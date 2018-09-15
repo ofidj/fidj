@@ -15,9 +15,9 @@ import {Error as FidjError} from '../connection';
  *      // $ npm install --save-dev fidj
  *      // then init your app.js & use it in your services
  *
- * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.miappio.inject.js"></script>
+ * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.inject.js"></script>
  *
- * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.miappio.sync.js"></script>
+ * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.sync.js"></script>
  *
  *
  */
@@ -25,92 +25,92 @@ import {Error as FidjError} from '../connection';
 export class FidjService implements ModuleServiceInterface {
 
     private logger: LoggerInterface;
-    private miappService: InternalService;
+    private fidjService: InternalService;
     private promise: any;
 
     constructor() {
         this.logger = new LoggerService();
         this.promise = Promise;
-        this.miappService = null;
+        this.fidjService = null;
         // let pouchdbRequired = PouchDB;
         // pouchdbRequired.error();
     };
 
-    public init(miappId, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
-        if (!this.miappService) {
-            this.miappService = new InternalService(this.logger, this.promise);
+    public init(fidjId, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
+        if (!this.fidjService) {
+            this.fidjService = new InternalService(this.logger, this.promise);
         }
         /*
         if (options && options.forcedEndpoint) {
-            this.miappService.setAuthEndpoint(options.forcedEndpoint);
+            this.fidjService.setAuthEndpoint(options.forcedEndpoint);
         }
         if (options && options.forcedDBEndpoint) {
-            this.miappService.setDBEndpoint(options.forcedDBEndpoint);
+            this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
         }*/
-        return this.miappService.miappInit(miappId, options);
+        return this.fidjService.fidjInit(fidjId, options);
     };
 
     public login(login, password): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular2.login : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.login : not initialized.'));
         }
-        return this.miappService.miappLogin(login, password);
+        return this.fidjService.fidjLogin(login, password);
     };
 
     public loginAsDemo(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular2.loginAsDemo : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
         }
-        return this.miappService.miappLoginInDemoMode(options);
+        return this.fidjService.fidjLoginInDemoMode(options);
     };
 
     public isLoggedIn(): boolean {
-        if (!this.miappService) {
-            return false; // this.promise.reject('miapp.sdk.angular2.isLoggedIn : not initialized.');
+        if (!this.fidjService) {
+            return false; // this.promise.reject('fidj.sdk.angular2.isLoggedIn : not initialized.');
         }
-        return this.miappService.miappIsLogin();
+        return this.fidjService.fidjIsLogin();
     };
 
     public getRoles(): Array<string> {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return [];
         }
-        return this.miappService.miappRoles();
+        return this.fidjService.fidjRoles();
     };
 
     public getEndpoints(): Array<EndpointInterface> {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return [];
         }
-        return this.miappService.miappGetEndpoints();
+        return this.fidjService.fidjGetEndpoints();
     };
 
     public postOnEndpoint(key: string, data: any): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular2.loginAsDemo : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
         }
-        return this.miappService.miappPostOnEndpoint(key, data);
+        return this.fidjService.fidjPostOnEndpoint(key, data);
     };
 
     public getIdToken(): string {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return;
         }
-        return this.miappService.miappGetIdToken();
+        return this.fidjService.fidjGetIdToken();
     };
 
     public getMessage(): string {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return '';
         }
-        return this.miappService.miappMessage();
+        return this.fidjService.fidjMessage();
     };
 
     public logout(): Promise<void | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular2.logout : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.logout : not initialized.'));
         }
-        return this.miappService.miappLogout();
+        return this.fidjService.fidjLogout();
     };
 
     /**
@@ -118,22 +118,22 @@ export class FidjService implements ModuleServiceInterface {
      * Synchronize DB
      * @param fnInitFirstData  a function with db as input and that return promise: call if DB is empty
      * @returns promise with this.session.db
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      *
      * @example
      *  let initDb = function() {
-     *     this.miappService.put('my first row');
+     *     this.fidjService.put('my first row');
      *  };
-     *  this.miappService.sync(initDb)
+     *  this.fidjService.sync(initDb)
      *  .then(user => ...)
      *  .catch(err => ...)
      *
      */
     public sync(fnInitFirstData?): Promise<void | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular2.sync : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.sync : not initialized.'));
         }
-        return this.miappService.miappSync(fnInitFirstData, this);
+        return this.fidjService.fidjSync(fnInitFirstData, this);
     };
 
     /**
@@ -143,10 +143,10 @@ export class FidjService implements ModuleServiceInterface {
      * @returns
      */
     public put(data: any): Promise<string | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular2.put : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.put : not initialized.'));
         }
-        return this.miappService.miappPutInDb(data);
+        return this.fidjService.fidjPutInDb(data);
     };
 
     /**
@@ -156,27 +156,27 @@ export class FidjService implements ModuleServiceInterface {
      * @returns
      */
     public remove(id: string): Promise<void | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular2.remove : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.remove : not initialized.'));
         }
-        return this.miappService.miappRemoveInDb(id);
+        return this.fidjService.fidjRemoveInDb(id);
     };
 
     /**
      * Find
      */
     public find(id: string): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular2.find : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.find : not initialized.'));
         }
-        return this.miappService.miappFindInDb(id);
+        return this.fidjService.fidjFindInDb(id);
     };
 
     public findAll(): Promise<any[] | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular2.findAll : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.findAll : not initialized.'));
         }
-        return this.miappService.miappFindAllInDb();
+        return this.fidjService.fidjFindAllInDb();
     };
 
 }

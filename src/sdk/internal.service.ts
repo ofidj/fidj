@@ -20,7 +20,7 @@ import {Ajax} from '../connection/ajax';
 
 /**
  * please use its angular.js or angular.io wrapper
- * usefull only for miapp.io dev team
+ * usefull only for fidj dev team
  */
 export class InternalService {
 
@@ -34,7 +34,7 @@ export class InternalService {
     constructor(logger: LoggerInterface, promise: PromiseConstructor) {
 
         this.sdk = {
-            org: 'miapp.io',
+            org: 'fidj',
             version: version.version,
             prod: false
         };
@@ -50,11 +50,11 @@ export class InternalService {
             this.logger.error = window.console.error;
             this.logger.warn = window.console.warn;
         }
-        this.logger.log('miapp.sdk.service : constructor');
+        this.logger.log('fidj.sdk.service : constructor');
         if (promise) {
             this.promise = promise;
         }
-        this.storage = new tools.LocalStorage(window.localStorage, 'miapp.');
+        this.storage = new tools.LocalStorage(window.localStorage, 'fidj.');
         this.session = new session.Session();
         this.connection = new connection.Connection(this.sdk, this.storage);
     }
@@ -65,19 +65,19 @@ export class InternalService {
      * Done each app start
      *
      * @param options Optional settings
-     * @param options.miappId  required use your customized endpoints
-     * @param options.miappSalt required use your customized endpoints
-     * @param options.miappVersion required use your customized endpoints
+     * @param options.fidjId  required use your customized endpoints
+     * @param options.fidjSalt required use your customized endpoints
+     * @param options.fidjVersion required use your customized endpoints
      * @param options.devMode optional default false, use your customized endpoints
      * @returns
      */
-    public miappInit(miappId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
+    public fidjInit(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
 
         const self = this;
-        self.logger.log('miapp.sdk.service.miappInit : ', options);
-        if (!miappId) {
-            self.logger.error('miapp.sdk.service.miappInit : bad init');
-            return self.promise.reject(new Error(400, 'Need a miappId'));
+        self.logger.log('fidj.sdk.service.fidjInit : ', options);
+        if (!fidjId) {
+            self.logger.error('fidj.sdk.service.fidjInit : bad init');
+            return self.promise.reject(new Error(400, 'Need a fidjId'));
         }
 
         self.sdk.prod = !options ? true : options.prod;
@@ -85,13 +85,13 @@ export class InternalService {
         return new self.promise((resolve, reject) => {
             self.connection.verifyConnectionStates()
                 .then(() => {
-                    self.connection.miappId = miappId;
-                    self.connection.miappVersion = self.sdk.version;
-                    self.connection.miappCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
+                    self.connection.fidjId = fidjId;
+                    self.connection.fidjVersion = self.sdk.version;
+                    self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
 
                     let theBestUrl: any = self.connection.getApiEndpoints({filter: 'theBestOne'})[0];
                     let theBestOldUrl: any = self.connection.getApiEndpoints({filter: 'theBestOldOne'})[0];
-                    const isLogin = self.miappIsLogin();
+                    const isLogin = self.fidjIsLogin();
 
                     if (theBestUrl && theBestUrl.url) {
                         theBestUrl = theBestUrl.url;
@@ -101,10 +101,10 @@ export class InternalService {
                     }
 
                     if (theBestUrl) {
-                        self.connection.setClient(new connection.Client(self.connection.miappId, theBestUrl, self.storage, self.sdk));
+                        self.connection.setClient(new connection.Client(self.connection.fidjId, theBestUrl, self.storage, self.sdk));
                         resolve();
                     } else if (isLogin && theBestOldUrl) {
-                        self.connection.setClient(new connection.Client(self.connection.miappId, theBestOldUrl, self.storage, self.sdk));
+                        self.connection.setClient(new connection.Client(self.connection.fidjId, theBestOldUrl, self.storage, self.sdk));
                         resolve();
                     } else {
                         reject(new Error(404, 'Need one connection - or too old SDK version (check update)'));
@@ -112,23 +112,23 @@ export class InternalService {
 
                 })
                 .catch((err) => {
-                    self.logger.error('miapp.sdk.service.miappInit: ', err);
+                    self.logger.error('fidj.sdk.service.fidjInit: ', err);
                     reject(new Error(500, err.toString()));
                 });
         });
     };
 
     /**
-     * Call it if miappIsLogin() === false
+     * Call it if fidjIsLogin() === false
      * Erase all (db & storage)
      *
      * @param login
      * @param password
      * @returns
      */
-    public miappLogin(login: string, password: string): Promise<any | ErrorInterface> {
+    public fidjLogin(login: string, password: string): Promise<any | ErrorInterface> {
         const self = this;
-        self.logger.log('miapp.sdk.service.miappLogin');
+        self.logger.log('fidj.sdk.service.fidjLogin');
         if (!self.connection.isReady()) {
             return self.promise.reject(new Error(404, 'Need an intialized FidjService'));
         }
@@ -139,7 +139,7 @@ export class InternalService {
                     return self.connection.verifyConnectionStates();
                 })
                 .then(() => {
-                    return self._createSession(self.connection.miappId);
+                    return self._createSession(self.connection.fidjId);
                 })
                 .then(() => {
                     return self._loginInternal(login, password);
@@ -151,7 +151,7 @@ export class InternalService {
                         .catch((err) => resolve(self.connection.getUser()));
                 })
                 .catch((err) => {
-                    self.logger.error('miapp.sdk.service.miappLogin: ', err.toString());
+                    self.logger.error('fidj.sdk.service.fidjLogin: ', err.toString());
                     reject(err);
                 });
         });
@@ -164,7 +164,7 @@ export class InternalService {
      * @param options.idToken  optional
      * @returns
      */
-    public miappLoginInDemoMode(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface> {
+    public fidjLoginInDemoMode(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface> {
         const self = this;
 
         // generate one day tokens if not set
@@ -192,20 +192,20 @@ export class InternalService {
         return new self.promise((resolve, reject) => {
             self._removeAll()
                 .then(() => {
-                    return self._createSession(self.connection.miappId);
+                    return self._createSession(self.connection.fidjId);
                 })
                 .then(() => {
                     self.connection.setConnectionOffline(options);
                     resolve(self.connection.getUser());
                 })
                 .catch((err) => {
-                    self.logger.error('miapp.sdk.service.miappLogin error: ', err);
+                    self.logger.error('fidj.sdk.service.fidjLogin error: ', err);
                     reject(err);
                 });
         });
     };
 
-    public miappGetEndpoints(filter?: EndpointFilterInterface): Array<EndpointInterface> {
+    public fidjGetEndpoints(filter?: EndpointFilterInterface): Array<EndpointInterface> {
 
         if (!filter) {
             filter = {showBlocked: false};
@@ -228,24 +228,24 @@ export class InternalService {
         return endpoints;
     };
 
-    public miappRoles(): Array<string> {
+    public fidjRoles(): Array<string> {
         return JSON.parse(this.connection.getIdPayload({roles: []})).roles;
     };
 
-    public miappMessage(): string {
+    public fidjMessage(): string {
         return JSON.parse(this.connection.getIdPayload({message: ''})).message;
     };
 
-    public miappIsLogin(): boolean {
+    public fidjIsLogin(): boolean {
         return this.connection.isLogin();
     };
 
-    public miappLogout(): Promise<void | ErrorInterface> {
+    public fidjLogout(): Promise<void | ErrorInterface> {
         const self = this;
         if (!self.connection.getClient()) {
             return self._removeAll()
                 .then(() => {
-                    return this.session.create(self.connection.miappId, true);
+                    return this.session.create(self.connection.fidjId, true);
                 });
         }
 
@@ -257,7 +257,7 @@ export class InternalService {
                 return self._removeAll();
             })
             .then(() => {
-                return this.session.create(self.connection.miappId, true);
+                return this.session.create(self.connection.fidjId, true);
             });
     };
 
@@ -269,31 +269,31 @@ export class InternalService {
      * @param fnInitFirstData_Arg arg to set to fnInitFirstData()
      * @returns  promise
      */
-    public miappSync(fnInitFirstData?, fnInitFirstData_Arg?): Promise<void | ErrorInterface> {
+    public fidjSync(fnInitFirstData?, fnInitFirstData_Arg?): Promise<void | ErrorInterface> {
         const self = this;
-        self.logger.log('miapp.sdk.service.miappSync');
+        self.logger.log('fidj.sdk.service.fidjSync');
         // if (!self.session.isReady()) {
-        //    return self.promise.reject('miapp.sdk.service.miappSync : DB sync impossible. Did you login ?');
+        //    return self.promise.reject('fidj.sdk.service.fidjSync : DB sync impossible. Did you login ?');
         // }
 
         const firstSync = (self.session.dbLastSync === null);
 
         return new self.promise((resolve, reject) => {
 
-            self._createSession(self.connection.miappId)
+            self._createSession(self.connection.fidjId)
                 .then(() => {
                     return self.session.sync(self.connection.getClientId());
                 })
                 .then(() => {
-                    self.logger.log('miapp.sdk.service.miappSync resolved');
+                    self.logger.log('fidj.sdk.service.fidjSync resolved');
                     return self.session.isEmpty();
                 })
                 .catch((err) => {
-                    self.logger.warn('miapp.sdk.service.miappSync warn: ', err);
+                    self.logger.warn('fidj.sdk.service.fidjSync warn: ', err);
                     return self.session.isEmpty();
                 })
                 .then((isEmpty) => {
-                    self.logger.log('miapp.sdk.service.miappSync isEmpty : ', isEmpty, firstSync);
+                    self.logger.log('fidj.sdk.service.fidjSync isEmpty : ', isEmpty, firstSync);
 
                     return new Promise((resolveEmpty, rejectEmptyNotUsed) => {
                         if (isEmpty && firstSync && fnInitFirstData) {
@@ -309,7 +309,7 @@ export class InternalService {
                     });
                 })
                 .then((info) => {
-                    self.logger.log('miapp.sdk.service.miappSync fnInitFirstData resolved: ', info);
+                    self.logger.log('fidj.sdk.service.fidjSync fnInitFirstData resolved: ', info);
                     self.session.dbLastSync = new Date().getTime();
                     return self.session.info();
                 })
@@ -318,7 +318,7 @@ export class InternalService {
                     if (result && result.doc_count) {
                         self.session.dbRecordCount = result.doc_count;
                     }
-                    self.logger.log('miapp.sdk.service.miappSync _dbRecordCount : ' + self.session.dbRecordCount);
+                    self.logger.log('fidj.sdk.service.fidjSync _dbRecordCount : ' + self.session.dbRecordCount);
 
                     return self.connection.refreshConnection();
                 })
@@ -329,7 +329,7 @@ export class InternalService {
                     // console.error(err);
 
                     if (err && (err.code === 403 || err.code === 410)) {
-                        this.miappLogout()
+                        this.fidjLogout()
                             .then(() => {
                                 reject({code: 403, reason: 'Synchronization unauthorized : need to login again.'});
                             })
@@ -349,9 +349,9 @@ export class InternalService {
         });
     };
 
-    public miappPutInDb(data: any): Promise<string | ErrorInterface> {
+    public fidjPutInDb(data: any): Promise<string | ErrorInterface> {
         const self = this;
-        self.logger.log('miapp.sdk.service.miappPutInDb: ', data);
+        self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
 
         if (!self.connection.getClientId() || !self.session.isReady()) {
             return self.promise.reject(new Error(401, 'DB put impossible. Need a user logged in.'));
@@ -362,10 +362,10 @@ export class InternalService {
             _id = data._id;
         }
         if (!_id) {
-            _id = self._generateObjectUniqueId(self.connection.miappId);
+            _id = self._generateObjectUniqueId(self.connection.fidjId);
         }
         let crypto: SessionCryptoInterface;
-        if (self.connection.miappCrypto) {
+        if (self.connection.fidjCrypto) {
             crypto = {
                 obj: self.connection,
                 method: 'encrypt'
@@ -377,13 +377,13 @@ export class InternalService {
             _id,
             self.connection.getClientId(),
             self.sdk.org,
-            self.connection.miappVersion,
+            self.connection.fidjVersion,
             crypto);
     };
 
-    public miappRemoveInDb(data_id: string): Promise<void | ErrorInterface> {
+    public fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface> {
         const self = this;
-        self.logger.log('miapp.sdk.service.miappRemoveInDb ', data_id);
+        self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
 
         if (!self.session.isReady()) {
             return self.promise.reject(new Error(401, 'DB remove impossible. ' +
@@ -398,14 +398,14 @@ export class InternalService {
         return self.session.remove(data_id);
     };
 
-    public miappFindInDb(data_id: string): Promise<any | ErrorInterface> {
+    public fidjFindInDb(data_id: string): Promise<any | ErrorInterface> {
         const self = this;
         if (!self.connection.getClientId() || !self.session.isReady()) {
-            return self.promise.reject(new Error(401, 'miapp.sdk.service.miappFindInDb : need a user logged in.'));
+            return self.promise.reject(new Error(401, 'fidj.sdk.service.fidjFindInDb : need a user logged in.'));
         }
 
         let crypto: SessionCryptoInterface;
-        if (self.connection.miappCrypto) {
+        if (self.connection.fidjCrypto) {
             crypto = {
                 obj: self.connection,
                 method: 'decrypt'
@@ -415,7 +415,7 @@ export class InternalService {
         return self.session.get(data_id, crypto);
     };
 
-    public miappFindAllInDb(): Promise<Array<any> | ErrorInterface> {
+    public fidjFindAllInDb(): Promise<Array<any> | ErrorInterface> {
         const self = this;
 
         if (!self.connection.getClientId() || !self.session.isReady()) {
@@ -423,7 +423,7 @@ export class InternalService {
         }
 
         let crypto: SessionCryptoInterface;
-        if (self.connection.miappCrypto) {
+        if (self.connection.fidjCrypto) {
             crypto = {
                 obj: self.connection,
                 method: 'decrypt'
@@ -437,15 +437,15 @@ export class InternalService {
             });
     };
 
-    public miappPostOnEndpoint(key: string, data?: any): Promise<any | ErrorInterface> {
+    public fidjPostOnEndpoint(key: string, data?: any): Promise<any | ErrorInterface> {
         const filter: EndpointFilterInterface = {
             key: key
         };
-        const endpoints = this.miappGetEndpoints(filter);
+        const endpoints = this.fidjGetEndpoints(filter);
         if (!endpoints || endpoints.length !== 1) {
             return this.promise.reject(
                 new Error(400,
-                    'miapp.sdk.service.miappPostOnEndpoint : endpoint does not exist.'));
+                    'fidj.sdk.service.fidjPostOnEndpoint : endpoint does not exist.'));
         }
 
         const endpointUrl = endpoints[0].url;
@@ -463,7 +463,7 @@ export class InternalService {
             });
     };
 
-    public miappGetIdToken(): string {
+    public fidjGetIdToken(): string {
         return this.connection.getIdToken();
     };
 
@@ -478,7 +478,7 @@ export class InternalService {
      */
     private _loginInternal(login: string, password: string, updateProperties?: any): Promise<any | ErrorInterface> {
         const self = this;
-        self.logger.log('miapp.sdk.service._loginInternal');
+        self.logger.log('fidj.sdk.service._loginInternal');
         if (!self.connection.isReady()) {
             return self.promise.reject(new Error(403, 'Need an intialized FidjService'));
         }
@@ -497,7 +497,7 @@ export class InternalService {
                         resolve(loginUser);
                     })
                     .catch(err => {
-                        self.logger.error('miapp.sdk.service._loginInternal error : ' + err);
+                        self.logger.error('fidj.sdk.service._loginInternal error : ' + err);
                         reject(err);
                     });
             }

@@ -1,28 +1,28 @@
 {
   "name": "fidj",
   "version": "2.1.10",
-  "description": "miapp.io client SDK",
+  "description": "fidj.ovh js framework",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miappio/fidj.git"
+    "url": "git+https://github.com/ofidj/fidj.git"
   },
   "keywords": [
-    "miapp.io",
+    "fidj",
     "mobile",
     "angular",
     "ng",
     "ionic",
     "integration"
   ],
-  "author": "miapp.io",
+  "author": "fidj",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/miappio/fidj/issues"
+    "url": "https://github.com/ofidj/fidj/issues"
   },
-  "homepage": "https://github.com/miappio/fidj#readme",
+  "homepage": "https://github.com/ofidj/fidj#readme",
   "dependencies": {
-    "ajv": "^5.5.1",
-    "pouchdb": "^6.4.3"
+    "ajv": "^6.5.3",
+    "pouchdb": "^7.0.0"
   },
   "ignore": [
     "**/.*",
@@ -42,7 +42,7 @@
     "angular": "^1.5.3",
     "angular-mocks": "^1.5.3"
   },
-  "angularjsMain": "miapp.angularjs.js",
+  "angularjsMain": "fidj.angularjs.js",
   "main": "bundles/fidj.umd.js",
   "module": "fesm5/fidj.js",
   "es2015": "fesm2015/fidj.js",

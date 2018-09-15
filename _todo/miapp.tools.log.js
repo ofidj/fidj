@@ -1,16 +1,16 @@
 'use strict';
 
-// Namespace miapp
-var miapp;
-if (!miapp) miapp = {};
+// Namespace fidj
+var fidj;
+if (!fidj) fidj = {};
 
-function miappDumpData(input, maxDepth) {
+function fidjDumpData(input, maxDepth) {
     var str = "";
     if (typeof input === "object") {
         if (input instanceof Array) {
             if (maxDepth > 0) {
                 str += "[\n";
-                str += miappDumpArray("  ", input, maxDepth-1);
+                str += fidjDumpArray("  ", input, maxDepth-1);
                 str += "]\n";
             } else {
                 str += "[Array]\n";
@@ -18,7 +18,7 @@ function miappDumpData(input, maxDepth) {
         } else {
             if (maxDepth > 0) {
                 str += "{\n";
-                str += miappDumpObject("  ", input, maxDepth-1);
+                str += fidjDumpObject("  ", input, maxDepth-1);
                 str += "}\n";
             } else {
                 str += "[" + typeof(input) + "]\n";
@@ -30,14 +30,14 @@ function miappDumpData(input, maxDepth) {
     return str;
 }
 
-function miappDumpArray(offset, input, maxDepth) {
+function fidjDumpArray(offset, input, maxDepth) {
     var str = "";
     for (var key = 0,nb = input.length; key<nb; key++) {
         if (typeof input[key] === "object") {
             if (input[key] instanceof Array) {
                 if (maxDepth > 0) {
                     str += offset + key + " : [\n";
-                    str += miappDumpArray(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpArray(offset + "  ", input[key], maxDepth-1);
                     str += offset + "]\n";
                 } else {
                     str += offset + key + " : [Array]\n";
@@ -45,7 +45,7 @@ function miappDumpArray(offset, input, maxDepth) {
             } else {
                 if (maxDepth > 0) {
                     str += offset + key + " : {\n";
-                    str += miappDumpObject(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpObject(offset + "  ", input[key], maxDepth-1);
                     str += offset + "}\n";
                 } else {
                     str += offset + key + " : [" + typeof(input[key]) + "]\n";
@@ -58,7 +58,7 @@ function miappDumpArray(offset, input, maxDepth) {
     return str;
 }
 
-function miappDumpObject(offset, input, maxDepth) {
+function fidjDumpObject(offset, input, maxDepth) {
     var str = "", key;
     for (key in input) {
         if (!input.hasOwnProperty(key)) continue;
@@ -66,7 +66,7 @@ function miappDumpObject(offset, input, maxDepth) {
             if (input[key] instanceof Array) {
                 if (maxDepth > 0) {
                     str += offset + key + " : [\n";
-                    str += miappDumpArray(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpArray(offset + "  ", input[key], maxDepth-1);
                     str += offset + "]\n";
                 } else {
                     str += offset + key + " : [Array]\n";
@@ -74,7 +74,7 @@ function miappDumpObject(offset, input, maxDepth) {
             } else {
                 if (maxDepth > 0) {
                     str += offset + key + " : {\n";
-                    str += miappDumpObject(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpObject(offset + "  ", input[key], maxDepth-1);
                     str += offset + "}\n";
                 } else {
                     str += offset + key + " : [" + typeof(input[key]) + "]\n";
@@ -92,14 +92,14 @@ function miappDumpObject(offset, input, maxDepth) {
  * @param {Number} timestamp in ms since 1/1/1970
  * @returns {string} result
  */
-function miappTimestampFormat(timestamp) {
+function fidjTimestampFormat(timestamp) {
     var date = new Date(timestamp);
-    return miappPadNumber(date.getFullYear(), 4) + '-' +
-        miappPadNumber(date.getMonth() + 1, 2) + '-' +
-        miappPadNumber(date.getDate(), 2) + ' ' +
-        miappPadNumber(date.getHours(), 2) + ':' +
-        miappPadNumber(date.getMinutes(), 2) + ':' +
-        miappPadNumber(date.getSeconds(), 2);
+    return fidjPadNumber(date.getFullYear(), 4) + '-' +
+        fidjPadNumber(date.getMonth() + 1, 2) + '-' +
+        fidjPadNumber(date.getDate(), 2) + ' ' +
+        fidjPadNumber(date.getHours(), 2) + ':' +
+        fidjPadNumber(date.getMinutes(), 2) + ':' +
+        fidjPadNumber(date.getSeconds(), 2);
 }
 
 /**
@@ -107,14 +107,14 @@ function miappTimestampFormat(timestamp) {
  * @param {Date} date to format
  * @returns {string} result
  */
-function miappDateFormat(date) {
+function fidjDateFormat(date) {
     if (!date) return '';
-    return miappPadNumber(date.getFullYear(), 4) + '-' +
-        miappPadNumber(date.getMonth() + 1, 2) + '-' +
-        miappPadNumber(date.getDate(), 2) + ' ' +
-        miappPadNumber(date.getHours(), 2) + ':' +
-        miappPadNumber(date.getMinutes(), 2) + ':' +
-        miappPadNumber(date.getSeconds(), 2);
+    return fidjPadNumber(date.getFullYear(), 4) + '-' +
+        fidjPadNumber(date.getMonth() + 1, 2) + '-' +
+        fidjPadNumber(date.getDate(), 2) + ' ' +
+        fidjPadNumber(date.getHours(), 2) + ':' +
+        fidjPadNumber(date.getMinutes(), 2) + ':' +
+        fidjPadNumber(date.getSeconds(), 2);
 }
 
 /**
@@ -122,14 +122,14 @@ function miappDateFormat(date) {
  * @param {Date} date to format
  * @returns {string} result
  */
-function miappDateCompactFormat(date) {
+function fidjDateCompactFormat(date) {
     if (!date) return '';
-    return miappPadNumber(date.getFullYear(), 2) +
-        miappPadNumber(date.getMonth() + 1, 2) +
-        miappPadNumber(date.getDate(), 2) + '_' +
-        miappPadNumber(date.getHours(), 2) +
-        miappPadNumber(date.getMinutes(), 2) +
-        miappPadNumber(date.getSeconds(), 2);
+    return fidjPadNumber(date.getFullYear(), 2) +
+        fidjPadNumber(date.getMonth() + 1, 2) +
+        fidjPadNumber(date.getDate(), 2) + '_' +
+        fidjPadNumber(date.getHours(), 2) +
+        fidjPadNumber(date.getMinutes(), 2) +
+        fidjPadNumber(date.getSeconds(), 2);
 }
 
 /**
@@ -137,8 +137,8 @@ function miappDateCompactFormat(date) {
  * @param {string} date string at format "yyyy-MM-dd HH:mm:ss"
  * @returns {Number} Number resulting from Date.getTime or 0 if invalid date
  */
-function miappTimestampParse(date) {
-    var newDate = miappDateParse(date);
+function fidjTimestampParse(date) {
+    var newDate = fidjDateParse(date);
     return (newDate !== false) ? newDate.getTime() : 0;
 }
 
@@ -147,7 +147,7 @@ function miappTimestampParse(date) {
  * @param {string} date string at format "yyyy-MM-dd HH:mm:ss"
  * @returns {Date} Date object or false if invalid date
  */
-function miappDateParse(date) {
+function fidjDateParse(date) {
     if (!date || typeof date != 'string' || date == '') return false;
     // Date (choose 0 in date to force an error if parseInt fails)
     var yearS = parseInt(date.substr(0,4), 10) || 0;
@@ -176,7 +176,7 @@ function miappDateParse(date) {
 
 // @input date or string
 // @return String formatted as date
-function miappDateFormatObject(object) {
+function fidjDateFormatObject(object) {
 
     var yearS = '1970';
     var monthS = '01';
@@ -233,7 +233,7 @@ function miappDateFormatObject(object) {
 }
 
 
-function miappDateExtractDate(dateString) {
+function fidjDateExtractDate(dateString) {
 
     var dateReg = new RegExp("([0-9][0-9][0-9][0-9])-([0-9]\\d)-([0-9]\\d)+", "g");
     var dateParts = dateString.split(dateReg);
@@ -246,7 +246,7 @@ function miappDateExtractDate(dateString) {
     return ''+ yearS + '-' + monthS + '-' + dayS;
 }
 
-function miappDateExtractTime(dateString) {
+function fidjDateExtractTime(dateString) {
     var timeReg = new RegExp("([01]\\d|2[0-9]):([0-5]\\d):([0-5]\\d)");
     var timeParts = dateString.match(timeReg);
     var hourS = "00";
@@ -269,7 +269,7 @@ function miappDateExtractTime(dateString) {
 }
 
 
-function miappPadNumber(num, digits, trim) {
+function fidjPadNumber(num, digits, trim) {
     var neg = '';
     if (num < 0) {
         neg = '-';
@@ -285,7 +285,7 @@ function miappPadNumber(num, digits, trim) {
     return neg + num;
 }
 
-miapp.formatError = function(arg) {
+fidj.formatError = function(arg) {
     if (arg instanceof Error) {
         if (arg.stack) {
             arg = (arg.message && arg.stack.indexOf(arg.message) === -1)
@@ -298,7 +298,7 @@ miapp.formatError = function(arg) {
     return arg;
 };
 
-miapp.Log = (function () {
+fidj.Log = (function () {
 
     function Log(nbMax) {
         this.nbMax = nbMax || 1000;
@@ -330,7 +330,7 @@ miapp.Log = (function () {
     	    	
         details = details || '';
         var now = new Date();
-        now = miappDateFormat(now) + '.' + now.getMilliseconds();
+        now = fidjDateFormat(now) + '.' + now.getMilliseconds();
         // TODO : get the file and line of caller
         //var nb = (new Error).lineNumber;
         var from = '';
@@ -372,8 +372,8 @@ miapp.Log = (function () {
                 this.callbacks[idx].callback(this.callbacks[idx].id, logEntry);
             } catch (e) {
                 //console.log("Error on callback#" + idx
-                //    + " called from Log for the logEntry " + miappDumpData(logEntry, 1)
-                //    + " : " + miapp.formatError(e));
+                //    + " called from Log for the logEntry " + fidjDumpData(logEntry, 1)
+                //    + " : " + fidj.formatError(e));
             }
         }
         return logEntry;
@@ -401,5 +401,5 @@ miapp.Log = (function () {
     return Log;
 })(); // Invoke the function immediately to create this class.
 
-miapp.ErrorLog = new miapp.Log(1000);
-miapp.InternalLog = new miapp.Log(1000);
+fidj.ErrorLog = new fidj.Log(1000);
+fidj.InternalLog = new fidj.Log(1000);

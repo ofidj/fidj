@@ -29,7 +29,7 @@ export class FidjAngularjsService implements ModuleServiceInterface {
 
     private logger: any;
     private promise: any;
-    private miappService: InternalService;
+    private fidjService: InternalService;
 
     /**
      * @param $log
@@ -46,176 +46,176 @@ export class FidjAngularjsService implements ModuleServiceInterface {
             },
         };
         this.promise = $q || Promise;
-        this.miappService = null;
+        this.fidjService = null;
     }
 
     /**
-     * Init the service with miapp.io IDs
-     * @param miappId {String} given miapp.io appId
+     * Init the service with fidj IDs
+     * @param fidjId {String} given fidj appId
      * @param options Optional settings
      * @param options._devMode {boolean} optional default false, use your customized endpoints
-     * @param options._forceOnline {boolean} optional force connection to miapp.io hub
+     * @param options._forceOnline {boolean} optional force connection to fidj hub
      * @param options._forceEndpoint {String} optional auth endpoint
      * @param options._forceDBEndpoint {String} optional db endpoint
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      */
-    init(miappId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
-        if (!this.miappService) {
-            this.miappService = new InternalService(this.logger, this.promise);
+    init(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
+        if (!this.fidjService) {
+            this.fidjService = new InternalService(this.logger, this.promise);
         }
         /*
         if (options && options.forcedEndpoint) {
-            this.miappService.setAuthEndpoint(options.forcedEndpoint);
+            this.fidjService.setAuthEndpoint(options.forcedEndpoint);
         }
         if (options && options.forcedDBEndpoint) {
-            this.miappService.setDBEndpoint(options.forcedDBEndpoint);
+            this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
         }*/
-        return this.miappService.miappInit(miappId, options);
+        return this.fidjService.fidjInit(fidjId, options);
     };
 
     /**
      *
      * @param login
      * @param password
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      */
     login(login, password): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular.login : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.login : not initialized.'));
         }
-        return this.miappService.miappLogin(login, password);
+        return this.fidjService.fidjLogin(login, password);
     };
 
     loginAsDemo(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular.loginAsDemo : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
         }
-        return this.miappService.miappLoginInDemoMode(options);
+        return this.fidjService.fidjLoginInDemoMode(options);
     };
 
     /**
      * @return true if logged in
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      */
     isLoggedIn(): boolean {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return false;
         }
-        return this.miappService.miappIsLogin();
+        return this.fidjService.fidjIsLogin();
     };
 
     getRoles(): Array<string> {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return [];
         }
-        return this.miappService.miappRoles();
+        return this.fidjService.fidjRoles();
     };
 
     getEndpoints(): Array<EndpointInterface> {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return [];
         }
-        return this.miappService.miappGetEndpoints();
+        return this.fidjService.fidjGetEndpoints();
     };
 
     postOnEndpoint(key: string, data: any): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular2.loginAsDemo : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
         }
-        return this.miappService.miappPostOnEndpoint(key, data);
+        return this.fidjService.fidjPostOnEndpoint(key, data);
     };
 
     getIdToken(): string {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return;
         }
-        return this.miappService.miappGetIdToken();
+        return this.fidjService.fidjGetIdToken();
     };
 
     getMessage(): string {
-        if (!this.miappService) {
+        if (!this.fidjService) {
             return '';
         }
-        return this.miappService.miappMessage();
+        return this.fidjService.fidjMessage();
     };
 
     /**
-     * Logout all miapp services
-     * @memberof miapp.angularService
+     * Logout all fidj services
+     * @memberof fidj.angularService
      */
     logout(): Promise<void | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(303, 'miapp.sdk.angular.logout : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.logout : not initialized.'));
         }
-        return this.miappService.miappLogout();
+        return this.fidjService.fidjLogout();
     };
 
     sync(fnInitFirstData): Promise<void | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular.sync : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.sync : not initialized.'));
         }
-        return this.miappService.miappSync(fnInitFirstData, this);
+        return this.fidjService.fidjSync(fnInitFirstData, this);
     };
 
     /**
      *
      * @param data
      * @returns {*}
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      */
     put(data: any): Promise<string | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular.put : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.put : not initialized.'));
         }
-        return this.miappService.miappPutInDb(data);
+        return this.fidjService.fidjPutInDb(data);
     };
 
     /**
      *
      * @param dataId
      * @returns {*}
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      */
     remove(dataId: string): Promise<any | ErrorInterface> {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular.remove : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.remove : not initialized.'));
         }
-        return this.miappService.miappRemoveInDb(dataId);
+        return this.fidjService.fidjRemoveInDb(dataId);
     };
 
     /**
      *
      * @param id
      * @returns {*}
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      */
     find(id) {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular.find : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.find : not initialized.'));
         }
-        return this.miappService.miappFindInDb(id);
+        return this.fidjService.fidjFindInDb(id);
     };
 
     /**
      *
      * @returns {*}
-     * @memberof miapp.angularService
+     * @memberof fidj.angularService
      */
     findAll() {
-        if (!this.miappService) {
-            return this.promise.reject(new FidjError(401, 'miapp.sdk.angular.findAll : not initialized.'));
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.findAll : not initialized.'));
         }
-        return this.miappService.miappFindAllInDb();
+        return this.fidjService.fidjFindAllInDb();
     };
 
     /**
      * @deprecated
      */
     // private _testPromise() {
-    //     if (!this.miappService) {
-    //         return this.promise.reject('miapp.sdk.angular.testPromise : not initialized.');
+    //     if (!this.fidjService) {
+    //         return this.promise.reject('fidj.sdk.angular.testPromise : not initialized.');
     //     }
-    //     return (this.miappService as any)._testPromise();
+    //     return (this.fidjService as any)._testPromise();
     // };
 
 }
@@ -234,26 +234,26 @@ if (angular && angular.module) {
             return new FidjAngularjsService($log, $q);
         });
 
-    // todo : enforce miapp.services with all internal modules (LocalStorage etc...) made with love
+    // todo : enforce fidj.services with all internal modules (LocalStorage etc...) made with love
     angular
-        .module('miapp.services', [])
+        .module('fidj.services', [])
         .factory('srvLocalStorage', () => {
 
-            // var LocalStorage = miapp.LocalStorageFactory(window.localStorage);
+            // var LocalStorage = fidj.LocalStorageFactory(window.localStorage);
             // return new LocalStorage();
 
-            return new LocalStorage(window.localStorage, 'miapp.');
+            return new LocalStorage(window.localStorage, 'fidj.');
 
         })
-        .directive('miappLazyLoad', ($animate) => {
+        .directive('fidjLazyLoad', ($animate) => {
             return {
                 scope: {
-                    'miappLazyLoad': '=',
+                    'fidjLazyLoad': '=',
                     'afterShow': '&',
                     'afterHide': '&'
                 },
                 link: (scope, element) => {
-                    scope.$watch('miappLazyLoad', (show) => {
+                    scope.$watch('fidjLazyLoad', (show) => {
                         if (show) {
                             $animate.removeClass(element, 'ng-hide').then(scope.afterShow);
                         }

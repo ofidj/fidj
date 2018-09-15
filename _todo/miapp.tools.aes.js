@@ -1,14 +1,14 @@
-var miapp;
-if (!miapp) miapp = {};
+var fidj;
+if (!fidj) fidj = {};
 
 /**
  * AES implementation in JavaScript (c) Chris Veness 2005-2012
  * see http://csrc.nist.gov/publications/PubsFIPS.html#197
  *
- * @class miapp.Aes
+ * @class fidj.Aes
  * @private
  */
-miapp.Aes = (function () {
+fidj.Aes = (function () {
     'use strict';
 
 
@@ -112,7 +112,7 @@ miapp.Aes = (function () {
     Aes.ctrEncrypt = function (plaintext, stringkey) {
         var blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
         if (!(stringkey.length == 16 || stringkey.length == 24 || stringkey.length == 32)) return '';  // standard allows 128/192/256 bit keys
-        plaintext = miapp.Utf8.encode(plaintext);
+        plaintext = fidj.Utf8.encode(plaintext);
         //var t = new Date();  // timer
         var key = new Array(stringkey.length);
         for (var i = 0; i < stringkey.length; i++) key[i] = stringkey[i] & 0xff;
@@ -161,7 +161,7 @@ miapp.Aes = (function () {
 
         // Array.join is more efficient than repeated string concatenation in IE
         var ciphertext = ctrTxt + ciphertxt.join('');
-        //ciphertext = miapp.Base64.encode(ciphertext);
+        //ciphertext = fidj.Base64.encode(ciphertext);
 
         //alert((new Date()) - t);
         return ciphertext;
@@ -177,7 +177,7 @@ miapp.Aes = (function () {
     Aes.ctrDecrypt = function (ciphertext, stringkey) {
         var blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
         if (!(stringkey.length == 16 || stringkey.length == 24 || stringkey.length == 32)) return '';  // standard allows 128/192/256 bit keys
-        //ciphertext = miapp.Base64.decode(ciphertext);
+        //ciphertext = fidj.Base64.decode(ciphertext);
         //var t = new Date();  // timer
         var key = new Array(stringkey.length);
         for (var i = 0; i < stringkey.length; i++) key[i] = stringkey[i] & 0xff;
@@ -217,7 +217,7 @@ miapp.Aes = (function () {
 
         // join array of blocks into single plaintext string
         var plaintext = plaintxt.join('');
-        plaintext = miapp.Utf8.decode(plaintext);  // decode from UTF8 back to Unicode multi-byte chars
+        plaintext = fidj.Utf8.decode(plaintext);  // decode from UTF8 back to Unicode multi-byte chars
 
         //alert((new Date()) - t);
         return plaintext;
@@ -246,11 +246,11 @@ miapp.Aes = (function () {
 
         //trace = new Array(4 * Nb);
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(input[i]);
-        //console.log('round['+round+'] input='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] input='+fidj.Hex.encode(trace.join('')));
 
         //trace = new Array(4 * Nb);
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(w[round * 4 + Math.floor(i / 4)][i % 4]);
-        //console.log('round['+round+'] k_sch='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] k_sch='+fidj.Hex.encode(trace.join('')));
 
         state = addRoundKey(state, w, round, Nb);
 
@@ -258,32 +258,32 @@ miapp.Aes = (function () {
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] start='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] start='+fidj.Hex.encode(trace.join('')));
 
             state = subBytes(state, Nb);
 
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] s_box='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] s_box='+fidj.Hex.encode(trace.join('')));
 
             state = shiftRows(state, Nb);
 
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] s_row='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] s_row='+fidj.Hex.encode(trace.join('')));
 
             state = mixColumns(state, Nb);
 
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] m_col='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] m_col='+fidj.Hex.encode(trace.join('')));
 
             //trace = new Array(4 * Nb);
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(w[round * 4 + Math.floor(i / 4)][i % 4]);
-            //console.log('round['+round+'] k_sch='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] k_sch='+fidj.Hex.encode(trace.join('')));
 
             state = addRoundKey(state, w, round, Nb);
         }
@@ -291,21 +291,21 @@ miapp.Aes = (function () {
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-        //console.log('round['+round+'] start='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] start='+fidj.Hex.encode(trace.join('')));
 
         state = subBytes(state, Nb);
 
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-        //console.log('round['+round+'] s_box='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] s_box='+fidj.Hex.encode(trace.join('')));
 
         state = shiftRows(state, Nb);
 
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-        //console.log('round['+round+'] s_row='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] s_row='+fidj.Hex.encode(trace.join('')));
 
         state = addRoundKey(state, w, round, Nb);
 
@@ -315,7 +315,7 @@ miapp.Aes = (function () {
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(output[i]);
-        //console.log('round['+round+'] output='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] output='+fidj.Hex.encode(trace.join('')));
 
         return output;
     }
@@ -343,11 +343,11 @@ miapp.Aes = (function () {
 
         //trace = new Array(4 * Nb);
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(input[i]);
-        //console.log('round['+round+'] input='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] input='+fidj.Hex.encode(trace.join('')));
 
         //trace = new Array(4 * Nb);
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(w[round * 4 + Math.floor(i / 4)][i % 4]);
-        //console.log('round['+round+'] k_sch='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] k_sch='+fidj.Hex.encode(trace.join('')));
 
         state = addRoundKey(state, w, round, Nb);
 
@@ -355,32 +355,32 @@ miapp.Aes = (function () {
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] start='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] start='+fidj.Hex.encode(trace.join('')));
 
             state = invShiftRows(state, Nb);
 
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] s_row='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] s_row='+fidj.Hex.encode(trace.join('')));
 
             state = invSubBytes(state, Nb);
 
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] s_box='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] s_box='+fidj.Hex.encode(trace.join('')));
 
             //trace = new Array(4 * Nb);
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(w[round * 4 + Math.floor(i / 4)][i % 4]);
-            //console.log('round['+round+'] k_sch='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] k_sch='+fidj.Hex.encode(trace.join('')));
 
             state = addRoundKey(state, w, round, Nb);
 
             // trace
             //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
             //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-            //console.log('round['+round+'] k_add='+miapp.Hex.encode(trace.join('')));
+            //console.log('round['+round+'] k_add='+fidj.Hex.encode(trace.join('')));
 
             state = invMixColumns(state, Nb);
         }
@@ -388,25 +388,25 @@ miapp.Aes = (function () {
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-        //console.log('round['+round+'] start='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] start='+fidj.Hex.encode(trace.join('')));
 
         state = invShiftRows(state, Nb);
 
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-        //console.log('round['+round+'] s_row='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] s_row='+fidj.Hex.encode(trace.join('')));
 
         state = invSubBytes(state, Nb);
 
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(state[i % 4][Math.floor(i / 4)]);
-        //console.log('round['+round+'] s_box='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] s_box='+fidj.Hex.encode(trace.join('')));
 
         //trace = new Array(4 * Nb);
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(w[round * 4 + Math.floor(i / 4)][i % 4]);
-        //console.log('round['+round+'] k_sch='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] k_sch='+fidj.Hex.encode(trace.join('')));
 
         state = addRoundKey(state, w, round, Nb);
 
@@ -416,7 +416,7 @@ miapp.Aes = (function () {
         // trace
         //trace = new Array(4 * Nb);  // convert state to 1-d array before returning [�3.4]
         //for (var i = 0; i < (4 * Nb); i++) trace[i] = String.fromCharCode(output[i]);
-        //console.log('round['+round+'] output='+miapp.Hex.encode(trace.join('')));
+        //console.log('round['+round+'] output='+fidj.Hex.encode(trace.join('')));
 
         return output;
     }
@@ -442,7 +442,7 @@ miapp.Aes = (function () {
             /*
              trace = new Array(4);
              for (var t = 0; t < 4; t++) trace[t] = String.fromCharCode(w[i][t]);
-             console.log('w['+i+']='+miapp.Hex.encode(trace.join('')));
+             console.log('w['+i+']='+fidj.Hex.encode(trace.join('')));
              */
         }
 
@@ -459,7 +459,7 @@ miapp.Aes = (function () {
             /*
              trace = new Array(4);
              for (var t = 0; t < 4; t++) trace[t] = String.fromCharCode(w[i][t]);
-             console.log('w['+i+']='+miapp.Hex.encode(trace.join('')));
+             console.log('w['+i+']='+fidj.Hex.encode(trace.join('')));
              */
         }
 

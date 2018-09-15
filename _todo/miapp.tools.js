@@ -1,12 +1,12 @@
 
 
-// Namespace miapp
-var miapp = {};
+// Namespace fidj
+var fidj = {};
 
 /**
  * Management of browser capabilities
  */
-miapp.BrowserCapabilities = (function (navigator, window, document) {
+fidj.BrowserCapabilities = (function (navigator, window, document) {
     var capacities = {vendor: '', cssVendor: ''};
 
     function prefixStyle(style) {
@@ -152,12 +152,12 @@ miapp.BrowserCapabilities = (function (navigator, window, document) {
 })(navigator, window, document);
 
 
-miapp.Json = (function($)
+fidj.Json = (function($)
 {
     'use strict';
 
     if(!(Object.toJSON || window.JSON)){
-        throw new Error("Object.toJSON or window.JSON needs to be loaded before miapp.Json!");
+        throw new Error("Object.toJSON or window.JSON needs to be loaded before fidj.Json!");
     }
 
     // Constructor
@@ -230,7 +230,7 @@ miapp.Json = (function($)
  *  http://www.webtoolkit.info/
  *
  **/
-miapp.Sha1 = (function () {
+fidj.Sha1 = (function () {
 'use strict';
 
     var Sha1 = {};
@@ -241,7 +241,7 @@ miapp.Sha1 = (function () {
      * Hash string
      */
     Sha1.hash = function (input) {
-        var s = miapp.Utf8.encode(input);
+        var s = fidj.Utf8.encode(input);
         return binb2rstr(binb_sha1(rstr2binb(s), s.length * 8));
     };
 
@@ -251,8 +251,8 @@ miapp.Sha1 = (function () {
     Sha1.key256 = function (password) {
         var nBytes = 256 / 8;  // no bytes in key
         var halfLen = password.length / 2;
-        var hash1 = miapp.Sha1.hash(password.substr(0, halfLen));
-        var hash2 = miapp.Sha1.hash(password.substr(halfLen));
+        var hash1 = fidj.Sha1.hash(password.substr(0, halfLen));
+        var hash2 = fidj.Sha1.hash(password.substr(halfLen));
         return hash1.substr(0, 16) + hash2.substr(0, nBytes - 16);  // expand key to 16/24/32 bytes long
     };
 
@@ -368,9 +368,9 @@ miapp.Sha1 = (function () {
 
 
 // Usefull
-var miappBlockMove = function (evt,stopBubble) {
+var fidjBlockMove = function (evt,stopBubble) {
     'use strict';
-    //console.log('miappBlockMove');
+    //console.log('fidjBlockMove');
     // All but scrollable element = .c4p-container-scroll-y
     //if (evt.preventDefault) evt.preventDefault() ;
     //if (evt.preventDefault && !$(evt.target).parents('.c4p-container-scroll-y')[0]) {
@@ -386,14 +386,14 @@ var miappBlockMove = function (evt,stopBubble) {
 
 };
 
-var miappAllowMove = function (e) {
-    //console.log('miappAllowMove');
+var fidjAllowMove = function (e) {
+    //console.log('fidjAllowMove');
     return true ;
 };
 
 
-var miappFakeConsoleLog = function (e) {
-    //console.log('miappAllowMove');
+var fidjFakeConsoleLog = function (e) {
+    //console.log('fidjAllowMove');
     return true;
 };
 
@@ -419,48 +419,48 @@ var Camera;
 
 // A consistent way to create a unique ID which will never overflow.
 
-miapp.uid  = ['0', '0', '0'];
-miapp.idStr = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-miapp.idNext = {
+fidj.uid  = ['0', '0', '0'];
+fidj.idStr = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+fidj.idNext = {
     '0':1, '1':2, '2':3, '3':4, '4':5, '5':6, '6':7, '7':8, '8':9, '9':10,
     'A':11, 'B':12, 'C':13, 'D':14, 'E':15, 'F':16, 'G':17, 'H':18, 'I':19, 'J':20,
     'K':21, 'L':22, 'M':23, 'N':24, 'O':25, 'P':26, 'Q':27, 'R':28, 'S':29, 'T':30,
     'U':31, 'V':32, 'W':33, 'X':34, 'Y':35, 'Z':0
 };
 
-miapp.nextUid = function() {
-    var index = miapp.uid.length;
+fidj.nextUid = function() {
+    var index = fidj.uid.length;
     while (index) {
         index--;
-        var i = miapp.idNext[miapp.uid[index]];
-        miapp.uid[index] = miapp.idStr[i];
+        var i = fidj.idNext[fidj.uid[index]];
+        fidj.uid[index] = fidj.idStr[i];
         if (i > 0) {
-            return miapp.uid.join('');
+            return fidj.uid.join('');
         }
     }
-    miapp.uid.unshift('0');
-    return miapp.uid.join('');
+    fidj.uid.unshift('0');
+    return fidj.uid.join('');
 };
 
-miapp.getUid = function() {
-    return miapp.uid.join('');
+fidj.getUid = function() {
+    return fidj.uid.join('');
 };
 
-miapp.initUid = function(seed) {
-    if (miapp.isUndefined(seed)) {
-        miapp.uid  = ['0', '0', '0'];
+fidj.initUid = function(seed) {
+    if (fidj.isUndefined(seed)) {
+        fidj.uid  = ['0', '0', '0'];
         return;
     }
     seed = seed.toUpperCase();
-    miapp.uid  = [];
+    fidj.uid  = [];
     for (var i = 0, n = seed.length; i < n; i++) {
         var c = seed.charAt(i);
-        if (miapp.isDefined(miapp.idNext[c])) {
-            miapp.uid.push(c);
+        if (fidj.isDefined(fidj.idNext[c])) {
+            fidj.uid.push(c);
         }
     }
-    while (miapp.uid.length < 3) {
-        miapp.uid.unshift('0');
+    while (fidj.uid.length < 3) {
+        fidj.uid.unshift('0');
     }
 };
 
@@ -470,7 +470,7 @@ miapp.initUid = function(seed) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isUndefined = function(obj) {
+fidj.isUndefined = function(obj) {
     return (typeof(obj) == 'undefined');
 };
 
@@ -480,7 +480,7 @@ miapp.isUndefined = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isDefined = function(obj) {
+fidj.isDefined = function(obj) {
     return (typeof(obj) != 'undefined');
 };
 
@@ -490,7 +490,7 @@ miapp.isDefined = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isUndefinedOrNull = function(obj) {
+fidj.isUndefinedOrNull = function(obj) {
     return (typeof(obj) == 'undefined') || (obj === null);
 };
 
@@ -500,7 +500,7 @@ miapp.isUndefinedOrNull = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isDefinedAndNotNull = function(obj) {
+fidj.isDefinedAndNotNull = function(obj) {
     return (typeof(obj) != 'undefined') && (obj !== null);
 };
 
@@ -514,7 +514,7 @@ miapp.isDefinedAndNotNull = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isEmptyOrFalse = function(obj) {
+fidj.isEmptyOrFalse = function(obj) {
     'use strict';
     switch (typeof(obj)) {
         case 'object' :
@@ -552,7 +552,7 @@ miapp.isEmptyOrFalse = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isTrueOrNonEmpty = function(obj) {
+fidj.isTrueOrNonEmpty = function(obj) {
     switch (typeof(obj)) {
         case 'object' :
             /*for (var key in obj) {
@@ -590,9 +590,9 @@ miapp.isTrueOrNonEmpty = function(obj) {
  * @param scope
  * @param expr
  */
-miapp.safeApply = function (scope, expr, beforeFct, afterFct) {
+fidj.safeApply = function (scope, expr, beforeFct, afterFct) {
 
-    if (beforeFct) miapp.safeApply(scope,beforeFct);
+    if (beforeFct) fidj.safeApply(scope,beforeFct);
 
     // Check scope.$root.$$phase because it is always true during any $apply(), while scope.$$phase is NOT always true
     if (scope.$root && scope.$root.$$phase) {
@@ -616,117 +616,117 @@ miapp.safeApply = function (scope, expr, beforeFct, afterFct) {
         expr();
     }
 
-    if (afterFct) miapp.safeApply(scope,afterFct);
+    if (afterFct) fidj.safeApply(scope,afterFct);
 };
 
 /**
  * Solution to work around an XHR issue : sometimes no end if no $Apply under Chrome for example.
  * This solution trigger an $apply to hope triggering the XHR end.
  */
-miapp.promiseWakeupNb = 0; // number of simultaneous active httpPromise
-miapp.promiseWakeupTimeout = null;
-miapp.promiseWakeup = function (scope, httpPromise, fctOnHttpSuccess, fctOnHttpError) {
+fidj.promiseWakeupNb = 0; // number of simultaneous active httpPromise
+fidj.promiseWakeupTimeout = null;
+fidj.promiseWakeup = function (scope, httpPromise, fctOnHttpSuccess, fctOnHttpError) {
     var promiseWakeupOnHttpSuccess = function(response) {
-        //miapp.InternalLog.log("miapp.promiseWakeup.tick", "promiseWakeupOnHttpSuccess?");
-        miapp.promiseWakeupNb--;
+        //fidj.InternalLog.log("fidj.promiseWakeup.tick", "promiseWakeupOnHttpSuccess?");
+        fidj.promiseWakeupNb--;
         // Keep tick function active until all httpPromise end
-        if (miapp.promiseWakeupNb <= 0) {
-            miapp.InternalLog.log("miapp.promiseWakeup.tick", "stop");
-            miapp.promiseWakeupNb = 0;
-            clearTimeout(miapp.promiseWakeupTimeout);
-            miapp.promiseWakeupTimeout = null;
+        if (fidj.promiseWakeupNb <= 0) {
+            fidj.InternalLog.log("fidj.promiseWakeup.tick", "stop");
+            fidj.promiseWakeupNb = 0;
+            clearTimeout(fidj.promiseWakeupTimeout);
+            fidj.promiseWakeupTimeout = null;
         }
         fctOnHttpSuccess(response);
     };
     var promiseWakeupOnHttpError = function(response) {
-        //miapp.InternalLog.log("miapp.promiseWakeup.tick", "promiseWakeupOnHttpError?");
-        miapp.promiseWakeupNb--;
+        //fidj.InternalLog.log("fidj.promiseWakeup.tick", "promiseWakeupOnHttpError?");
+        fidj.promiseWakeupNb--;
         // Keep tick function active until all httpPromise end
-        if (miapp.promiseWakeupNb <= 0) {
-            miapp.InternalLog.log("miapp.promiseWakeup.tick", "stop");
-            miapp.promiseWakeupNb = 0;
-            clearTimeout(miapp.promiseWakeupTimeout);
-            miapp.promiseWakeupTimeout = null;
+        if (fidj.promiseWakeupNb <= 0) {
+            fidj.InternalLog.log("fidj.promiseWakeup.tick", "stop");
+            fidj.promiseWakeupNb = 0;
+            clearTimeout(fidj.promiseWakeupTimeout);
+            fidj.promiseWakeupTimeout = null;
         }
         fctOnHttpError(response);
     };
     function tick() {
-        if (miapp.promiseWakeupNb > 0) {
-            //miapp.InternalLog.log("miapp.promiseWakeup.tick", "scope.$apply");
-            miapp.safeApply(scope);
+        if (fidj.promiseWakeupNb > 0) {
+            //fidj.InternalLog.log("fidj.promiseWakeup.tick", "scope.$apply");
+            fidj.safeApply(scope);
             // Usage of $timeout breaks e2e tests for the moment : https://github.com/angular/angular.js/issues/2402
             //$timeout(tick, 1000, false);// DO NOT call $apply
-            miapp.promiseWakeupTimeout = setTimeout(tick, 1000);
+            fidj.promiseWakeupTimeout = setTimeout(tick, 1000);
         } else {
-            //miapp.InternalLog.log("miapp.promiseWakeup.tick", "ignored");
+            //fidj.InternalLog.log("fidj.promiseWakeup.tick", "ignored");
         }
     }
     // Launch only one tick function if many httpPromise occur
-    if (miapp.promiseWakeupNb === 0) {
-        //miapp.InternalLog.log("miapp.promiseWakeup.tick", "start");
-        miapp.promiseWakeupTimeout = setTimeout(tick, 1000);
+    if (fidj.promiseWakeupNb === 0) {
+        //fidj.InternalLog.log("fidj.promiseWakeup.tick", "start");
+        fidj.promiseWakeupTimeout = setTimeout(tick, 1000);
     }
-    miapp.promiseWakeupNb++;
-    //miapp.InternalLog.log("miapp.promiseWakeup.tick", "before?");
+    fidj.promiseWakeupNb++;
+    //fidj.InternalLog.log("fidj.promiseWakeup.tick", "before?");
     httpPromise.then(promiseWakeupOnHttpSuccess, promiseWakeupOnHttpError);
-    //miapp.InternalLog.log("miapp.promiseWakeup.tick", "after?");
+    //fidj.InternalLog.log("fidj.promiseWakeup.tick", "after?");
 };
 
 function openChildBrowser(url, extension, onLocationChange, onClose) {
 
-    //miapp.InternalLog.log('openChildBrowser', url+' extension:'+extension);
+    //fidj.InternalLog.log('openChildBrowser', url+' extension:'+extension);
     var closeChildBrowserAfterLocationChange = false;// To NOT call onClose() if onLocationChange() has been called
     if (!window.device){
         // Chrome case
         // We can not bind on window events because Salesforce page modify/erase our event bindings.
-        miapp.InternalLog.log('openChildBrowser', 'window.open');
+        fidj.InternalLog.log('openChildBrowser', 'window.open');
         var new_window = window.open(url, '_blank', 'menubar=no,scrollbars=yes,resizable=1,height=400,width=600');
         var initialLocation;
         var initialUrl;
-        if (miapp.isDefinedAndNotNull(new_window.location)) {
+        if (fidj.isDefinedAndNotNull(new_window.location)) {
             initialLocation = new_window.location.href;
         }
-        if (miapp.isDefinedAndNotNull(new_window.document)) {
+        if (fidj.isDefinedAndNotNull(new_window.document)) {
             initialUrl = new_window.document.URL;
         }
-        miapp.InternalLog.log('openChildBrowser', 'initialLocation=' + initialLocation + ' initialUrl=' + initialUrl);
+        fidj.InternalLog.log('openChildBrowser', 'initialLocation=' + initialLocation + ' initialUrl=' + initialUrl);
         var locationChanged = false;
         //if (onLocationChange) new_window.onbeforeunload = onLocationChange;
         var new_window_tracker = function () {
-            if (miapp.isDefinedAndNotNull(new_window.location) && (typeof new_window.location.href == "string")) {
-                //miapp.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
-            } else if (miapp.isDefinedAndNotNull(new_window.document) && (typeof new_window.document.URL == "string")) {
-                //miapp.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
+            if (fidj.isDefinedAndNotNull(new_window.location) && (typeof new_window.location.href == "string")) {
+                //fidj.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
+            } else if (fidj.isDefinedAndNotNull(new_window.document) && (typeof new_window.document.URL == "string")) {
+                //fidj.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
             }
             if (!locationChanged) {
-                if (miapp.isDefinedAndNotNull(new_window.location) &&
+                if (fidj.isDefinedAndNotNull(new_window.location) &&
                     (typeof new_window.location.href == "string") &&
                     (initialLocation != new_window.location.href)) {
-                    miapp.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
+                    fidj.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
                     locationChanged = true;
                     setTimeout(new_window_tracker, 100);
                     return;
-                } else if (miapp.isDefinedAndNotNull(new_window.document) &&
+                } else if (fidj.isDefinedAndNotNull(new_window.document) &&
                     (typeof new_window.document.URL == "string") &&
                     (initialUrl != new_window.document.URL)) {
-                    miapp.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
+                    fidj.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
                     locationChanged = true;
                     setTimeout(new_window_tracker, 100);
                     return;
                 }
             } else {
-                if (miapp.isDefinedAndNotNull(new_window.location) &&
+                if (fidj.isDefinedAndNotNull(new_window.location) &&
                     (typeof new_window.location.href == "string") &&
                     (new_window.location.href.indexOf('about:blank') >= 0)) {
-                    miapp.InternalLog.log('openChildBrowser', 'onLocationChange');
+                    fidj.InternalLog.log('openChildBrowser', 'onLocationChange');
                     if (onLocationChange) onLocationChange();
                     closeChildBrowserAfterLocationChange = true;
                     new_window.close();
                     return;
-                } else if (miapp.isDefinedAndNotNull(new_window.document) &&
+                } else if (fidj.isDefinedAndNotNull(new_window.document) &&
                     (typeof new_window.document.URL == "string") &&
                     (new_window.document.URL.indexOf('about:blank') >= 0)) {
-                    miapp.InternalLog.log('openChildBrowser', 'onUrlChange');
+                    fidj.InternalLog.log('openChildBrowser', 'onUrlChange');
                     if (onLocationChange) onLocationChange();
                     closeChildBrowserAfterLocationChange = true;
                     new_window.close();
@@ -734,28 +734,28 @@ function openChildBrowser(url, extension, onLocationChange, onClose) {
                 }
             }
             if (new_window.closed) {
-                miapp.InternalLog.log('openChildBrowser', 'onClose');
+                fidj.InternalLog.log('openChildBrowser', 'onClose');
                 if (!closeChildBrowserAfterLocationChange) {
                     if (onClose) onClose();
                 }
                 return;
             }
-            //miapp.InternalLog.log('openChildBrowser', 'track locationChanged=' + locationChanged);
+            //fidj.InternalLog.log('openChildBrowser', 'track locationChanged=' + locationChanged);
             setTimeout(new_window_tracker, 100);
         };
         setTimeout(new_window_tracker, 100);
 
   }
   else {
-        miapp.InternalLog.log('openChildBrowser', 'cordova : window.open');
+        fidj.InternalLog.log('openChildBrowser', 'cordova : window.open');
         var target = '_blank';
         if (extension != 'url' && window.device.platform === "Android") target = '_system';
         var ref = window.open(url, target,'location=no' );//'_blank', 'location=yes');'_system','location=no'
         ref.addEventListener('loadstart', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'loadstart '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'loadstart '+e.url);
         });
         ref.addEventListener('loadstop', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'loadstop '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'loadstop '+e.url);
           if (typeof e.url == "string" && e.url.indexOf("about:blank") >= 0) {
               closeChildBrowserAfterLocationChange = true;
               if (onLocationChange) onLocationChange();
@@ -763,10 +763,10 @@ function openChildBrowser(url, extension, onLocationChange, onClose) {
           }
         });
         ref.addEventListener('loaderror', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'loaderror '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'loaderror '+e.url);
         });
         ref.addEventListener('exit', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'exit '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'exit '+e.url);
           if(!closeChildBrowserAfterLocationChange){
             if (onClose) onClose();
           }
@@ -788,7 +788,7 @@ function isArray(obj) {
     if (typeof obj !== 'object') {
         return false;
     }
-    if (miapp.isUndefined(obj) || (obj === null)) {
+    if (fidj.isUndefined(obj) || (obj === null)) {
         return false;
     }
     if (Object.prototype.toString.call(obj) === '[object Array]') {
@@ -817,7 +817,7 @@ function getErrorObject(){
     try { throw Error(''); } catch(err) { return err; }
 }
 
-function miappExportJson(input, maxDepth) {
+function fidjExportJson(input, maxDepth) {
     var str = '{\n', key, first = true, type;
     for (key in input) {
         if (!input.hasOwnProperty(key)) continue;
@@ -833,7 +833,7 @@ function miappExportJson(input, maxDepth) {
 
         if (typeof input[key] === "object") {
             if (maxDepth > 0) {
-                str += miappExportJsonObject('\t\t', input[key], maxDepth-1, type);
+                str += fidjExportJsonObject('\t\t', input[key], maxDepth-1, type);
             }
         }
         str +='\t' + ']';
@@ -843,7 +843,7 @@ function miappExportJson(input, maxDepth) {
     return str;
 }
 
-function miappExportJsonObject(offset, input, maxDepth, type) {
+function fidjExportJsonObject(offset, input, maxDepth, type) {
     var str = "", key, first = true;
     for (key in input) {
         if (!input.hasOwnProperty(key)) continue;
@@ -859,7 +859,7 @@ function miappExportJsonObject(offset, input, maxDepth, type) {
                 } else {
                     str += offset + '\"' +key+ '\":{';
                 }
-                str += miappExportJsonObject(offset + '\t', input[key], maxDepth-1, type);
+                str += fidjExportJsonObject(offset + '\t', input[key], maxDepth-1, type);
 
                 if (maxDepth == 2) {
                     str += offset + '}';
@@ -905,14 +905,14 @@ function logEvent(e) {
     if (type == 'error' && bCon) {
         message+= ' (prolly a syntax error in manifest)';
     }
-    miapp.InternalLog.log(message);
+    fidj.InternalLog.log(message);
 }
 
 //window.applicationCache.addEventListener(
 //    'updateready',
 //    function(){
 //        window.applicationCache.swapCache();
-//        miapp.InternalLog.log('swap cache has been called');
+//        fidj.InternalLog.log('swap cache has been called');
 //    },
 //    false
 //);
@@ -957,7 +957,7 @@ function checkCache() {
 function checkConnection() {
 
     var bCon = false;
-    miapp.InternalLog.log('checkConnection','launched');
+    fidj.InternalLog.log('checkConnection','launched');
     /*
         if (!navigator.onLine) used or not ?
     var networkState = navigator.connection.type;
@@ -979,11 +979,11 @@ function checkConnection() {
 
 	if (!navigator.network || !navigator.network.connection){
 		if (navigator.onLine) {
-            miapp.InternalLog.log('checkConnection','without cordova but online');
+            fidj.InternalLog.log('checkConnection','without cordova but online');
 			return true;
 		}
         else {
-            miapp.InternalLog.log('checkConnection','without cordova but online');
+            fidj.InternalLog.log('checkConnection','without cordova but online');
             return false;
         }
 	}
@@ -999,19 +999,19 @@ function checkConnection() {
     states[Connection.CELL_4G]  = 'Cell 4G connection';
     states[Connection.NONE]     = 'No network connection';
 
-    miapp.InternalLog.log('checkConnection','Connection type: ' + states[networkState]);
+    fidj.InternalLog.log('checkConnection','Connection type: ' + states[networkState]);
     bCon = (networkState != Connection.NONE);
     return bCon;
      */
 
      if (!navigator.connection || !navigator.connection.type){
-        if (miapp.BrowserCapabilities && miapp.BrowserCapabilities.online) {
+        if (fidj.BrowserCapabilities && fidj.BrowserCapabilities.online) {
             bCon = true;
         }
-        else if (!miapp.BrowserCapabilities) {
+        else if (!fidj.BrowserCapabilities) {
             bCon = navigator.onLine;
         }
-        miapp.InternalLog.log('checkConnection','without Cordova but online ? '+bCon);
+        fidj.InternalLog.log('checkConnection','without Cordova but online ? '+bCon);
     }
     else {
 
@@ -1025,7 +1025,7 @@ function checkConnection() {
         states[Connection.CELL_4G]  = 'Cell 4G connection';
         states[Connection.CELL]     = 'Cell generic connection';
         states[Connection.NONE]     = 'No network connection';
-        miapp.InternalLog.log('checkConnection','Cordova Connection type: ' + states[networkState]);
+        fidj.InternalLog.log('checkConnection','Cordova Connection type: ' + states[networkState]);
         bCon = (networkState != Connection.NONE);
     }
     return bCon;
@@ -1036,9 +1036,9 @@ function checkConnection() {
 function getUrlVars(ihref)
 {
 	var href = ihref;
-	if(miapp.isUndefined(href) || !href) href = window.location.href;
+	if(fidj.isUndefined(href) || !href) href = window.location.href;
 
-    miapp.InternalLog.log('getUrlVars','href:'+href);
+    fidj.InternalLog.log('getUrlVars','href:'+href);
 
     var vars = [], hash;
     var hashes = href.slice(href.indexOf('#') + 1).split('&');
@@ -1174,13 +1174,13 @@ function SHA256(s){
 
 }
 
-var miappTranslateDatesToPxSize = function(date_start, date_end, totalSize) {
+var fidjTranslateDatesToPxSize = function(date_start, date_end, totalSize) {
     var date1 = date_start;
-    if (typeof date1 == 'string') date1 = miappDateParse(date_start);
+    if (typeof date1 == 'string') date1 = fidjDateParse(date_start);
     if (!date1) return totalSize;// date_start is invalid
 
     var date2 = date_end;
-    if (typeof date2 == 'string') date2 = miappDateParse(date_end);
+    if (typeof date2 == 'string') date2 = fidjDateParse(date_end);
     if (!date2) return totalSize;// date_end is invalid
 
     var milliseconds = date2.getTime() - date1.getTime();
@@ -1193,9 +1193,9 @@ var miappTranslateDatesToPxSize = function(date_start, date_end, totalSize) {
     return Math.round(days * totalSize);
 };
 
-var miappTranslateDateToPx = function(date, totalSize) {
+var fidjTranslateDateToPx = function(date, totalSize) {
     var date1 = date;
-    if (typeof date1 == 'string') date1 = miappDateParse(date);
+    if (typeof date1 == 'string') date1 = fidjDateParse(date);
     if (!date1) return 0;// date is invalid
 
     var days = (date1.getHours()*60 + date1.getMinutes()) / 1440;
@@ -1211,7 +1211,7 @@ var miappTranslateDateToPx = function(date, totalSize) {
  * @param f
  * @returns {Function}
  */
-miapp.not = function(f) {
+fidj.not = function(f) {
     return function () {
         var result = f.apply(this, arguments);
         return !result;
@@ -1226,7 +1226,7 @@ miapp.not = function(f) {
  * @returns {Function}
  */
 // Contrast this with the map() function from earlier.
-miapp.mapper = function(f) {
+fidj.mapper = function(f) {
     return function(a) {
         return map(a, f);
     };
@@ -1238,7 +1238,7 @@ miapp.mapper = function(f) {
  * @param f idempotent function keyed on its arguments string representations
  * @returns {Function}
  */
-miapp.memoize = function(f) {
+fidj.memoize = function(f) {
     var cache = {}; // Value cache stored in the closure.
     return function () {
         // Create a string version of the arguments to use as a cache key.
@@ -1254,7 +1254,7 @@ miapp.memoize = function(f) {
 /*
 // Note that when we write a recursive function that we will be memoizing,
 // we typically want to recurse to the memoized version, not the original.
-var factorial = miapp.memoize(function(n) {
+var factorial = fidj.memoize(function(n) {
     return (n <= 1) ? 1 : n * factorial(n-1);
 });
 factorial(5) // => 120. Also caches values for 4, 3, 2 and 1.
@@ -1272,7 +1272,7 @@ factorial(5) // => 120. Also caches values for 4, 3, 2 and 1.
  * @param p
  * @returns {*}
  */
-miapp.extend = function(o, p) {
+fidj.extend = function(o, p) {
     for (var prop in p) { // For all props in p.
         o[prop] = p[prop]; // Add the property to o.
     }
@@ -1289,7 +1289,7 @@ miapp.extend = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.merge = function(o, p) {
+fidj.merge = function(o, p) {
     for (var prop in p) { // For all props in p.
         if (o.hasOwnProperty(prop)) continue; // Except those already in o.
         o[prop] = p[prop]; // Add the property to o.
@@ -1305,7 +1305,7 @@ miapp.merge = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.restrict = function(o, p) {
+fidj.restrict = function(o, p) {
     for (var prop in o) { // For all props in o
         if (!(prop in p)) delete o[prop]; // Delete if not in p
     }
@@ -1320,7 +1320,7 @@ miapp.restrict = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.subtract = function(o, p) {
+fidj.subtract = function(o, p) {
     for (var prop in p) { // For all props in p
         delete o[prop]; // Delete from o (deleting a nonexistent prop is harmless)
     }
@@ -1336,8 +1336,8 @@ miapp.subtract = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.union = function(o, p) {
-    return miapp.extend(miapp.extend({}, o), p);
+fidj.union = function(o, p) {
+    return fidj.extend(fidj.extend({}, o), p);
 };
 
 /**
@@ -1348,8 +1348,8 @@ miapp.union = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.intersection = function(o, p) {
-    return miapp.restrict(miapp.extend({}, o), p);
+fidj.intersection = function(o, p) {
+    return fidj.restrict(fidj.extend({}, o), p);
 };
 
 /**
@@ -1358,7 +1358,7 @@ miapp.intersection = function(o, p) {
  * @param o
  * @returns {Array}
  */
-miapp.keys = function(o) {
+fidj.keys = function(o) {
     if (typeof o !== "object") throw new TypeError();
     var result = [];
     for (var prop in o) {
@@ -1378,7 +1378,7 @@ miapp.keys = function(o) {
  * @param props
  * @returns {*}
  */
-miapp.create = function(proto, props) {
+fidj.create = function(proto, props) {
     if (proto === null) throw new TypeError();
     if (Object.create) {
         return Object.create(proto, props);
@@ -1388,7 +1388,7 @@ miapp.create = function(proto, props) {
     function F() {} // dummy constructor function.
     F.prototype = proto;
     var o = new F();
-    return miapp.extend(o, props);
+    return fidj.extend(o, props);
 };
 
 /**
@@ -1397,7 +1397,7 @@ miapp.create = function(proto, props) {
  * @param x
  * @returns {boolean}
  */
-miapp.even = function(x) {
+fidj.even = function(x) {
     return x % 2 === 0;
 };
 
@@ -1407,36 +1407,36 @@ miapp.even = function(x) {
  * @param x
  * @returns {boolean}
  */
-miapp.odd = miapp.not(miapp.even);
+fidj.odd = fidj.not(fidj.even);
 
 /**
  * Loop via Array.forEach method.
- * If the function passed to foreach() throws miapp.foreach.break, the loop will terminate early.
+ * If the function passed to foreach() throws fidj.foreach.break, the loop will terminate early.
  *
  * @param a array object
  * @param f callback function as first argument in Array.forEach()
  * @param t thisObject as second argument in Array.forEach()
  * @returns {boolean}
  */
-miapp.foreach = function(a, f, t) {
+fidj.foreach = function(a, f, t) {
     try {
         a.forEach(f, t);
     } catch (e) {
-        if (e === miapp.foreach.break) return;
+        if (e === fidj.foreach.break) return;
         throw e;
     }
 };
-miapp.foreach.break = new Error("StopIteration");
+fidj.foreach.break = new Error("StopIteration");
 'use strict';
 
 
-function miappDumpData(input, maxDepth) {
+function fidjDumpData(input, maxDepth) {
     var str = "";
     if (typeof input === "object") {
         if (input instanceof Array) {
             if (maxDepth > 0) {
                 str += "[\n";
-                str += miappDumpArray("  ", input, maxDepth-1);
+                str += fidjDumpArray("  ", input, maxDepth-1);
                 str += "]\n";
             } else {
                 str += "[Array]\n";
@@ -1444,7 +1444,7 @@ function miappDumpData(input, maxDepth) {
         } else {
             if (maxDepth > 0) {
                 str += "{\n";
-                str += miappDumpObject("  ", input, maxDepth-1);
+                str += fidjDumpObject("  ", input, maxDepth-1);
                 str += "}\n";
             } else {
                 str += "[" + typeof(input) + "]\n";
@@ -1456,14 +1456,14 @@ function miappDumpData(input, maxDepth) {
     return str;
 }
 
-function miappDumpArray(offset, input, maxDepth) {
+function fidjDumpArray(offset, input, maxDepth) {
     var str = "";
     for (var key = 0,nb = input.length; key<nb; key++) {
         if (typeof input[key] === "object") {
             if (input[key] instanceof Array) {
                 if (maxDepth > 0) {
                     str += offset + key + " : [\n";
-                    str += miappDumpArray(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpArray(offset + "  ", input[key], maxDepth-1);
                     str += offset + "]\n";
                 } else {
                     str += offset + key + " : [Array]\n";
@@ -1471,7 +1471,7 @@ function miappDumpArray(offset, input, maxDepth) {
             } else {
                 if (maxDepth > 0) {
                     str += offset + key + " : {\n";
-                    str += miappDumpObject(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpObject(offset + "  ", input[key], maxDepth-1);
                     str += offset + "}\n";
                 } else {
                     str += offset + key + " : [" + typeof(input[key]) + "]\n";
@@ -1484,7 +1484,7 @@ function miappDumpArray(offset, input, maxDepth) {
     return str;
 }
 
-function miappDumpObject(offset, input, maxDepth) {
+function fidjDumpObject(offset, input, maxDepth) {
     var str = "", key;
     for (key in input) {
         if (!input.hasOwnProperty(key)) continue;
@@ -1492,7 +1492,7 @@ function miappDumpObject(offset, input, maxDepth) {
             if (input[key] instanceof Array) {
                 if (maxDepth > 0) {
                     str += offset + key + " : [\n";
-                    str += miappDumpArray(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpArray(offset + "  ", input[key], maxDepth-1);
                     str += offset + "]\n";
                 } else {
                     str += offset + key + " : [Array]\n";
@@ -1500,7 +1500,7 @@ function miappDumpObject(offset, input, maxDepth) {
             } else {
                 if (maxDepth > 0) {
                     str += offset + key + " : {\n";
-                    str += miappDumpObject(offset + "  ", input[key], maxDepth-1);
+                    str += fidjDumpObject(offset + "  ", input[key], maxDepth-1);
                     str += offset + "}\n";
                 } else {
                     str += offset + key + " : [" + typeof(input[key]) + "]\n";
@@ -1518,14 +1518,14 @@ function miappDumpObject(offset, input, maxDepth) {
  * @param {Number} timestamp in ms since 1/1/1970
  * @returns {string} result
  */
-function miappTimestampFormat(timestamp) {
+function fidjTimestampFormat(timestamp) {
     var date = new Date(timestamp);
-    return miappPadNumber(date.getFullYear(), 4) + '-' +
-        miappPadNumber(date.getMonth() + 1, 2) + '-' +
-        miappPadNumber(date.getDate(), 2) + ' ' +
-        miappPadNumber(date.getHours(), 2) + ':' +
-        miappPadNumber(date.getMinutes(), 2) + ':' +
-        miappPadNumber(date.getSeconds(), 2);
+    return fidjPadNumber(date.getFullYear(), 4) + '-' +
+        fidjPadNumber(date.getMonth() + 1, 2) + '-' +
+        fidjPadNumber(date.getDate(), 2) + ' ' +
+        fidjPadNumber(date.getHours(), 2) + ':' +
+        fidjPadNumber(date.getMinutes(), 2) + ':' +
+        fidjPadNumber(date.getSeconds(), 2);
 }
 
 /**
@@ -1533,14 +1533,14 @@ function miappTimestampFormat(timestamp) {
  * @param {Date} date to format
  * @returns {string} result
  */
-function miappDateFormat(date) {
+function fidjDateFormat(date) {
     if (!date) return '';
-    return miappPadNumber(date.getFullYear(), 4) + '-' +
-        miappPadNumber(date.getMonth() + 1, 2) + '-' +
-        miappPadNumber(date.getDate(), 2) + ' ' +
-        miappPadNumber(date.getHours(), 2) + ':' +
-        miappPadNumber(date.getMinutes(), 2) + ':' +
-        miappPadNumber(date.getSeconds(), 2);
+    return fidjPadNumber(date.getFullYear(), 4) + '-' +
+        fidjPadNumber(date.getMonth() + 1, 2) + '-' +
+        fidjPadNumber(date.getDate(), 2) + ' ' +
+        fidjPadNumber(date.getHours(), 2) + ':' +
+        fidjPadNumber(date.getMinutes(), 2) + ':' +
+        fidjPadNumber(date.getSeconds(), 2);
 }
 
 /**
@@ -1548,14 +1548,14 @@ function miappDateFormat(date) {
  * @param {Date} date to format
  * @returns {string} result
  */
-function miappDateCompactFormat(date) {
+function fidjDateCompactFormat(date) {
     if (!date) return '';
-    return miappPadNumber(date.getFullYear(), 2) +
-        miappPadNumber(date.getMonth() + 1, 2) +
-        miappPadNumber(date.getDate(), 2) + '_' +
-        miappPadNumber(date.getHours(), 2) +
-        miappPadNumber(date.getMinutes(), 2) +
-        miappPadNumber(date.getSeconds(), 2);
+    return fidjPadNumber(date.getFullYear(), 2) +
+        fidjPadNumber(date.getMonth() + 1, 2) +
+        fidjPadNumber(date.getDate(), 2) + '_' +
+        fidjPadNumber(date.getHours(), 2) +
+        fidjPadNumber(date.getMinutes(), 2) +
+        fidjPadNumber(date.getSeconds(), 2);
 }
 
 /**
@@ -1563,8 +1563,8 @@ function miappDateCompactFormat(date) {
  * @param {string} date string at format "yyyy-MM-dd HH:mm:ss"
  * @returns {Number} Number resulting from Date.getTime or 0 if invalid date
  */
-function miappTimestampParse(date) {
-    var newDate = miappDateParse(date);
+function fidjTimestampParse(date) {
+    var newDate = fidjDateParse(date);
     return (newDate !== false) ? newDate.getTime() : 0;
 }
 
@@ -1573,7 +1573,7 @@ function miappTimestampParse(date) {
  * @param {string} date string at format "yyyy-MM-dd HH:mm:ss"
  * @returns {Date} Date object or false if invalid date
  */
-function miappDateParse(date) {
+function fidjDateParse(date) {
     if (!date || typeof date != 'string' || date == '') return false;
     // Date (choose 0 in date to force an error if parseInt fails)
     var yearS = parseInt(date.substr(0,4), 10) || 0;
@@ -1602,7 +1602,7 @@ function miappDateParse(date) {
 
 // @input date or string
 // @return String formatted as date
-function miappDateFormatObject(object) {
+function fidjDateFormatObject(object) {
 
     var yearS = '1970';
     var monthS = '01';
@@ -1659,7 +1659,7 @@ function miappDateFormatObject(object) {
 }
 
 
-function miappDateExtractDate(dateString) {
+function fidjDateExtractDate(dateString) {
 
     var dateReg = new RegExp("([0-9][0-9][0-9][0-9])-([0-9]\\d)-([0-9]\\d)+", "g");
     var dateParts = dateString.split(dateReg);
@@ -1672,7 +1672,7 @@ function miappDateExtractDate(dateString) {
     return ''+ yearS + '-' + monthS + '-' + dayS;
 }
 
-function miappDateExtractTime(dateString) {
+function fidjDateExtractTime(dateString) {
     var timeReg = new RegExp("([01]\\d|2[0-9]):([0-5]\\d):([0-5]\\d)");
     var timeParts = dateString.match(timeReg);
     var hourS = "00";
@@ -1695,7 +1695,7 @@ function miappDateExtractTime(dateString) {
 }
 
 
-function miappPadNumber(num, digits, trim) {
+function fidjPadNumber(num, digits, trim) {
     var neg = '';
     if (num < 0) {
         neg = '-';
@@ -1711,7 +1711,7 @@ function miappPadNumber(num, digits, trim) {
     return neg + num;
 }
 
-miapp.formatError = function(arg) {
+fidj.formatError = function(arg) {
     if (arg instanceof Error) {
         if (arg.stack) {
             arg = (arg.message && arg.stack.indexOf(arg.message) === -1)
@@ -1724,7 +1724,7 @@ miapp.formatError = function(arg) {
     return arg;
 };
 
-miapp.Log = (function () {
+fidj.Log = (function () {
 
     function Log(nbMax) {
         this.nbMax = nbMax || 1000;
@@ -1756,7 +1756,7 @@ miapp.Log = (function () {
     	    	
         details = details || '';
         var now = new Date();
-        now = miappDateFormat(now) + '.' + now.getMilliseconds();
+        now = fidjDateFormat(now) + '.' + now.getMilliseconds();
         // TODO : get the file and line of caller
         //var nb = (new Error).lineNumber;
         var from = '';
@@ -1798,8 +1798,8 @@ miapp.Log = (function () {
                 this.callbacks[idx].callback(this.callbacks[idx].id, logEntry);
             } catch (e) {
                 //console.log("Error on callback#" + idx
-                //    + " called from Log for the logEntry " + miappDumpData(logEntry, 1)
-                //    + " : " + miapp.formatError(e));
+                //    + " called from Log for the logEntry " + fidjDumpData(logEntry, 1)
+                //    + " : " + fidj.formatError(e));
             }
         }
         return logEntry;
@@ -1827,8 +1827,8 @@ miapp.Log = (function () {
     return Log;
 })(); // Invoke the function immediately to create this class.
 
-miapp.ErrorLog = new miapp.Log(1000);
-miapp.InternalLog = new miapp.Log(1000);
+fidj.ErrorLog = new fidj.Log(1000);
+fidj.InternalLog = new fidj.Log(1000);
 
 
 /*
@@ -1879,30 +1879,30 @@ fileInput.onchange = function() {
  */
 
 // Create a new module
-/*angular.module("miapp", [
-    "miapp.all",
-    "miapp.file",
-    "miapp.analytics",
-    "miapp.storage",
-    "miapp.stringFormat",
-    "miapp.base64",
-    "miapp.json",
-    "miapp.xml",
-    "miapp.fileDownloader",
-    "miapp.fileUploader",
-    "miapp.taskReceiver",
-    "miapp.taskSender",
-    "miapp.sense"
+/*angular.module("fidj", [
+    "fidj.all",
+    "fidj.file",
+    "fidj.analytics",
+    "fidj.storage",
+    "fidj.stringFormat",
+    "fidj.base64",
+    "fidj.json",
+    "fidj.xml",
+    "fidj.fileDownloader",
+    "fidj.fileUploader",
+    "fidj.taskReceiver",
+    "fidj.taskSender",
+    "fidj.sense"
 ]);*/
 
 // Create a new module
-//var miappStorageModule = angular.module('miapp.storage', ['miapp.xml', 'miapp.json']);
+//var fidjStorageModule = angular.module('fidj.storage', ['fidj.xml', 'fidj.json']);
 
 /**
  * localStorage service provides an interface to manage in memory data repository.
  * @param {object} storageService The object window.localStorage or an equivalent object which implements it.
  */
-/*miappStorageModule.factory('localStorage', ['miappXml', 'miappJson', function(miappXml, miappJson) {
+/*fidjStorageModule.factory('localStorage', ['fidjXml', 'fidjJson', function(fidjXml, fidjJson) {
     var LocalStorage = function(storageService) {
         storageService = storageService || window.localStorage;
     };
@@ -1912,9 +1912,9 @@ fileInput.onchange = function() {
 
 /**
  * Memory storage (used mainly for tests).
- * Usage : miapp.LocalStorageFactory(new miapp.MemoryStorage());
+ * Usage : fidj.LocalStorageFactory(new fidj.MemoryStorage());
  */
-miapp.MemoryStorage = (function () {
+fidj.MemoryStorage = (function () {
 "use strict";
 
     function Storage() {
@@ -1931,7 +1931,7 @@ miapp.MemoryStorage = (function () {
         return this.keyes[idx];
     };
     Storage.prototype.getItem = function (key) {
-        if (miapp.isUndefined(this.set[key])) return null;
+        if (fidj.isUndefined(this.set[key])) return null;
         return this.set[key];
     };
     Storage.prototype.setItem = function (key, value) {
@@ -1956,31 +1956,31 @@ miapp.MemoryStorage = (function () {
 
 /**
  * localStorage class factory
- * Usage : var LocalStorage = miapp.LocalStorageFactory(window.localStorage); // to create a new class
+ * Usage : var LocalStorage = fidj.LocalStorageFactory(window.localStorage); // to create a new class
  * Usage : var localStorageService = new LocalStorage(); // to create a new instance
  */
-miapp.LocalStorageFactory = function (storageService, storageKey) {
+fidj.LocalStorageFactory = function (storageService, storageKey) {
 "use strict";
 
     var storage = storageService || window.localStorage;
     if (!storage) {
-        throw new Error("miapp.LocalStorageFactory needs a storageService!");
+        throw new Error("fidj.LocalStorageFactory needs a storageService!");
     }
 
     // Constructor
     function LocalStorage() {
         this.version = "0.1";
-        if (!miapp.Xml) {
-            throw new Error("miapp.Xml needs to be loaded before miapp.LocalStorage!");
+        if (!fidj.Xml) {
+            throw new Error("fidj.Xml needs to be loaded before fidj.LocalStorage!");
         }
-        if (!miapp.Json) {
-            throw new Error("miapp.Json needs to be loaded before miapp.LocalStorage!");
+        if (!fidj.Json) {
+            throw new Error("fidj.Json needs to be loaded before fidj.LocalStorage!");
         }
-        if (!miapp.Xml.isXml || !miapp.Xml.xml2String || !miapp.Xml.string2Xml) {
-            throw new Error("miapp.Xml with isXml(), xml2String() and string2Xml() needs to be loaded before miapp.LocalStorage!");
+        if (!fidj.Xml.isXml || !fidj.Xml.xml2String || !fidj.Xml.string2Xml) {
+            throw new Error("fidj.Xml with isXml(), xml2String() and string2Xml() needs to be loaded before fidj.LocalStorage!");
         }
-        if (!miapp.Json.object2String || !miapp.Json.string2Object) {
-            throw new Error("miapp.Json with object2String() and string2Object() needs to be loaded before miapp.LocalStorage!");
+        if (!fidj.Json.object2String || !fidj.Json.string2Object) {
+            throw new Error("fidj.Json with object2String() and string2Object() needs to be loaded before fidj.LocalStorage!");
         }
     }
 
@@ -2005,16 +2005,16 @@ miapp.LocalStorageFactory = function (storageService, storageKey) {
             value = 'null';
         else if (value === null)
             value = 'null';
-        else if (miapp.Xml.isXml(value))
-            value = miapp.Json.object2String({xml:miapp.Xml.xml2String(value)});
+        else if (fidj.Xml.isXml(value))
+            value = fidj.Json.object2String({xml:fidj.Xml.xml2String(value)});
         else if (t == "string")
-            value = miapp.Json.object2String({string:value});
+            value = fidj.Json.object2String({string:value});
         else if (t == "number")
-            value = miapp.Json.object2String({number:value});
+            value = fidj.Json.object2String({number:value});
         else if (t == "boolean")
-            value = miapp.Json.object2String({ bool : value });
+            value = fidj.Json.object2String({ bool : value });
         else if (t == "object")
-            value = miapp.Json.object2String( { json : value } );
+            value = fidj.Json.object2String( { json : value } );
         else {
             // reject and do not insert
             // if (typeof value == "function") for example
@@ -2039,9 +2039,9 @@ miapp.LocalStorageFactory = function (storageService, storageKey) {
             if (item == 'null') {
                 return null;
             }
-            var value = miapp.Json.string2Object(item);
+            var value = fidj.Json.string2Object(item);
             if ('xml' in value) {
-                return miapp.Xml.string2Xml(value.xml);
+                return fidj.Xml.string2Xml(value.xml);
             } else if ('string' in value) {
                 return value.string;
             } else if ('number' in value) {
@@ -2052,7 +2052,7 @@ miapp.LocalStorageFactory = function (storageService, storageKey) {
                 return value.json;
             }
         }
-        return miapp.isUndefined(def) ? null : def;
+        return fidj.isUndefined(def) ? null : def;
     };
 
     /**
@@ -2130,7 +2130,7 @@ miapp.LocalStorageFactory = function (storageService, storageKey) {
     return LocalStorage;
 };
 
-miapp.FileStorage = (function () {
+fidj.FileStorage = (function () {
     "use strict";
 
     // Constructor
@@ -2151,7 +2151,7 @@ miapp.FileStorage = (function () {
     // Public API
 
     function initEnd(self) {
-        miapp.safeApply(self.rootScope, function() {
+        fidj.safeApply(self.rootScope, function() {
             for (var i= 0; i < self.initPromises.length; i++) {
                 self.initTrigger(self.initPromises[i]);
             }
@@ -2170,7 +2170,7 @@ miapp.FileStorage = (function () {
     function tryQuota(self, grantBytes) {
         try {
             var fctOnSuccess = function (fs) {
-                //miapp.InternalLog.log('miapp.FileStorage', 'opened file system ' + fs.name);
+                //fidj.InternalLog.log('fidj.FileStorage', 'opened file system ' + fs.name);
                 self.fs = fs;
                 self.urlPrefix = '';
                 var pattern = /^(https?)_([^_]+)_(\d+):Persistent$/;
@@ -2182,7 +2182,7 @@ miapp.FileStorage = (function () {
                     // get URL from URI by prefixing fullPath with urlPrefix
                     self.urlPrefix = 'filesystem:' + name + '/persistent';
                 }
-                //miapp.InternalLog.log('miapp.FileStorage', 'urlPrefix = ' + self.urlPrefix);
+                //fidj.InternalLog.log('fidj.FileStorage', 'urlPrefix = ' + self.urlPrefix);
                 self.initTrigger = function(deferred) { deferred.resolve(); };
                 launchEnd(self);
             };
@@ -2197,7 +2197,7 @@ miapp.FileStorage = (function () {
             };
             var requestFs = function(grantedBytes) {
                 try {
-                    if (miapp.isDefined(window.requestFileSystem)) {
+                    if (fidj.isDefined(window.requestFileSystem)) {
                         window.requestFileSystem(self.storageType, grantedBytes, fctOnSuccess, fctOnFailure);
                     } else {
                         window.webkitRequestFileSystem(self.storageType, grantedBytes, fctOnSuccess, fctOnFailure);
@@ -2209,9 +2209,9 @@ miapp.FileStorage = (function () {
                 }
             };
 
-            if (miapp.isDefined(window.webkitPersistentStorage)) {
+            if (fidj.isDefined(window.webkitPersistentStorage)) {
                 // In Chrome 27+
-                if (miapp.isDefined(window.webkitPersistentStorage.requestQuota)) {
+                if (fidj.isDefined(window.webkitPersistentStorage.requestQuota)) {
                     window.webkitPersistentStorage.requestQuota(grantBytes, function (grantedBytes) {
                         self.grantedBytes = grantedBytes;
                         requestFs(grantedBytes);
@@ -2227,9 +2227,9 @@ miapp.FileStorage = (function () {
                 } else {
                     requestFs(grantBytes);
                 }
-            } else if (miapp.isDefined(navigator.webkitPersistentStorage)){//MLE deprecated ? (miapp.isDefined(window.webkitStorageInfo)) {
+            } else if (fidj.isDefined(navigator.webkitPersistentStorage)){//MLE deprecated ? (fidj.isDefined(window.webkitStorageInfo)) {
                 // In Chrome 13
-                if (miapp.isDefined(navigator.webkitPersistentStorage.requestQuota)) {
+                if (fidj.isDefined(navigator.webkitPersistentStorage.requestQuota)) {
                     navigator.webkitPersistentStorage.requestQuota(self.storageType, grantBytes, function (grantedBytes) {
                         self.grantedBytes = grantedBytes;
                         requestFs(grantedBytes);
@@ -2265,24 +2265,24 @@ miapp.FileStorage = (function () {
         } else if (this.initPromises.length == 1) {
             // Init not yet started
             this.initPromises.push(deferred);
-            if (miapp.isUndefinedOrNull(LocalFileSystem)) {
+            if (fidj.isUndefinedOrNull(LocalFileSystem)) {
                 this.storageType = window.PERSISTENT;
             } else {
                 this.storageType = LocalFileSystem.PERSISTENT;
             }
             if (!window.File || !window.FileReader || !window.Blob) {
-                message = "window.File, window.FileReader and window.Blob need to be loaded before miapp.FileStorage!";
+                message = "window.File, window.FileReader and window.Blob need to be loaded before fidj.FileStorage!";
                 this.initTrigger = function(deferred) { deferred.reject(message); };
                 launchEnd(this);
-            } else if (miapp.isUndefined(window.requestFileSystem) && miapp.isUndefined(window.webkitRequestFileSystem)) {
-                message = "window.requestFileSystem() or window.webkitRequestFileSystem() required by miapp.FileStorage!";
+            } else if (fidj.isUndefined(window.requestFileSystem) && fidj.isUndefined(window.webkitRequestFileSystem)) {
+                message = "window.requestFileSystem() or window.webkitRequestFileSystem() required by fidj.FileStorage!";
                 this.initTrigger = function(deferred) { deferred.reject(message); };
                 launchEnd(this);
-            } else if (miapp.isUndefined(window.resolveLocalFileSystemURL) &&
-                miapp.isUndefined(window.webkitResolveLocalFileSystemURL) &&
-                miapp.isUndefined(window.resolveLocalFileSystemURI) &&
-                miapp.isUndefined(window.webkitResolveLocalFileSystemURI)) {
-                message = "window.resolveLocalFileSystemURI or equivalent required by miapp.FileStorage!";
+            } else if (fidj.isUndefined(window.resolveLocalFileSystemURL) &&
+                fidj.isUndefined(window.webkitResolveLocalFileSystemURL) &&
+                fidj.isUndefined(window.resolveLocalFileSystemURI) &&
+                fidj.isUndefined(window.webkitResolveLocalFileSystemURI)) {
+                message = "window.resolveLocalFileSystemURI or equivalent required by fidj.FileStorage!";
                 this.initTrigger = function(deferred) { deferred.reject(message); };
                 launchEnd(this);
             } else {
@@ -2306,15 +2306,15 @@ miapp.FileStorage = (function () {
     /* getGrantedBytes() and getUsedBytes() are not yet ready
      FileStorage.getGrantedBytes = function (storageType, onSuccess) {
      // In Chrome 13
-            if ((miapp.isUndefinedOrNull(storageType)) {
-                if (miapp.isUndefinedOrNull(LocalFileSystem)) {
+            if ((fidj.isUndefinedOrNull(storageType)) {
+                if (fidj.isUndefinedOrNull(LocalFileSystem)) {
                     storageType = window.PERSISTENT;
                 } else {
                     storageType = LocalFileSystem.PERSISTENT;
                 }
             }
-     if (miapp.isUndefined(navigator.webkitPersistentStorage)) {
-     if (miapp.isUndefined(navigator.webkitPersistentStorage.queryUsageAndQuota)) {
+     if (fidj.isUndefined(navigator.webkitPersistentStorage)) {
+     if (fidj.isUndefined(navigator.webkitPersistentStorage.queryUsageAndQuota)) {
      navigator.webkitPersistentStorage.queryUsageAndQuota(storageType,
      function (currentUsageInBytes) {
      },
@@ -2339,15 +2339,15 @@ miapp.FileStorage = (function () {
     /* getGrantedBytes() and getUsedBytes() are not yet ready
      FileStorage.getUsedBytes = function (storageType, onSuccess) {
      // In Chrome 13
-            if (miapp.isUndefinedOrNull(storageType)) {
-                if (miapp.isUndefinedOrNull(LocalFileSystem)) {
+            if (fidj.isUndefinedOrNull(storageType)) {
+                if (fidj.isUndefinedOrNull(LocalFileSystem)) {
                     storageType = window.PERSISTENT;
                 } else {
                     storageType = LocalFileSystem.PERSISTENT;
                 }
             }
-     if (miapp.isDefined(navigator.webkitPersistentStorage)) {
-     if (miapp.isDefined(navigator.webkitPersistentStorage.queryUsageAndQuota)) {
+     if (fidj.isDefined(navigator.webkitPersistentStorage)) {
+     if (fidj.isDefined(navigator.webkitPersistentStorage.queryUsageAndQuota)) {
      navigator.webkitPersistentStorage.queryUsageAndQuota(storageType,
      function (currentUsageInBytes) {
      onSuccess(currentUsageInBytes);
@@ -2368,7 +2368,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.getFS = function () {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         return this.fs;
     };
@@ -2382,7 +2382,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.createDir = function (dirPath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var self = this;
         var names = dirPath.split('/');
@@ -2413,7 +2413,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.getDir = function (dirPath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var names = dirPath.split('/');
         var max = names.length;
@@ -2437,7 +2437,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.readDirectory = function (dirPath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var names = dirPath.split('/');
         var max = names.length;
@@ -2499,7 +2499,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.readFullDirectory = function (dirPath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var names = dirPath.split('/');
         var max = names.length;
@@ -2513,7 +2513,7 @@ miapp.FileStorage = (function () {
         var dirEntries = [];
         var fileEntries = [];
         var dirContentReader = function (dirEntry) {
-            //miapp.InternalLog.log('miapp.FileStorage', 'Reading dir ' + dirEntry.fullPath);
+            //fidj.InternalLog.log('fidj.FileStorage', 'Reading dir ' + dirEntry.fullPath);
             var dirReader = dirEntry.createReader();
             // There is no guarantee that all entries are read in ony one call to readEntries()
             // call readEntries() until no more results are returned
@@ -2556,7 +2556,7 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.deleteDir = function (dirPath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var names = dirPath.split('/');
         var max = names.length;
@@ -2588,7 +2588,7 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.deleteFullDir = function (dirPath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var names = dirPath.split('/');
         var max = names.length;
@@ -2627,17 +2627,17 @@ miapp.FileStorage = (function () {
      * @param {Function} onFailure - Called with error message argument if failure.
      */
     FileStorage.prototype.getFileFromUrl = function (fileUrl, onSuccess, onFailure) {
-        //miapp.InternalLog.log('miapp.FileStorage','getFileFromUrl : '+ fileUrl);
+        //fidj.InternalLog.log('fidj.FileStorage','getFileFromUrl : '+ fileUrl);
         if (!this.fs) {
-            //miapp.InternalLog.log('miapp.FileStorage','FileStorage No FS !');
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            //fidj.InternalLog.log('fidj.FileStorage','FileStorage No FS !');
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         // resolve File in private or localhost fs
         fileUrl = fileUrl.replace('/private/','/');
         fileUrl = fileUrl.replace('/localhost/','/');
 
-        if (miapp.isDefined(window.resolveLocalFileSystemURL)) {
-            //miapp.InternalLog.log('miapp.FileStorage','window.resolveLocalFileSystemURL '+fileUrl);
+        if (fidj.isDefined(window.resolveLocalFileSystemURL)) {
+            //fidj.InternalLog.log('fidj.FileStorage','window.resolveLocalFileSystemURL '+fileUrl);
             window.resolveLocalFileSystemURL(fileUrl, function (fileEntry) {
                     if (onSuccess) {
                         onSuccess(fileEntry);
@@ -2648,8 +2648,8 @@ miapp.FileStorage = (function () {
                         onFailure("resolveLocalFileSystemURL " + fileUrl + " failure : " + errorMessage(fileError));
                     }
                 });
-        } else if (miapp.isDefined(window.webkitResolveLocalFileSystemURL)) {
-            //miapp.InternalLog.log('miapp.FileStorage','window.webkitResolveLocalFileSystemURL '+fileUrl);
+        } else if (fidj.isDefined(window.webkitResolveLocalFileSystemURL)) {
+            //fidj.InternalLog.log('fidj.FileStorage','window.webkitResolveLocalFileSystemURL '+fileUrl);
             window.webkitResolveLocalFileSystemURL(fileUrl, function (fileEntry) {
                     if (onSuccess) {
                         onSuccess(fileEntry);
@@ -2662,7 +2662,7 @@ miapp.FileStorage = (function () {
                 });
         }
         else {
-            //miapp.InternalLog.log('miapp.FileStorage','cordova.getFileFromUri '+fileUrl);
+            //fidj.InternalLog.log('fidj.FileStorage','cordova.getFileFromUri '+fileUrl);
             // In Cordova window.webkitResolveLocalFileSystemURL does not exist
             this.getFileFromUri(fileUrl, onSuccess, onFailure);
         }
@@ -2678,14 +2678,14 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.getFileFromUri = function (fileUri, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         // resolve File in private or localhost fs
         fileUri = fileUri.replace('/private/','/');
         fileUri = fileUri.replace('/localhost/','/');
 
-        if (miapp.isDefined(window.resolveLocalFileSystemURI)) {
-            //miapp.InternalLog.log('miapp.FileStorage','window.resolveLocalFileSystemURI '+fileUri);
+        if (fidj.isDefined(window.resolveLocalFileSystemURI)) {
+            //fidj.InternalLog.log('fidj.FileStorage','window.resolveLocalFileSystemURI '+fileUri);
             window.resolveLocalFileSystemURI(fileUri, function (fileEntry) {
                     if (onSuccess) {
                         onSuccess(fileEntry);
@@ -2696,8 +2696,8 @@ miapp.FileStorage = (function () {
                         onFailure("resolveLocalFileSystemURI " + fileUri + " failure : " + errorMessage(fileError));
                     }
                 });
-        } else if (miapp.isDefined(window.webkitResolveLocalFileSystemURI)) {
-            //miapp.InternalLog.log('miapp.FileStorage','window.webkitResolveLocalFileSystemURI '+fileUri);
+        } else if (fidj.isDefined(window.webkitResolveLocalFileSystemURI)) {
+            //fidj.InternalLog.log('fidj.FileStorage','window.webkitResolveLocalFileSystemURI '+fileUri);
             window.webkitResolveLocalFileSystemURI(fileUri, function (fileEntry) {
                     if (onSuccess) {
                         onSuccess(fileEntry);
@@ -2709,7 +2709,7 @@ miapp.FileStorage = (function () {
                     }
                 });
         } else {
-            //miapp.InternalLog.log('miapp.FileStorage','cordova.getFileFromUrl '+fileUri);
+            //fidj.InternalLog.log('fidj.FileStorage','cordova.getFileFromUrl '+fileUri);
             // In Chrome window.webkitResolveLocalFileSystemURI does not exist
             this.getFileFromUrl(self.urlPrefix + fileUri, onSuccess, onFailure);
         }
@@ -2724,23 +2724,23 @@ miapp.FileStorage = (function () {
      * @param {Function} onFailure - Called with error message argument if failure.
      */
     FileStorage.prototype.getUrlFromFile = function (filePath, onSuccess, onFailure) {
-        //miapp.InternalLog.log('miapp.FileStorage','getUrlFromFile '+filePath);
+        //fidj.InternalLog.log('fidj.FileStorage','getUrlFromFile '+filePath);
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
 
-        //miapp.InternalLog.log('miapp.FileStorage','getUrlFromFile .. '+filePath);
+        //fidj.InternalLog.log('fidj.FileStorage','getUrlFromFile .. '+filePath);
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
 
-                //miapp.InternalLog.log('miapp.FileStorage','getUrlFromFile result  toURL '+fileEntry.toURL());
-                //miapp.InternalLog.log('miapp.FileStorage','getUrlFromFile result  fullPath '+fileEntry.fullPath);
+                //fidj.InternalLog.log('fidj.FileStorage','getUrlFromFile result  toURL '+fileEntry.toURL());
+                //fidj.InternalLog.log('fidj.FileStorage','getUrlFromFile result  fullPath '+fileEntry.fullPath);
 
-                if (miapp.isDefined(fileEntry.toNativeURL)){
-                    //miapp.InternalLog.log('miapp.FileStorage','getUrlFromFile result  toNativeURL '+fileEntry.toNativeURL());
+                if (fidj.isDefined(fileEntry.toNativeURL)){
+                    //fidj.InternalLog.log('fidj.FileStorage','getUrlFromFile result  toNativeURL '+fileEntry.toNativeURL());
                     if (onSuccess) onSuccess(fileEntry.toNativeURL());
                 } else {
-                    //miapp.InternalLog.log('miapp.FileStorage','toNativeURL not defined, use toUrl');
+                    //fidj.InternalLog.log('fidj.FileStorage','toNativeURL not defined, use toUrl');
                     if (onSuccess) onSuccess(fileEntry.toURL());
                 }
 
@@ -2757,7 +2757,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.getUriFromFile = function (filePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
@@ -2777,7 +2777,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.getModificationTimeFromFile = function (filePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
@@ -2805,7 +2805,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.getFile = function (filePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false}, onSuccess, onFailure);
     };
@@ -2820,7 +2820,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.newFile = function (filePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:true, exclusive:true}, onSuccess, onFailure);
     };
@@ -2835,7 +2835,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.getOrNewFile = function (filePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:true, exclusive:false}, onSuccess, onFailure);
     };
@@ -2850,7 +2850,7 @@ miapp.FileStorage = (function () {
      */
     FileStorage.prototype.readFileAsDataURL = function (filePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
@@ -2876,7 +2876,7 @@ miapp.FileStorage = (function () {
     };
     FileStorage.prototype.readFileAsText = function (filePath, onSuccess, onFailure, onProgress, from, length) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
@@ -2906,7 +2906,7 @@ miapp.FileStorage = (function () {
     // Not yet implemented in Cordova
     FileStorage.prototype.readFileAsArrayBuffer = function (filePath, onSuccess, onFailure, onProgress, from, length) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
@@ -2936,7 +2936,7 @@ miapp.FileStorage = (function () {
     // Not yet implemented in Cordova
     FileStorage.prototype.readFileAsBinaryString = function (filePath, onSuccess, onFailure, onProgress, from, length) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
@@ -2965,7 +2965,7 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.writeFile = function (fromBlob, toFilePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, toFilePath, {create:true, exclusive:false},
             function (fileEntry) {
@@ -2996,7 +2996,7 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.appendFile = function (fromBlob, toFilePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, toFilePath, {create:true, exclusive:false},
             function (fileEntry) {
@@ -3024,7 +3024,7 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.deleteFile = function (filePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         getFileEntry(this.fs.root, filePath, {create:false, exclusive:false},
             function (fileEntry) {
@@ -3047,9 +3047,9 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.copyFile = function (fromFilePath, toFilePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
-        //miapp.InternalLog.log('miapp.FileStorage','copyFile :'+fromFilePath+" to:"+toFilePath);
+        //fidj.InternalLog.log('fidj.FileStorage','copyFile :'+fromFilePath+" to:"+toFilePath);
         var self = this;
         var names = toFilePath.split('/');
         var max = names.length - 1;
@@ -3063,10 +3063,10 @@ miapp.FileStorage = (function () {
         var dirOptions = {create:true, exclusive:false};
         getDirEntry(this.fs.root, dirOptions, dirs,
             function (dirEntry) {
-                //miapp.InternalLog.log('miapp.FileStorage','copyFile in :'+fromFilePath+" to:"+toFilePath);
+                //fidj.InternalLog.log('fidj.FileStorage','copyFile in :'+fromFilePath+" to:"+toFilePath);
                 getFileEntry(self.fs.root, fromFilePath, {create:false, exclusive:false},
                     function (fileEntry) {
-                        //miapp.InternalLog.log('miapp.FileStorage','copyFile in2 :'+fromFilePath+" to:"+toFilePath);
+                        //fidj.InternalLog.log('fidj.FileStorage','copyFile in2 :'+fromFilePath+" to:"+toFilePath);
                         fileEntry.copyTo(dirEntry, fileName, function (toFileEntry) {
                             if (onSuccess) {
                                 onSuccess(toFileEntry);
@@ -3083,9 +3083,9 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.copyFileFromUrl = function (fromFileUrl, toFilePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
-        //miapp.InternalLog.log('miapp.FileStorage','copyFileFromUrl :'+fromFileUrl+" to:"+toFilePath);
+        //fidj.InternalLog.log('fidj.FileStorage','copyFileFromUrl :'+fromFileUrl+" to:"+toFilePath);
         var self = this;
         var names = toFilePath.split('/');
         var max = names.length - 1;
@@ -3099,10 +3099,10 @@ miapp.FileStorage = (function () {
         var dirOptions = {create:true, exclusive:false};
         getDirEntry(this.fs.root, dirOptions, dirs,
             function (dirEntry) {
-                //miapp.InternalLog.log('miapp.FileStorage','copyFileFromUrl in :'+fromFileUrl+" to:"+toFilePath);
+                //fidj.InternalLog.log('fidj.FileStorage','copyFileFromUrl in :'+fromFileUrl+" to:"+toFilePath);
                 self.getFileFromUrl(fromFileUrl,
                     function (fileEntry) {
-                        //miapp.InternalLog.log('miapp.FileStorage','copyFileFromUrl in2 :'+fromFileUrl+" to:"+toFilePath);
+                        //fidj.InternalLog.log('fidj.FileStorage','copyFileFromUrl in2 :'+fromFileUrl+" to:"+toFilePath);
                         fileEntry.copyTo(dirEntry, fileName, function (toFileEntry) {
                             if (onSuccess) {
                                 onSuccess(toFileEntry);
@@ -3118,7 +3118,7 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.moveFile = function (fromFilePath, toFilePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var self = this;
         var names = toFilePath.split('/');
@@ -3151,7 +3151,7 @@ miapp.FileStorage = (function () {
 
     FileStorage.prototype.moveFileEntry = function (fromFileEntry, toFilePath, onSuccess, onFailure) {
         if (!this.fs) {
-            throw new Error("miapp.FileStorage is not yet initialized with its file system.");
+            throw new Error("fidj.FileStorage is not yet initialized with its file system.");
         }
         var self = this;
         var names = toFilePath.split('/');
@@ -3235,7 +3235,7 @@ miapp.FileStorage = (function () {
     function getDirEntry(dirEntry, dirOptions, dirs, onSuccess, onFailure) {
 
         if (dirs.length <= 0) {
-            //miapp.InternalLog.log('miapp.FileStorage','getDirEntry success1');
+            //fidj.InternalLog.log('fidj.FileStorage','getDirEntry success1');
             if (onSuccess) onSuccess(dirEntry);
             return;
         }
@@ -3244,28 +3244,28 @@ miapp.FileStorage = (function () {
         var dirName = dirs[0];
         dirs = dirs.slice(1);
 
-        //miapp.InternalLog.log('miapp.FileStorage','getDirEntry '+dirName+' '+dirOptions);
+        //fidj.InternalLog.log('fidj.FileStorage','getDirEntry '+dirName+' '+dirOptions);
         dirEntry.getDirectory(dirName, dirOptions,
             function (dirEntry) {
                 bWillThrow = true;
-                //miapp.InternalLog.log('miapp.FileStorage','getDirEntry in '+dirName);
+                //fidj.InternalLog.log('fidj.FileStorage','getDirEntry in '+dirName);
                 if (dirs.length) {
-                    //miapp.InternalLog.log('miapp.FileStorage','getDirEntry in2 '+dirName);
+                    //fidj.InternalLog.log('fidj.FileStorage','getDirEntry in2 '+dirName);
                     getDirEntry(dirEntry, dirOptions, dirs, onSuccess, onFailure);
                 } else {
-                    //miapp.InternalLog.log('miapp.FileStorage','getDirEntry success2 '+dirName);
+                    //fidj.InternalLog.log('fidj.FileStorage','getDirEntry success2 '+dirName);
                     if (onSuccess) onSuccess(dirEntry);
                 }
             },
             function (fileError) {
-                //miapp.InternalLog.log('miapp.FileStorage','getDirEntry fail '+dirName+' '+fileError+' '+dirOptions);
+                //fidj.InternalLog.log('fidj.FileStorage','getDirEntry fail '+dirName+' '+fileError+' '+dirOptions);
                 bWillThrow = true;
                 if (onFailure) onFailure("getDirectory " + dirName + " from " + dirEntry.fullPath + " failure : " + errorMessage(fileError));
             }
         );
 
         //setTimeout(function() {
-            //miapp.InternalLog.log('miapp.FileStorage','bWillThrow ? '+bWillThrow+' '+dirName);
+            //fidj.InternalLog.log('fidj.FileStorage','bWillThrow ? '+bWillThrow+' '+dirName);
             // window.setTimeout(function(){console.log('wait...');},1000);
             // console.log('bWillThrow... ? '+bWillThrow);
 
@@ -3287,7 +3287,7 @@ miapp.FileStorage = (function () {
             }
         }
 
-        //miapp.InternalLog.log('miapp.FileStorage','getFileEntry filePath :'+filePath+" fileOptions:"+fileOptions.create+' dirs:'+miappDumpObject("  ", dirs, 1));
+        //fidj.InternalLog.log('fidj.FileStorage','getFileEntry filePath :'+filePath+" fileOptions:"+fileOptions.create+' dirs:'+fidjDumpObject("  ", dirs, 1));
         var dirOptions;
         if (fileOptions.create) {
             dirOptions = {create:true, exclusive:false};
@@ -3296,15 +3296,15 @@ miapp.FileStorage = (function () {
         }
         getDirEntry(rootEntry, dirOptions, dirs,
             function (dirEntry) {
-                //miapp.InternalLog.log('miapp.FileStorage','getFileEntry in filePath :'+filePath+" fileOptions:"+fileOptions.create);
+                //fidj.InternalLog.log('fidj.FileStorage','getFileEntry in filePath :'+filePath+" fileOptions:"+fileOptions.create);
                 dirEntry.getFile(fileName, fileOptions,
                     function (fileEntry) {
-                        //miapp.InternalLog.log('miapp.FileStorage','getFileEntry in success filePath :'+filePath+" fileOptions:"+fileOptions.create);
+                        //fidj.InternalLog.log('fidj.FileStorage','getFileEntry in success filePath :'+filePath+" fileOptions:"+fileOptions.create);
                         if (onSuccess) {
                             onSuccess(fileEntry);
                         }
                     }, function (fileError) {
-                        //miapp.InternalLog.log('miapp.FileStorage','getFileEntry in failure filePath :'+filePath+" fileOptions:"+fileOptions.create);
+                        //fidj.InternalLog.log('fidj.FileStorage','getFileEntry in failure filePath :'+filePath+" fileOptions:"+fileOptions.create);
                         if (onFailure) {
                             onFailure("getFile " + fileName + " from " + dirEntry.fullPath + " failure : " + errorMessage(fileError));
                         }
@@ -3365,7 +3365,7 @@ miapp.FileStorage = (function () {
 })(); // Invoke the function immediately to create this class.
 
 // An auxiliary constructor for the FileStorage class.
-miapp.PredefinedFileStorage = (function () {
+fidj.PredefinedFileStorage = (function () {
     // Constructor
     function PredefinedFileStorage(fileSystem, grantedBytes) {
         this.version = "0.1";
@@ -3374,7 +3374,7 @@ miapp.PredefinedFileStorage = (function () {
     }
 
     // Set the prototype so that PredefinedFileStorage creates instances of FileStorage
-    PredefinedFileStorage.prototype = miapp.FileStorage.prototype;
+    PredefinedFileStorage.prototype = fidj.FileStorage.prototype;
 
     // The public API for this module is the constructor function.
     // We need to export that function from this private namespace so that
@@ -3384,7 +3384,7 @@ miapp.PredefinedFileStorage = (function () {
 
 
 
-miapp.Utf8 = (function () {
+fidj.Utf8 = (function () {
 'use strict';
 
     var Utf8 = {};
@@ -3641,7 +3641,7 @@ miapp.Utf8 = (function () {
 })(); // Invoke the function immediately to create this class.
 
 
-miapp.Base64 = (function () {
+fidj.Base64 = (function () {
 'use strict';
 
     var Base64 = {};
@@ -3882,7 +3882,7 @@ var loadLocation = function () {
  */
 
 
-miapp.Xml = (function()
+fidj.Xml = (function()
 {
     // Constructor
     function Xml()
@@ -3949,4 +3949,4 @@ miapp.Xml = (function()
 })(); // Invoke the function immediately to create this class.
 
 
-export miapp;
+export fidj;

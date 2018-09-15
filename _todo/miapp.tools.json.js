@@ -1,14 +1,14 @@
 
-// Namespace miapp
-var miapp;
-if (!miapp) miapp = {};
+// Namespace fidj
+var fidj;
+if (!fidj) fidj = {};
 
-miapp.Json = (function($)
+fidj.Json = (function($)
 {
     'use strict';
 
     if(!(Object.toJSON || window.JSON)){
-        throw new Error("Object.toJSON or window.JSON needs to be loaded before miapp.Json!");
+        throw new Error("Object.toJSON or window.JSON needs to be loaded before fidj.Json!");
     }
 
     // Constructor

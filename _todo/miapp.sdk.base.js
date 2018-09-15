@@ -1,17 +1,17 @@
 
 
-// Namespace miappSdk
-var miappSdk = {};
+// Namespace fidjSdk
+var fidjSdk = {};
 
 window.console = window.console || {};
 window.console.log = window.console.log || function () {
 };
 
-var miappSdkEventable = function () {
-    throw Error("'miappSdkEventable' is not intended to be invoked directly");
+var fidjSdkEventable = function () {
+    throw Error("'fidjSdkEventable' is not intended to be invoked directly");
 };
 
-miappSdkEventable.prototype = {
+fidjSdkEventable.prototype = {
     bind: function (event, fn) {
         this._events = this._events || {};
         this._events[event] = this._events[event] || [];
@@ -31,7 +31,7 @@ miappSdkEventable.prototype = {
     }
 };
 
-miappSdkEventable.mixin = function (destObject) {
+fidjSdkEventable.mixin = function (destObject) {
     var props = ["bind", "unbind", "trigger"];
     for (var i = 0; i < props.length; i++) {
         if (props[i] in destObject.prototype) {
@@ -39,7 +39,7 @@ miappSdkEventable.mixin = function (destObject) {
             console.warn("the previous version can be found at '_" + props[i] + "' on '" + destObject.name + "'.");
             destObject.prototype["_" + props[i]] = destObject.prototype[props[i]];
         }
-        destObject.prototype[props[i]] = miappSdkEventable.prototype[props[i]];
+        destObject.prototype[props[i]] = fidjSdkEventable.prototype[props[i]];
     }
 };
 
@@ -111,16 +111,16 @@ miappSdkEventable.mixin = function (destObject) {
 })(this || window);
 
 (function (global) {
-    var name = "miappSdkPromise", overwrittenName = global[name], exports;
+    var name = "fidjSdkPromise", overwrittenName = global[name], exports;
 
-    function miappSdkPromise() {
+    function fidjSdkPromise() {
         this.complete = false;
         this.error = null;
         this.result = null;
         this.callbacks = [];
     }
 
-    miappSdkPromise.prototype.then = function (callback, context) {
+    fidjSdkPromise.prototype.then = function (callback, context) {
         var f = function () {
             return callback.apply(context, arguments);
         };
@@ -130,7 +130,7 @@ miappSdkEventable.mixin = function (destObject) {
             this.callbacks.push(f);
         }
     };
-    miappSdkPromise.prototype.done = function (error, result) {
+    fidjSdkPromise.prototype.done = function (error, result) {
         this.complete = true;
         this.error = error;
         this.result = result;
@@ -139,8 +139,8 @@ miappSdkEventable.mixin = function (destObject) {
             this.callbacks.length = 0;
         }
     };
-    miappSdkPromise.join = function (promises) {
-        var p = new miappSdkPromise(), total = promises.length, completed = 0, errors = [], results = [];
+    fidjSdkPromise.join = function (promises) {
+        var p = new fidjSdkPromise(), total = promises.length, completed = 0, errors = [], results = [];
 
         function notifier(i) {
             return function (error, result) {
@@ -158,15 +158,15 @@ miappSdkEventable.mixin = function (destObject) {
         }
         return p;
     };
-    miappSdkPromise.chain = function (promises, error, result) {
-        var p = new miappSdkPromise();
+    fidjSdkPromise.chain = function (promises, error, result) {
+        var p = new fidjSdkPromise();
         if (promises === null || promises.length === 0) {
             p.done(error, result);
         } else {
             promises[0](error, result).then(function (res, err) {
                 promises.splice(0, 1);
                 if (promises) {
-                    miappSdkPromise.chain(promises, res, err).then(function (r, e) {
+                    fidjSdkPromise.chain(promises, res, err).then(function (r, e) {
                         p.done(r, e);
                     });
                 } else {
@@ -176,12 +176,12 @@ miappSdkEventable.mixin = function (destObject) {
         }
         return p;
     };
-    global[name] = miappSdkPromise;
+    global[name] = fidjSdkPromise;
     global[name].noConflict = function () {
         if (overwrittenName) {
             global[name] = overwrittenName;
         }
-        return miappSdkPromise;
+        return fidjSdkPromise;
     };
     return global[name];
 })(this || window);
@@ -215,7 +215,7 @@ miappSdkEventable.mixin = function (destObject) {
         }
 
         function request(m, u, d, token) {
-            var p = new miappSdkPromise(), timeout;
+            var p = new fidjSdkPromise(), timeout;
             //self.logger.time(m + " " + u);
             (function (xhr) {
                 try {
@@ -249,7 +249,7 @@ miappSdkEventable.mixin = function (destObject) {
                                 //    errStatus = '408'; // The client did not produce a request within the time that the server was prepared to wait.
 
                                 xhr.abort();
-                                var error = new miappSdkError('Fidj.ovh SDK request fail.', errStatus);
+                                var error = new fidjSdkError('Fidj.ovh SDK request fail.', errStatus);
                                 p.done(error, null);
                             }
                         }
@@ -279,7 +279,7 @@ miappSdkEventable.mixin = function (destObject) {
                         //var token = token;//self.getToken();
                         //console.log('TODO token : ' + token);
                         //MLE ? xhr.withCredentials = true;
-                        //MLE ? if (token) xhr.setRequestHeader('Cookie', "miappSdktoken=" + token);
+                        //MLE ? if (token) xhr.setRequestHeader('Cookie', "fidjSdktoken=" + token);
                         //if (token) xhr.setRequestHeader('X-CSRF-Token', token);
                     }
                     xhr.timeout = 9000; // time in milliseconds
@@ -290,7 +290,7 @@ miappSdkEventable.mixin = function (destObject) {
                         console.log('timeout xhr.status :', errStatus);
                         errStatus = '408'; // The client did not produce a request within the time that the server was prepared to wait.
                         xhr.abort();
-                        var error = new miappSdkError('Fidj.ovh SDK request fail.', errStatus, new Date(), 9000);
+                        var error = new fidjSdkError('Fidj.ovh SDK request fail.', errStatus, new Date(), 9000);
                         console.log('timeout error :', error);
                         p.done(error, null);
                     };
@@ -434,22 +434,22 @@ function doCallback(callback, params, context) {
 
 (function (global) {
     var self = this;
-    var name = "miappSdk", overwrittenName = global[name];
+    var name = "fidjSdk", overwrittenName = global[name];
     var VALID_REQUEST_METHODS = ["GET", "POST", "PUT", "DELETE"];
 
-    function miappSdk() {
+    function fidjSdk() {
         self.logger = new Logger(name);
     }
 
-    miappSdk.isValidEndpoint = function (endpoint) {
+    fidjSdk.isValidEndpoint = function (endpoint) {
         return true;
     };
-    miappSdk.Request = function (method, endpoint, query_params, data, callback) {
-        var p = new miappSdkPromise();
+    fidjSdk.Request = function (method, endpoint, query_params, data, callback) {
+        var p = new fidjSdkPromise();
         /*
          Create a logger
          */
-        self.logger = new global.Logger("miappSdk.Request");
+        self.logger = new global.Logger("fidjSdk.Request");
         self.logger.time("process request " + method + " " + endpoint);
         //self.logger.info("REQUEST launch " + method + " " + endpoint);
         /*
@@ -461,7 +461,7 @@ function doCallback(callback, params, context) {
         self.method = method.toUpperCase();
         self.data = "object" === typeof data ? JSON.stringify(data) : data;
         if (VALID_REQUEST_METHODS.indexOf(self.method) === -1) {
-            throw new miappSdkInvalidHTTPMethodError("invalid request method '" + self.method + "'");
+            throw new fidjSdkInvalidHTTPMethodError("invalid request method '" + self.method + "'");
         }
         /*
          Prepare our request
@@ -470,7 +470,7 @@ function doCallback(callback, params, context) {
         //self.logger.info("REQUEST launch", self.endpoint, self.method, self.data);
         if (!isValidUrl(self.endpoint)) {
             self.logger.error(endpoint, self.endpoint, /^https:\/\//.test(endpoint));
-            throw new miappSdkInvalidURIError("The provided endpoint is not valid: " + self.endpoint);
+            throw new fidjSdkInvalidURIError("The provided endpoint is not valid: " + self.endpoint);
         }
         /* a callback to make the request */
         var token = null;
@@ -481,7 +481,7 @@ function doCallback(callback, params, context) {
         /* a callback to process the response */
         var response = function (err, request) {
             //console.log("REQUEST response : ", err , request);
-            return new miappSdk.Response(err, request);
+            return new fidjSdk.Response(err, request);
         }.bind(self);
         /* a callback to clean up and return data to the client */
         var oncomplete = function (err, response) {
@@ -493,12 +493,12 @@ function doCallback(callback, params, context) {
             //self.logger.timeEnd("process request " + method + " " + endpoint);
         }.bind(self);
         /* and a promise to chain them all together */
-        miappSdkPromise.chain([request, response]).then(oncomplete);
+        fidjSdkPromise.chain([request, response]).then(oncomplete);
 
         return p;
     };
-    miappSdk.Response = function (err, response) {
-        var p = new miappSdkPromise();
+    fidjSdk.Response = function (err, response) {
+        var p = new fidjSdkPromise();
         var data = null;
         try {
             data = JSON.parse(response.responseText);
@@ -570,32 +570,32 @@ function doCallback(callback, params, context) {
             p.done(null, self);
         } else {
             var errorSdk = err;
-            if ((!err instanceof miappSdkError))
-                errorSdk = miappSdkError.fromResponse(err);
+            if ((!err instanceof fidjSdkError))
+                errorSdk = fidjSdkError.fromResponse(err);
 
             //console.log('errorSdk : ',errorSdk);
             p.done(errorSdk, self);
         }
         return p;
     };
-    miappSdk.Response.prototype.getEntities = function () {
+    fidjSdk.Response.prototype.getEntities = function () {
         var entities;
         if (self.success) {
             entities = self.data ? self.data.entities : self.entities;
         }
         return entities || [];
     };
-    miappSdk.Response.prototype.getEntity = function () {
+    fidjSdk.Response.prototype.getEntity = function () {
         var entities = self.getEntities();
         return entities[0];
     };
-    miappSdk.VERSION = miappSdk.USERGRID_SDK_VERSION = "0.11.0";
-    global[name] = miappSdk;
+    fidjSdk.VERSION = fidjSdk.USERGRID_SDK_VERSION = "0.11.0";
+    global[name] = fidjSdk;
     global[name].noConflict = function () {
         if (overwrittenName) {
             global[name] = overwrittenName;
         }
-        return miappSdk;
+        return fidjSdk;
     };
     return global[name];
 })(this || window);
@@ -603,7 +603,7 @@ function doCallback(callback, params, context) {
 (function (global) {
     var name = "Client", overwrittenName = global[name], exports;
     var AUTH_ERRORS = ["auth_expired_session_token", "auth_missing_credentials", "auth_unverified_oath", "expired_token", "unauthorized", "auth_invalid"];
-    miappSdk.Client = function (options) {
+    fidjSdk.Client = function (options) {
         //console.log(this);
         this.URI = options.URI;
         if (options.orgName) {
@@ -634,7 +634,7 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.request = function (options, callback) {
+    fidjSdk.Client.prototype.request = function (options, callback) {
         var method = options.method || "GET";
         var endpoint = options.endpoint;
         var body = options.body || {};
@@ -664,7 +664,7 @@ function doCallback(callback, params, context) {
             qs = propCopy(qs, default_qs);
         }
         var self = this;
-        var req = new miappSdk.Request(method, uri, qs, body, function (err, response) {
+        var req = new fidjSdk.Request(method, uri, qs, body, function (err, response) {
             /*if (AUTH_ERRORS.indexOf(response.error) !== -1) {
              return logoutCallback();
              }*/
@@ -683,7 +683,7 @@ function doCallback(callback, params, context) {
      *  @params {string} uuid
      *  @return {string} assetURL
      */
-    miappSdk.Client.prototype.buildAssetURL = function (uuid) {
+    fidjSdk.Client.prototype.buildAssetURL = function (uuid) {
         var self = this;
         var qs = {};
         var assetURL = this.URI + "/" + this.orgName + "/" + this.appName + "/assets/" + uuid + "/data";
@@ -705,8 +705,8 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.createGroup = function (options, callback) {
-        var group = new miappSdk.Group({
+    fidjSdk.Client.prototype.createGroup = function (options, callback) {
+        var group = new fidjSdk.Group({
             path: options.path,
             client: this,
             data: options
@@ -726,8 +726,8 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.createEntity = function (options, callback) {
-        var entity = new miappSdk.Entity({
+    fidjSdk.Client.prototype.createEntity = function (options, callback) {
+        var entity = new fidjSdk.Entity({
             client: this,
             data: options
         });
@@ -749,8 +749,8 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.getEntity = function (options, callback) {
-        var entity = new miappSdk.Entity({
+    fidjSdk.Client.prototype.getEntity = function (options, callback) {
+        var entity = new fidjSdk.Entity({
             client: this,
             data: options
         });
@@ -768,13 +768,13 @@ function doCallback(callback, params, context) {
      *  @param {string} serializedObject
      *  @return {object} Entity Object
      */
-    miappSdk.Client.prototype.restoreEntity = function (serializedObject) {
+    fidjSdk.Client.prototype.restoreEntity = function (serializedObject) {
         var data = JSON.parse(serializedObject);
         var options = {
             client: this,
             data: data
         };
-        var entity = new miappSdk.Entity(options);
+        var entity = new fidjSdk.Entity(options);
         return entity;
     };
     /*
@@ -788,8 +788,8 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, response, counter)
      */
-    miappSdk.Client.prototype.createCounter = function (options, callback) {
-        var counter = new miappSdk.Counter({
+    fidjSdk.Client.prototype.createCounter = function (options, callback) {
+        var counter = new fidjSdk.Counter({
             client: this,
             data: options
         });
@@ -806,7 +806,7 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, response, counter)
      */
-    miappSdk.Client.prototype.createAsset = function (options, callback) {
+    fidjSdk.Client.prototype.createAsset = function (options, callback) {
         var file = options.file;
         if (file) {
             options.name = options.name || file.name;
@@ -814,7 +814,7 @@ function doCallback(callback, params, context) {
             options.path = options.path || "/";
             delete options.file;
         }
-        var asset = new miappSdk.Asset({
+        var asset = new fidjSdk.Asset({
             client: this,
             data: options
         });
@@ -837,9 +837,9 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.createCollection = function (options, callback) {
+    fidjSdk.Client.prototype.createCollection = function (options, callback) {
         options.client = this;
-        return new miappSdk.Collection(options, function (err, data, collection) {
+        return new fidjSdk.Collection(options, function (err, data, collection) {
             //console.log("createCollection", arguments);
             doCallback(callback, [err, collection, data]);
         });
@@ -854,10 +854,10 @@ function doCallback(callback, params, context) {
      *  @param {string} serializedObject
      *  @return {object} Collection Object
      */
-    miappSdk.Client.prototype.restoreCollection = function (serializedObject) {
+    fidjSdk.Client.prototype.restoreCollection = function (serializedObject) {
         var data = JSON.parse(serializedObject);
         data.client = this;
-        var collection = new miappSdk.Collection(data);
+        var collection = new fidjSdk.Collection(data);
         return collection;
     };
     /*
@@ -869,7 +869,7 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data, activities)
      */
-    miappSdk.Client.prototype.getFeedForUser = function (username, callback) {
+    fidjSdk.Client.prototype.getFeedForUser = function (username, callback) {
         var options = {
             method: "GET",
             endpoint: "users/" + username + "/feed"
@@ -917,13 +917,13 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.createUserActivity = function (user, options, callback) {
+    fidjSdk.Client.prototype.createUserActivity = function (user, options, callback) {
         options.type = "users/" + user + "/activities";
         options = {
             client: this,
             data: options
         };
-        var entity = new miappSdk.Entity(options);
+        var entity = new fidjSdk.Entity(options);
         entity.save(function (err, data) {
             doCallback(callback, [err, data, entity]);
         });
@@ -932,7 +932,7 @@ function doCallback(callback, params, context) {
      *  Function for creating user activities with an associated user entity.
      *
      *  user object:
-     *  The user object passed into this function is an instance of miappSdk.Entity.
+     *  The user object passed into this function is an instance of fidjSdk.Entity.
      *
      *  @method createUserActivityWithEntity
      *  @public
@@ -941,7 +941,7 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.createUserActivityWithEntity = function (user, content, callback) {
+    fidjSdk.Client.prototype.createUserActivityWithEntity = function (user, content, callback) {
         var username = user.get("username");
         var options = {
             actor: {
@@ -965,7 +965,7 @@ function doCallback(callback, params, context) {
     /*
      *  A private method to get call timing of last call
      */
-    miappSdk.Client.prototype.calcTimeDiff = function () {
+    fidjSdk.Client.prototype.calcTimeDiff = function () {
         var seconds = 0;
         var time = this._end - this._start;
         try {
@@ -983,26 +983,26 @@ function doCallback(callback, params, context) {
      *  @params {string} token
      *  @return none
      */
-    miappSdk.Client.prototype.setToken = function (token) {
+    fidjSdk.Client.prototype.setToken = function (token) {
         this.set("token", token);
     };
-    miappSdk.Client.prototype.setFidjURL = function (url) {
-        this.set("miappURL", url);
+    fidjSdk.Client.prototype.setFidjURL = function (url) {
+        this.set("fidjURL", url);
         this.URI = url;
     };
-    miappSdk.Client.prototype.setFidjDBURL = function (url) {
-        this.set("miappDBURL", url);
+    fidjSdk.Client.prototype.setFidjDBURL = function (url) {
+        this.set("fidjDBURL", url);
     };
-    miappSdk.Client.prototype.setUserId = function (userId) {
+    fidjSdk.Client.prototype.setUserId = function (userId) {
         this.set("userid", userId);
     };
-    miappSdk.Client.prototype.setAppId = function (appId) {
-        this.set("miappSdkid", appId);
+    fidjSdk.Client.prototype.setAppId = function (appId) {
+        this.set("fidjSdkid", appId);
     };
-    miappSdk.Client.prototype.setLogin = function (login) {
+    fidjSdk.Client.prototype.setLogin = function (login) {
         this.login = login;
     };
-    miappSdk.Client.prototype.setPassword = function (pwd) {
+    fidjSdk.Client.prototype.setPassword = function (pwd) {
         this.pwd = pwd;
     };
 
@@ -1014,35 +1014,35 @@ function doCallback(callback, params, context) {
      *  @public
      *  @return {string} token
      */
-    miappSdk.Client.prototype.getToken = function () {
+    fidjSdk.Client.prototype.getToken = function () {
         return this.get("token");
     };
 
-    miappSdk.Client.prototype.getEndpoint = function () {
+    fidjSdk.Client.prototype.getEndpoint = function () {
         return this.get("endpoint");
     };
 
-    miappSdk.Client.prototype.getUserId = function () {
+    fidjSdk.Client.prototype.getUserId = function () {
         return this.get("userid");
     };
-    miappSdk.Client.prototype.getAppId = function () {
-        return this.get("miappSdkid");
+    fidjSdk.Client.prototype.getAppId = function () {
+        return this.get("fidjSdkid");
     };
-    miappSdk.Client.prototype.getLogin = function () {
+    fidjSdk.Client.prototype.getLogin = function () {
         return this.login;
     };
-    miappSdk.Client.prototype.getPassword = function () {
+    fidjSdk.Client.prototype.getPassword = function () {
         return this.pwd;
     };
 
-    miappSdk.Client.prototype.setObject = function (key, value) {
+    fidjSdk.Client.prototype.setObject = function (key, value) {
         if (value) {
             value = JSON.stringify(value);
         }
         this.set(key, value);
     };
-    miappSdk.Client.prototype.set = function (key, value) {
-        var keyStore = "miappstore_" + key;
+    fidjSdk.Client.prototype.set = function (key, value) {
+        var keyStore = "fidjstore_" + key;
         this[key] = value;
         if (typeof Storage !== "undefined") {
             if (value) {
@@ -1052,11 +1052,11 @@ function doCallback(callback, params, context) {
             }
         }
     };
-    miappSdk.Client.prototype.getObject = function (key) {
+    fidjSdk.Client.prototype.getObject = function (key) {
         return JSON.parse(this.get(key));
     };
-    miappSdk.Client.prototype.get = function (key) {
-        var keyStore = "miappstore_" + key;
+    fidjSdk.Client.prototype.get = function (key) {
+        var keyStore = "fidjstore_" + key;
         var value = null;
         if (this[key]) {
             value = this[key];
@@ -1077,7 +1077,7 @@ function doCallback(callback, params, context) {
      * @param {function} callback
      * @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.signup = function (username, password, email, name, callback) {
+    fidjSdk.Client.prototype.signup = function (username, password, email, name, callback) {
         var self = this;
         var options = {
             type: "users",
@@ -1099,7 +1099,7 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.login = function (username, password, callback) {
+    fidjSdk.Client.prototype.login = function (username, password, callback) {
         var self = this;
         var options = {
             method: "POST",
@@ -1118,7 +1118,7 @@ function doCallback(callback, params, context) {
                     client: self,
                     data: response.user
                 };
-                user = new miappSdk.Entity(options);
+                user = new fidjSdk.Entity(options);
                 self.setToken(response.access_token);
             }
             doCallback(callback, [err, response, user]);
@@ -1126,7 +1126,7 @@ function doCallback(callback, params, context) {
     };
 
 
-    miappSdk.Client.prototype.authMLE = function (callback) {
+    fidjSdk.Client.prototype.authMLE = function (callback) {
         var self = this;
         var userId = self.getUserId();
         var appId = self.getAppId();
@@ -1145,7 +1145,7 @@ function doCallback(callback, params, context) {
                 grant_type: 'client_credentials',
                 client_id: userId,
                 client_secret: password,
-                client_udid: 'miappSdk_fwk',
+                client_udid: 'fidjSdk_fwk',
                 client_info: '123456789',
                 audience: appId,
                 scope: userId
@@ -1162,19 +1162,19 @@ function doCallback(callback, params, context) {
                 //    data: { _id : userId }
                 //};
                 //TODO MLE store tokens here ? if (!response.access_token) err = "no data in auth response";
-                //user = new miappSdk.Entity(options);
+                //user = new fidjSdk.Entity(options);
                 //MLE ? self.setToken(response.access_token);
-                //if (response.miapp_url) self.setFidjURL(response.miapp_url);
-                //if (response.miapp_db_url) self.setFidjDBURL(response.miapp_db_url);
+                //if (response.fidj_url) self.setFidjURL(response.fidj_url);
+                //if (response.fidj_db_url) self.setFidjDBURL(response.fidj_db_url);
                 //self.setEndDate(response.endDate);
             //}
-            // doCallback(callback, [err, response.miapp_url, response.miapp_db_url, response.end_date]);
+            // doCallback(callback, [err, response.fidj_url, response.fidj_db_url, response.end_date]);
             doCallback(callback, [err, response]);
         });
     };
 
 
-    miappSdk.Client.prototype.loginMLE = function (appid, login, password, updateProperties, callback) {
+    fidjSdk.Client.prototype.loginMLE = function (appid, login, password, updateProperties, callback) {
         var self = this;
         self.setAppId(appid);
         self.setLogin(login);
@@ -1208,9 +1208,9 @@ function doCallback(callback, params, context) {
                         if (!errAuth) {
                             // Auth OK
                             //user.access_token = self.getToken();
-                            //if (miappURL) user.miappURL = miappURL;
-                            //if (miappDBURL) user.miappDBURL = miappDBURL;
-                            //if (endDate) user.miappNeedRefresh = new Date(endDate);
+                            //if (fidjURL) user.fidjURL = fidjURL;
+                            //if (fidjDBURL) user.fidjDBURL = fidjDBURL;
+                            //if (endDate) user.fidjNeedRefresh = new Date(endDate);
                             console.log('user before: ', user);
                             Object.keys(res).forEach(function(key) {
                                 if (typeof res[key] === 'string')
@@ -1233,7 +1233,7 @@ function doCallback(callback, params, context) {
     };
 
 
-    miappSdk.Client.prototype.deleteUserMLE = function (userIDToDelete, callback) {
+    fidjSdk.Client.prototype.deleteUserMLE = function (userIDToDelete, callback) {
         var self = this;
         var options = {
             method: "DELETE",
@@ -1250,7 +1250,7 @@ function doCallback(callback, params, context) {
     };
 
 
-    miappSdk.Client.prototype.reAuthenticateLite = function (callback) {
+    fidjSdk.Client.prototype.reAuthenticateLite = function (callback) {
         var self = this;
         var options = {
             method: "GET",
@@ -1266,7 +1266,7 @@ function doCallback(callback, params, context) {
         });
     };
 
-    miappSdk.Client.prototype.reAuthenticateMLE = function (callback) {
+    fidjSdk.Client.prototype.reAuthenticateMLE = function (callback) {
         var self = this;
         var options = {
             method: "GET",
@@ -1289,7 +1289,7 @@ function doCallback(callback, params, context) {
         }
     };
 
-    miappSdk.Client.prototype.reAuthenticate = function (email, callback) {
+    fidjSdk.Client.prototype.reAuthenticate = function (email, callback) {
         var self = this;
         var options = {
             method: "GET",
@@ -1319,7 +1319,7 @@ function doCallback(callback, params, context) {
                     client: self,
                     data: userData
                 };
-                user = new miappSdk.Entity(options);
+                user = new fidjSdk.Entity(options);
                 organizations = data.organizations;
                 var org = "";
                 try {
@@ -1348,7 +1348,7 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.loginFacebook = function (facebookToken, callback) {
+    fidjSdk.Client.prototype.loginFacebook = function (facebookToken, callback) {
         var self = this;
         var options = {
             method: "GET",
@@ -1365,7 +1365,7 @@ function doCallback(callback, params, context) {
                     client: self,
                     data: data.user
                 };
-                user = new miappSdk.Entity(options);
+                user = new fidjSdk.Entity(options);
                 self.setToken(data.access_token);
             }
             doCallback(callback, [err, data, user], self);
@@ -1379,10 +1379,10 @@ function doCallback(callback, params, context) {
      *  @param {function} callback
      *  @return {callback} callback(err, data)
      */
-    miappSdk.Client.prototype.getLoggedInUser = function (callback) {
+    fidjSdk.Client.prototype.getLoggedInUser = function (callback) {
         var self = this;
         if (!this.getToken()) {
-            doCallback(callback, [new miappSdkError("Access Token not set"), null, self], self);
+            doCallback(callback, [new fidjSdkError("Access Token not set"), null, self], self);
         } else {
             var options = {
                 method: "GET",
@@ -1398,7 +1398,7 @@ function doCallback(callback, params, context) {
                         client: self,
                         data: response.getEntity()
                     };
-                    var user = new miappSdk.Entity(options);
+                    var user = new fidjSdk.Entity(options);
                     doCallback(callback, [null, response, user], self);
                 }
             });
@@ -1412,7 +1412,7 @@ function doCallback(callback, params, context) {
      *  @public
      *  @return {boolean} Returns true the user is logged in (has token and uuid), false if not
      */
-    miappSdk.Client.prototype.isLoggedIn = function () {
+    fidjSdk.Client.prototype.isLoggedIn = function () {
         var token = this.getToken();
         return "undefined" !== typeof token && token !== null;
     };
@@ -1423,7 +1423,7 @@ function doCallback(callback, params, context) {
      *  @public
      *  @return none
      */
-    miappSdk.Client.prototype.logout = function () {
+    fidjSdk.Client.prototype.logout = function () {
         this.setToken();
     };
     /*
@@ -1437,7 +1437,7 @@ function doCallback(callback, params, context) {
      *  @param {string} revokeAll set to 'true' to revoke all tokens for the user
      *  @return none
      */
-    miappSdk.Client.prototype.destroyToken = function (username, token, revokeAll, callback) {
+    fidjSdk.Client.prototype.destroyToken = function (username, token, revokeAll, callback) {
         var options = {
             client: self,
             method: "PUT"
@@ -1476,7 +1476,7 @@ function doCallback(callback, params, context) {
      *  @param {string} revokeAll set to 'true' to revoke all tokens for the user
      *  @return none
      */
-    miappSdk.Client.prototype.logoutAndDestroyToken = function (username, token, revokeAll, callback) {
+    fidjSdk.Client.prototype.logoutAndDestroyToken = function (username, token, revokeAll, callback) {
 
         //if (username === null)  console.log("username required to revoke tokens");
         if (username !== null) {
@@ -1494,7 +1494,7 @@ function doCallback(callback, params, context) {
      *  @param {object} options
      *  @return {string} curl
      */
-    miappSdk.Client.prototype.buildCurlCall = function (options) {
+    fidjSdk.Client.prototype.buildCurlCall = function (options) {
         var curl = ["curl"];
         var method = (options.method || "GET").toUpperCase();
         var body = options.body;
@@ -1510,21 +1510,21 @@ function doCallback(callback, params, context) {
         //console.log(curl);
         return curl;
     };
-    miappSdk.Client.prototype.getDisplayImage = function (email, picture, size) {
+    fidjSdk.Client.prototype.getDisplayImage = function (email, picture, size) {
         size = size || 50;
-        var image = "https://apigee.com/miappSdk/images/user_profile.png";
+        var image = "https://apigee.com/fidjSdk/images/user_profile.png";
         try {
             if (picture) {
                 image = picture;
             } else if (email.length) {
-                image = "https://secure.gravatar.com/avatar/" + MD5(email) + "?s=" + size + encodeURI("&d=https://apigee.com/miappSdk/images/user_profile.png");
+                image = "https://secure.gravatar.com/avatar/" + MD5(email) + "?s=" + size + encodeURI("&d=https://apigee.com/fidjSdk/images/user_profile.png");
             }
         } catch (e) {
         } finally {
             return image;
         }
     };
-    global[name] = miappSdk.Client;
+    global[name] = fidjSdk.Client;
     global[name].noConflict = function () {
         if (overwrittenName) {
             global[name] = overwrittenName;
@@ -1536,10 +1536,10 @@ function doCallback(callback, params, context) {
 
 var ENTITY_SYSTEM_PROPERTIES = ["metadata", "created", "modified", "oldpassword", "newpassword", "type", "activated", "uuid"];
 
-// A class to Model a miappSdk Entity.
+// A class to Model a fidjSdk Entity.
 // Set the type and uuid of entity in the 'data' json object
 // @param {object} options {client:client, data:{'type':'collection_type', uuid:'uuid', 'key':'value'}}
-miappSdk.Entity = function (options) {
+fidjSdk.Entity = function (options) {
     this._data = {};
     this._client = undefined;
     if (options) {
@@ -1549,19 +1549,19 @@ miappSdk.Entity = function (options) {
 };
 
 /*
- *  method to determine whether or not the passed variable is a miappSdk Entity
+ *  method to determine whether or not the passed variable is a fidjSdk Entity
  *
  *  @method isEntity
  *  @public
  *  @params {any} obj - any variable
  *  @return {boolean} Returns true or false
  */
-miappSdk.Entity.isEntity = function (obj) {
-    return obj && obj instanceof miappSdk.Entity;
+fidjSdk.Entity.isEntity = function (obj) {
+    return obj && obj instanceof fidjSdk.Entity;
 };
 
 /*
- *  method to determine whether or not the passed variable is a miappSdk Entity
+ *  method to determine whether or not the passed variable is a fidjSdk Entity
  *  That has been saved.
  *
  *  @method isPersistedEntity
@@ -1569,7 +1569,7 @@ miappSdk.Entity.isEntity = function (obj) {
  *  @params {any} obj - any variable
  *  @return {boolean} Returns true or false
  */
-miappSdk.Entity.isPersistedEntity = function (obj) {
+fidjSdk.Entity.isPersistedEntity = function (obj) {
     return isEntity(obj) && isUUID(obj.get("uuid"));
 };
 
@@ -1581,7 +1581,7 @@ miappSdk.Entity.isPersistedEntity = function (obj) {
  *  @method serialize
  *  @return {string} data
  */
-miappSdk.Entity.prototype.serialize = function () {
+fidjSdk.Entity.prototype.serialize = function () {
     return JSON.stringify(this._data);
 };
 
@@ -1593,7 +1593,7 @@ miappSdk.Entity.prototype.serialize = function () {
  *  @param {string} field
  *  @return {string} || {object} data
  */
-miappSdk.Entity.prototype.get = function (key) {
+fidjSdk.Entity.prototype.get = function (key) {
     var value;
     if (arguments.length === 0) {
         value = this._data;
@@ -1628,7 +1628,7 @@ miappSdk.Entity.prototype.get = function (key) {
  *  @param {string} value
  *  @return none
  */
-miappSdk.Entity.prototype.set = function (key, value) {
+fidjSdk.Entity.prototype.set = function (key, value) {
     if (typeof key === "object") {
         for (var field in key) {
             this._data[field] = key[field];
@@ -1644,10 +1644,10 @@ miappSdk.Entity.prototype.set = function (key, value) {
     }
 };
 
-miappSdk.Entity.prototype.getEndpoint = function () {
+fidjSdk.Entity.prototype.getEndpoint = function () {
     var type = this.get("type"), nameProperties = ["uuid", "name"], name;
     if (type === undefined) {
-        throw new miappSdkError("cannot fetch entity, no entity type specified", "no_type_specified");
+        throw new fidjSdkError("cannot fetch entity, no entity type specified", "no_type_specified");
     } else if (/^users?$/.test(type)) {
         nameProperties.unshift("username");
     }
@@ -1665,7 +1665,7 @@ miappSdk.Entity.prototype.getEndpoint = function () {
  *  @param {function} callback
  *  @return {callback} callback(err, response, self)
  */
-miappSdk.Entity.prototype.save = function (callback) {
+fidjSdk.Entity.prototype.save = function (callback) {
     var self = this, type = this.get("type"), method = "POST", entityId = this.get("uuid"), changePassword,
         entityData = this.get(), options = {
             method: method,
@@ -1697,7 +1697,7 @@ miappSdk.Entity.prototype.save = function (callback) {
  *
  * Updates the user's password
  */
-miappSdk.Entity.prototype.changePassword = function (oldpassword, newpassword, callback) {
+fidjSdk.Entity.prototype.changePassword = function (oldpassword, newpassword, callback) {
     var self = this;
     if ("function" === typeof oldpassword && callback === undefined) {
         callback = oldpassword;
@@ -1726,7 +1726,7 @@ miappSdk.Entity.prototype.changePassword = function (oldpassword, newpassword, c
             doCallback(callback, [err, response, self], self);
         });
     } else {
-        throw new miappSdkInvalidArgumentError("Invalid arguments passed to 'changePassword'");
+        throw new fidjSdkInvalidArgumentError("Invalid arguments passed to 'changePassword'");
     }
 };
 
@@ -1738,7 +1738,7 @@ miappSdk.Entity.prototype.changePassword = function (oldpassword, newpassword, c
  *  @param {function} callback
  *  @return {callback} callback(err, data)
  */
-miappSdk.Entity.prototype.fetch = function (callback) {
+fidjSdk.Entity.prototype.fetch = function (callback) {
     var endpoint, self = this;
     endpoint = this.getEndpoint();
     var options = {
@@ -1764,7 +1764,7 @@ miappSdk.Entity.prototype.fetch = function (callback) {
  *  @return {callback} callback(err, data)
  *
  */
-miappSdk.Entity.prototype.destroy = function (callback) {
+fidjSdk.Entity.prototype.destroy = function (callback) {
     var self = this;
     var endpoint = this.getEndpoint();
     var options = {
@@ -1790,7 +1790,7 @@ miappSdk.Entity.prototype.destroy = function (callback) {
  *  @return {callback} callback(err, data)
  *
  */
-miappSdk.Entity.prototype.connect = function (connection, entity, callback) {
+fidjSdk.Entity.prototype.connect = function (connection, entity, callback) {
     this.addOrRemoveConnection("POST", connection, entity, callback);
 };
 
@@ -1805,7 +1805,7 @@ miappSdk.Entity.prototype.connect = function (connection, entity, callback) {
  *  @return {callback} callback(err, data)
  *
  */
-miappSdk.Entity.prototype.disconnect = function (connection, entity, callback) {
+fidjSdk.Entity.prototype.disconnect = function (connection, entity, callback) {
     this.addOrRemoveConnection("DELETE", connection, entity, callback);
 };
 
@@ -1821,20 +1821,20 @@ miappSdk.Entity.prototype.disconnect = function (connection, entity, callback) {
  *  @return {callback} callback(err, data)
  *
  */
-miappSdk.Entity.prototype.addOrRemoveConnection = function (method, connection, entity, callback) {
+fidjSdk.Entity.prototype.addOrRemoveConnection = function (method, connection, entity, callback) {
     var self = this;
     if (["POST", "DELETE"].indexOf(method.toUpperCase()) == -1) {
-        throw new miappSdkInvalidArgumentError("invalid method for connection call. must be 'POST' or 'DELETE'");
+        throw new fidjSdkInvalidArgumentError("invalid method for connection call. must be 'POST' or 'DELETE'");
     }
     var connecteeType = entity.get("type");
     var connectee = this.getEntityId(entity);
     if (!connectee) {
-        throw new miappSdkInvalidArgumentError("connectee could not be identified");
+        throw new fidjSdkInvalidArgumentError("connectee could not be identified");
     }
     var connectorType = this.get("type");
     var connector = this.getEntityId(this);
     if (!connector) {
-        throw new miappSdkInvalidArgumentError("connector could not be identified");
+        throw new fidjSdkInvalidArgumentError("connector could not be identified");
     }
     var endpoint = [connectorType, connector, connection, connecteeType, connectee].join("/");
     var options = {
@@ -1858,7 +1858,7 @@ miappSdk.Entity.prototype.addOrRemoveConnection = function (method, connection, 
  *  @return {callback} callback(err, data)
  *
  */
-miappSdk.Entity.prototype.getEntityId = function (entity) {
+fidjSdk.Entity.prototype.getEntityId = function (entity) {
     var id;
     if (isUUID(entity.get("uuid"))) {
         id = entity.get("uuid");
@@ -1881,7 +1881,7 @@ miappSdk.Entity.prototype.getEntityId = function (entity) {
  *  @return {callback} callback(err, data, connections)
  *
  */
-miappSdk.Entity.prototype.getConnections = function (connection, callback) {
+fidjSdk.Entity.prototype.getConnections = function (connection, callback) {
     var self = this;
     var connectorType = this.get("type");
     var connector = this.getEntityId(this);
@@ -1915,7 +1915,7 @@ miappSdk.Entity.prototype.getConnections = function (connection, callback) {
     });
 };
 
-miappSdk.Entity.prototype.getGroups = function (callback) {
+fidjSdk.Entity.prototype.getGroups = function (callback) {
     var self = this;
     var endpoint = "users" + "/" + this.get("uuid") + "/groups";
     var options = {
@@ -1930,7 +1930,7 @@ miappSdk.Entity.prototype.getGroups = function (callback) {
     });
 };
 
-miappSdk.Entity.prototype.getActivities = function (callback) {
+fidjSdk.Entity.prototype.getActivities = function (callback) {
     var self = this;
     var endpoint = this.get("type") + "/" + this.get("uuid") + "/activities";
     var options = {
@@ -1948,7 +1948,7 @@ miappSdk.Entity.prototype.getActivities = function (callback) {
     });
 };
 
-miappSdk.Entity.prototype.getFollowing = function (callback) {
+fidjSdk.Entity.prototype.getFollowing = function (callback) {
     var self = this;
     var endpoint = "users" + "/" + this.get("uuid") + "/following";
     var options = {
@@ -1968,7 +1968,7 @@ miappSdk.Entity.prototype.getFollowing = function (callback) {
     });
 };
 
-miappSdk.Entity.prototype.getFollowers = function (callback) {
+fidjSdk.Entity.prototype.getFollowers = function (callback) {
     var self = this;
     var endpoint = "users" + "/" + this.get("uuid") + "/followers";
     var options = {
@@ -1988,7 +1988,7 @@ miappSdk.Entity.prototype.getFollowers = function (callback) {
     });
 };
 
-miappSdk.Client.prototype.createRole = function (roleName, permissions, callback) {
+fidjSdk.Client.prototype.createRole = function (roleName, permissions, callback) {
     var options = {
         type: "role",
         name: roleName
@@ -2008,7 +2008,7 @@ miappSdk.Client.prototype.createRole = function (roleName, permissions, callback
     });
 };
 
-miappSdk.Entity.prototype.getRoles = function (callback) {
+fidjSdk.Entity.prototype.getRoles = function (callback) {
     var self = this;
     var endpoint = this.get("type") + "/" + this.get("uuid") + "/roles";
     var options = {
@@ -2023,7 +2023,7 @@ miappSdk.Entity.prototype.getRoles = function (callback) {
     });
 };
 
-miappSdk.Entity.prototype.assignRole = function (roleName, callback) {
+fidjSdk.Entity.prototype.assignRole = function (roleName, callback) {
     var self = this;
     var type = self.get("type");
     var collection = type + "s";
@@ -2036,7 +2036,7 @@ miappSdk.Entity.prototype.assignRole = function (roleName, callback) {
         entityID = self.get("uuid");
     }
     if (type != "users" && type != "groups") {
-        doCallback(callback, [new miappSdkError("entity must be a group or user", "invalid_entity_type"), null, this], this);
+        doCallback(callback, [new fidjSdkError("entity must be a group or user", "invalid_entity_type"), null, this], this);
     }
     var endpoint = "roles/" + roleName + "/" + collection + "/" + entityID;
     var options = {
@@ -2050,7 +2050,7 @@ miappSdk.Entity.prototype.assignRole = function (roleName, callback) {
     });
 };
 
-miappSdk.Entity.prototype.removeRole = function (roleName, callback) {
+fidjSdk.Entity.prototype.removeRole = function (roleName, callback) {
     var self = this;
     var type = self.get("type");
     var collection = type + "s";
@@ -2063,7 +2063,7 @@ miappSdk.Entity.prototype.removeRole = function (roleName, callback) {
         entityID = this.get("uuid");
     }
     if (type != "users" && type != "groups") {
-        doCallback(callback, [new miappSdkError("entity must be a group or user", "invalid_entity_type"), null, this], this);
+        doCallback(callback, [new fidjSdkError("entity must be a group or user", "invalid_entity_type"), null, this], this);
     }
     var endpoint = "roles/" + roleName + "/" + collection + "/" + entityID;
     var options = {
@@ -2077,12 +2077,12 @@ miappSdk.Entity.prototype.removeRole = function (roleName, callback) {
     });
 };
 
-miappSdk.Entity.prototype.assignPermissions = function (permissions, callback) {
+fidjSdk.Entity.prototype.assignPermissions = function (permissions, callback) {
     var self = this;
     var entityID;
     var type = this.get("type");
     if (type != "user" && type != "users" && type != "group" && type != "groups" && type != "role" && type != "roles") {
-        doCallback(callback, [new miappSdkError("entity must be a group, user, or role", "invalid_entity_type"), null, this], this);
+        doCallback(callback, [new fidjSdkError("entity must be a group, user, or role", "invalid_entity_type"), null, this], this);
     }
     if (type == "user" && this.get("username") != null) {
         entityID = this.get("username");
@@ -2106,12 +2106,12 @@ miappSdk.Entity.prototype.assignPermissions = function (permissions, callback) {
     });
 };
 
-miappSdk.Entity.prototype.removePermissions = function (permissions, callback) {
+fidjSdk.Entity.prototype.removePermissions = function (permissions, callback) {
     var self = this;
     var entityID;
     var type = this.get("type");
     if (type != "user" && type != "users" && type != "group" && type != "groups" && type != "role" && type != "roles") {
-        doCallback(callback, [new miappSdkError("entity must be a group, user, or role", "invalid_entity_type"), null, this], this);
+        doCallback(callback, [new fidjSdkError("entity must be a group, user, or role", "invalid_entity_type"), null, this], this);
     }
     if (type == "user" && this.get("username") != null) {
         entityID = this.get("username");
@@ -2135,7 +2135,7 @@ miappSdk.Entity.prototype.removePermissions = function (permissions, callback) {
     });
 };
 
-miappSdk.Entity.prototype.getPermissions = function (callback) {
+fidjSdk.Entity.prototype.getPermissions = function (callback) {
     var self = this;
     var endpoint = this.get("type") + "/" + this.get("uuid") + "/permissions";
     var options = {
@@ -2182,7 +2182,7 @@ miappSdk.Entity.prototype.getPermissions = function (callback) {
 };
 
 /*
- *  The Collection class models miappSdk Collections.  It essentially
+ *  The Collection class models fidjSdk Collections.  It essentially
  *  acts as a container for holding Entity objects, while providing
  *  additional funcitonality such as paging, and saving
  *
@@ -2190,7 +2190,7 @@ miappSdk.Entity.prototype.getPermissions = function (callback) {
  *  @param {string} options - configuration object
  *  @return {Collection} collection
  */
-miappSdk.Collection = function (options) {
+fidjSdk.Collection = function (options) {
     if (options) {
         this._client = options.client;
         this._type = options.type;
@@ -2211,15 +2211,15 @@ miappSdk.Collection = function (options) {
 };
 
 /*
- *  method to determine whether or not the passed variable is a miappSdk Collection
+ *  method to determine whether or not the passed variable is a fidjSdk Collection
  *
  *  @method isCollection
  *  @public
  *  @params {any} obj - any variable
  *  @return {boolean} Returns true or false
  */
-miappSdk.isCollection = function (obj) {
-    return obj && obj instanceof miappSdk.Collection;
+fidjSdk.isCollection = function (obj) {
+    return obj && obj instanceof fidjSdk.Collection;
 };
 
 /*
@@ -2228,7 +2228,7 @@ miappSdk.isCollection = function (obj) {
  *  @method serialize
  *  @return {object} data
  */
-miappSdk.Collection.prototype.serialize = function () {
+fidjSdk.Collection.prototype.serialize = function () {
     var data = {};
     data.type = this._type;
     data.qs = this.qs;
@@ -2248,10 +2248,10 @@ miappSdk.Collection.prototype.serialize = function () {
     return data;
 };
 
-/*miappSdk.Collection.prototype.addCollection = function (collectionName, options, callback) {
+/*fidjSdk.Collection.prototype.addCollection = function (collectionName, options, callback) {
  self = this;
  options.client = this._client;
- var collection = new miappSdk.Collection(options, function(err, data) {
+ var collection = new fidjSdk.Collection(options, function(err, data) {
  if (typeof(callback) === 'function') {
 
  collection.resetEntityPointer();
@@ -2274,7 +2274,7 @@ miappSdk.Collection.prototype.serialize = function () {
  *  @param {function} callback
  *  @return {callback} callback(err, data)
  */
-miappSdk.Collection.prototype.fetch = function (callback) {
+fidjSdk.Collection.prototype.fetch = function (callback) {
     var self = this;
     var qs = this.qs;
     if (this._cursor) {
@@ -2296,7 +2296,7 @@ miappSdk.Collection.prototype.fetch = function (callback) {
             self._list = response.getEntities().filter(function (entity) {
                 return isUUID(entity.uuid);
             }).map(function (entity) {
-                var ent = new miappSdk.Entity({
+                var ent = new fidjSdk.Entity({
                     client: self._client
                 });
                 ent.set(entity);
@@ -2316,7 +2316,7 @@ miappSdk.Collection.prototype.fetch = function (callback) {
  *  @param {function} callback
  *  @return {callback} callback(err, data, entity)
  */
-miappSdk.Collection.prototype.addEntity = function (entityObject, callback) {
+fidjSdk.Collection.prototype.addEntity = function (entityObject, callback) {
     var self = this;
     entityObject.type = this._type;
     this._client.createEntity(entityObject, function (err, response, entity) {
@@ -2327,7 +2327,7 @@ miappSdk.Collection.prototype.addEntity = function (entityObject, callback) {
     });
 };
 
-miappSdk.Collection.prototype.addExistingEntity = function (entity) {
+fidjSdk.Collection.prototype.addExistingEntity = function (entity) {
     var count = this._list.length;
     this._list[count] = entity;
 };
@@ -2340,7 +2340,7 @@ miappSdk.Collection.prototype.addExistingEntity = function (entity) {
  *  @param {function} callback
  *  @return {callback} callback(err, data)
  */
-miappSdk.Collection.prototype.destroyEntity = function (entity, callback) {
+fidjSdk.Collection.prototype.destroyEntity = function (entity, callback) {
     var self = this;
     entity.destroy(function (err, response) {
         if (err) {
@@ -2362,7 +2362,7 @@ miappSdk.Collection.prototype.destroyEntity = function (entity, callback) {
  *  @param {function} criteria  A function that takes each entity as an argument and returns true or false
  *  @return {Entity[]} returns a list of entities that caused the criteria function to return true
  */
-miappSdk.Collection.prototype.getEntitiesByCriteria = function (criteria) {
+fidjSdk.Collection.prototype.getEntitiesByCriteria = function (criteria) {
     return this._list.filter(criteria);
 };
 
@@ -2374,7 +2374,7 @@ miappSdk.Collection.prototype.getEntitiesByCriteria = function (criteria) {
  *  @param {function} criteria  A function that takes each entity as an argument and returns true or false
  *  @return {Entity[]} returns a list of entities that caused the criteria function to return true
  */
-miappSdk.Collection.prototype.getEntityByCriteria = function (criteria) {
+fidjSdk.Collection.prototype.getEntityByCriteria = function (criteria) {
     return this.getEntitiesByCriteria(criteria).shift();
 };
 
@@ -2385,7 +2385,7 @@ miappSdk.Collection.prototype.getEntityByCriteria = function (criteria) {
  *  @param {object} entity
  *  @return {Entity} returns the removed entity or undefined if it was not found
  */
-miappSdk.Collection.prototype.removeEntity = function (entity) {
+fidjSdk.Collection.prototype.removeEntity = function (entity) {
     var removedEntity = this.getEntityByCriteria(function (item) {
         return entity.uuid === item.get("uuid");
     });
@@ -2401,7 +2401,7 @@ miappSdk.Collection.prototype.removeEntity = function (entity) {
  *  @param {function} callback
  *  @return {callback} callback(err, data, entity)
  */
-miappSdk.Collection.prototype.getEntityByUUID = function (uuid, callback) {
+fidjSdk.Collection.prototype.getEntityByUUID = function (uuid, callback) {
     var entity = this.getEntityByCriteria(function (item) {
         return item.get("uuid") === uuid;
     });
@@ -2415,7 +2415,7 @@ miappSdk.Collection.prototype.getEntityByUUID = function (uuid, callback) {
             },
             client: this._client
         };
-        entity = new miappSdk.Entity(options);
+        entity = new fidjSdk.Entity(options);
         entity.fetch(callback);
     }
 };
@@ -2426,7 +2426,7 @@ miappSdk.Collection.prototype.getEntityByUUID = function (uuid, callback) {
  *  @method getFirstEntity
  *  @return {object} returns an entity object
  */
-miappSdk.Collection.prototype.getFirstEntity = function () {
+fidjSdk.Collection.prototype.getFirstEntity = function () {
     var count = this._list.length;
     if (count > 0) {
         return this._list[0];
@@ -2440,7 +2440,7 @@ miappSdk.Collection.prototype.getFirstEntity = function () {
  *  @method getLastEntity
  *  @return {object} returns an entity object
  */
-miappSdk.Collection.prototype.getLastEntity = function () {
+fidjSdk.Collection.prototype.getLastEntity = function () {
     var count = this._list.length;
     if (count > 0) {
         return this._list[count - 1];
@@ -2457,7 +2457,7 @@ miappSdk.Collection.prototype.getLastEntity = function () {
  *  @method hasNextEntity
  *  @return {boolean} true if there is a next entity, false if not
  */
-miappSdk.Collection.prototype.hasNextEntity = function () {
+fidjSdk.Collection.prototype.hasNextEntity = function () {
     var next = this._iterator + 1;
     var hasNextElement = next >= 0 && next < this._list.length;
     if (hasNextElement) {
@@ -2475,7 +2475,7 @@ miappSdk.Collection.prototype.hasNextEntity = function () {
  *  @method hasNextEntity
  *  @return {object} entity
  */
-miappSdk.Collection.prototype.getNextEntity = function () {
+fidjSdk.Collection.prototype.getNextEntity = function () {
     this._iterator++;
     var hasNextElement = this._iterator >= 0 && this._iterator <= this._list.length;
     if (hasNextElement) {
@@ -2491,7 +2491,7 @@ miappSdk.Collection.prototype.getNextEntity = function () {
  *  @method hasPrevEntity
  *  @return {boolean} true if there is a previous entity, false if not
  */
-miappSdk.Collection.prototype.hasPrevEntity = function () {
+fidjSdk.Collection.prototype.hasPrevEntity = function () {
     var previous = this._iterator - 1;
     var hasPreviousElement = previous >= 0 && previous < this._list.length;
     if (hasPreviousElement) {
@@ -2506,7 +2506,7 @@ miappSdk.Collection.prototype.hasPrevEntity = function () {
  *  @method getPrevEntity
  *  @return {object} entity
  */
-miappSdk.Collection.prototype.getPrevEntity = function () {
+fidjSdk.Collection.prototype.getPrevEntity = function () {
     this._iterator--;
     var hasPreviousElement = this._iterator >= 0 && this._iterator <= this._list.length;
     if (hasPreviousElement) {
@@ -2522,7 +2522,7 @@ miappSdk.Collection.prototype.getPrevEntity = function () {
  *  @method resetEntityPointer
  *  @return none
  */
-miappSdk.Collection.prototype.resetEntityPointer = function () {
+fidjSdk.Collection.prototype.resetEntityPointer = function () {
     this._iterator = -1;
 };
 
@@ -2533,7 +2533,7 @@ miappSdk.Collection.prototype.resetEntityPointer = function () {
  * @method saveCursor
  * @return none
  */
-miappSdk.Collection.prototype.saveCursor = function (cursor) {
+fidjSdk.Collection.prototype.saveCursor = function (cursor) {
     if (this._next !== cursor) {
         this._next = cursor;
     }
@@ -2546,7 +2546,7 @@ miappSdk.Collection.prototype.saveCursor = function (cursor) {
  * @method resetPaging
  * @return none
  */
-miappSdk.Collection.prototype.resetPaging = function () {
+fidjSdk.Collection.prototype.resetPaging = function () {
     this._previous = [];
     this._next = null;
     this._cursor = null;
@@ -2558,7 +2558,7 @@ miappSdk.Collection.prototype.resetPaging = function () {
  *  @method hasNextPage
  *  @return {boolean} returns true if there is a next page of data, false otherwise
  */
-miappSdk.Collection.prototype.hasNextPage = function () {
+fidjSdk.Collection.prototype.hasNextPage = function () {
     return this._next;
 };
 
@@ -2571,7 +2571,7 @@ miappSdk.Collection.prototype.hasNextPage = function () {
  *  @param {function} callback
  *  @return {callback} callback(err, data)
  */
-miappSdk.Collection.prototype.getNextPage = function (callback) {
+fidjSdk.Collection.prototype.getNextPage = function (callback) {
     if (this.hasNextPage()) {
         this._previous.push(this._cursor);
         this._cursor = this._next;
@@ -2586,7 +2586,7 @@ miappSdk.Collection.prototype.getNextPage = function (callback) {
  *  @method hasPreviousPage
  *  @return {boolean} returns true if there is a previous page of data, false otherwise
  */
-miappSdk.Collection.prototype.hasPreviousPage = function () {
+fidjSdk.Collection.prototype.hasPreviousPage = function () {
     return this._previous.length > 0;
 };
 
@@ -2599,7 +2599,7 @@ miappSdk.Collection.prototype.hasPreviousPage = function () {
  *  @param {function} callback
  *  @return {callback} callback(err, data)
  */
-miappSdk.Collection.prototype.getPreviousPage = function (callback) {
+fidjSdk.Collection.prototype.getPreviousPage = function (callback) {
     if (this.hasPreviousPage()) {
         this._next = null;
         this._cursor = this._previous.pop();
@@ -2609,13 +2609,13 @@ miappSdk.Collection.prototype.getPreviousPage = function (callback) {
 };
 
 /*
- *  A class to model a miappSdk group.
+ *  A class to model a fidjSdk group.
  *  Set the path in the options object.
  *
  *  @constructor
  *  @param {object} options {client:client, data: {'key': 'value'}, path:'path'}
  */
-miappSdk.Group = function (options, callback) {
+fidjSdk.Group = function (options, callback) {
     this._path = options.path;
     this._list = [];
     this._client = options.client;
@@ -2624,11 +2624,11 @@ miappSdk.Group = function (options, callback) {
 };
 
 /*
- *  Inherit from miappSdk.Entity.
+ *  Inherit from fidjSdk.Entity.
  *  Note: This only accounts for data on the group object itself.
  *  You need to use add and remove to manipulate group membership.
  */
-miappSdk.Group.prototype = new miappSdk.Entity();
+fidjSdk.Group.prototype = new fidjSdk.Entity();
 
 /*
  *  Fetches current group data, and members.
@@ -2638,7 +2638,7 @@ miappSdk.Group.prototype = new miappSdk.Entity();
  *  @param {function} callback
  *  @returns {function} callback(err, data)
  */
-miappSdk.Group.prototype.fetch = function (callback) {
+fidjSdk.Group.prototype.fetch = function (callback) {
     var self = this;
     var groupEndpoint = "groups/" + this._path;
     var memberEndpoint = "groups/" + this._path + "/users";
@@ -2666,7 +2666,7 @@ miappSdk.Group.prototype.fetch = function (callback) {
                         self._list = response.getEntities().filter(function (entity) {
                             return isUUID(entity.uuid);
                         }).map(function (entity) {
-                            return new miappSdk.Entity({
+                            return new fidjSdk.Entity({
                                 type: entity.type,
                                 client: self._client,
                                 uuid: entity.uuid,
@@ -2689,7 +2689,7 @@ miappSdk.Group.prototype.fetch = function (callback) {
  *  @param {function} callback
  *  @return {function} callback(err, data);
  */
-miappSdk.Group.prototype.members = function (callback) {
+fidjSdk.Group.prototype.members = function (callback) {
     return this._list;
 };
 
@@ -2704,7 +2704,7 @@ miappSdk.Group.prototype.members = function (callback) {
  *  @param {function} callback
  *  @return {function} callback(err, data)
  */
-miappSdk.Group.prototype.add = function (options, callback) {
+fidjSdk.Group.prototype.add = function (options, callback) {
     var self = this;
     if (options.user) {
         options = {
@@ -2719,7 +2719,7 @@ miappSdk.Group.prototype.add = function (options, callback) {
             }
         });
     } else {
-        doCallback(callback, [new miappSdkError("no user specified", "no_user_specified"), null, this], this);
+        doCallback(callback, [new fidjSdkError("no user specified", "no_user_specified"), null, this], this);
     }
 };
 
@@ -2734,7 +2734,7 @@ miappSdk.Group.prototype.add = function (options, callback) {
  *  @param {function} callback
  *  @return {function} callback(err, data)
  */
-miappSdk.Group.prototype.remove = function (options, callback) {
+fidjSdk.Group.prototype.remove = function (options, callback) {
     var self = this;
     if (options.user) {
         options = {
@@ -2749,7 +2749,7 @@ miappSdk.Group.prototype.remove = function (options, callback) {
             }
         });
     } else {
-        doCallback(callback, [new miappSdkError("no user specified", "no_user_specified"), null, this], this);
+        doCallback(callback, [new fidjSdkError("no user specified", "no_user_specified"), null, this], this);
     }
 };
 
@@ -2761,7 +2761,7 @@ miappSdk.Group.prototype.remove = function (options, callback) {
  * @param {function} callback
  * @returns {callback} callback(err, data, activities)
  */
-miappSdk.Group.prototype.feed = function (callback) {
+fidjSdk.Group.prototype.feed = function (callback) {
     var self = this;
     var options = {
         method: "GET",
@@ -2783,10 +2783,10 @@ miappSdk.Group.prototype.feed = function (callback) {
  * @param {function} callback
  * @returns {callback} callback(err, entity)
  */
-miappSdk.Group.prototype.createGroupActivity = function (options, callback) {
+fidjSdk.Group.prototype.createGroupActivity = function (options, callback) {
     var self = this;
     var user = options.user;
-    var entity = new miappSdk.Entity({
+    var entity = new fidjSdk.Entity({
         client: this._client,
         data: {
             actor: {
@@ -2813,13 +2813,13 @@ miappSdk.Group.prototype.createGroupActivity = function (options, callback) {
 };
 
 /*
- *  A class to model a miappSdk event.
+ *  A class to model a fidjSdk event.
  *
  *  @constructor
  *  @param {object} options {timestamp:0, category:'value', counters:{name : value}}
  *  @returns {callback} callback(err, event)
  */
-miappSdk.Counter = function (options) {
+fidjSdk.Counter = function (options) {
     this._client = options.client;
     this._data = options.data || {};
     this._data.category = options.category || "UNKNOWN";
@@ -2831,11 +2831,11 @@ miappSdk.Counter = function (options) {
 var COUNTER_RESOLUTIONS = ["all", "minute", "five_minutes", "half_hour", "hour", "six_day", "day", "week", "month"];
 
 /*
- *  Inherit from miappSdk.Entity.
+ *  Inherit from fidjSdk.Entity.
  *  Note: This only accounts for data on the group object itself.
  *  You need to use add and remove to manipulate group membership.
  */
-miappSdk.Counter.prototype = new miappSdk.Entity();
+fidjSdk.Counter.prototype = new fidjSdk.Entity();
 
 /*
  * overrides Entity.prototype.fetch. Returns all data for counters
@@ -2846,7 +2846,7 @@ miappSdk.Counter.prototype = new miappSdk.Entity();
  * @param {function} callback
  * @returns {callback} callback(err, event)
  */
-miappSdk.Counter.prototype.fetch = function (callback) {
+fidjSdk.Counter.prototype.fetch = function (callback) {
     this.getData({}, callback);
 };
 
@@ -2861,12 +2861,12 @@ miappSdk.Counter.prototype.fetch = function (callback) {
  * @param {function} callback
  * @returns {callback} callback(err, event)
  */
-miappSdk.Counter.prototype.increment = function (options, callback) {
+fidjSdk.Counter.prototype.increment = function (options, callback) {
     var self = this, name = options.name, value = options.value;
     if (!name) {
-        return doCallback(callback, [new miappSdkInvalidArgumentError("'name' for increment, decrement must be a number"), null, self], self);
+        return doCallback(callback, [new fidjSdkInvalidArgumentError("'name' for increment, decrement must be a number"), null, self], self);
     } else if (isNaN(value)) {
-        return doCallback(callback, [new miappSdkInvalidArgumentError("'value' for increment, decrement must be a number"), null, self], self);
+        return doCallback(callback, [new fidjSdkInvalidArgumentError("'value' for increment, decrement must be a number"), null, self], self);
     } else {
         self._data.counters[name] = parseInt(value) || 1;
         return self.save(callback);
@@ -2884,7 +2884,7 @@ miappSdk.Counter.prototype.increment = function (options, callback) {
  * @param {function} callback
  * @returns {callback} callback(err, event)
  */
-miappSdk.Counter.prototype.decrement = function (options, callback) {
+fidjSdk.Counter.prototype.decrement = function (options, callback) {
     var self = this, name = options.name, value = options.value;
     self.increment({
         name: name,
@@ -2903,7 +2903,7 @@ miappSdk.Counter.prototype.decrement = function (options, callback) {
  * @param {function} callback
  * @returns {callback} callback(err, event)
  */
-miappSdk.Counter.prototype.reset = function (options, callback) {
+fidjSdk.Counter.prototype.reset = function (options, callback) {
     var self = this, name = options.name;
     self.increment({
         name: name,
@@ -2928,7 +2928,7 @@ miappSdk.Counter.prototype.reset = function (options, callback) {
  * @param {function} callback
  * @returns {callback} callback(err, event)
  */
-miappSdk.Counter.prototype.getData = function (options, callback) {
+fidjSdk.Counter.prototype.getData = function (options, callback) {
     var start_time, end_time, start = options.start || 0, end = options.end || Date.now(),
         resolution = (options.resolution || "all").toLowerCase(),
         counters = options.counters || Object.keys(this._data.counters), res = (resolution || "all").toLowerCase();
@@ -2979,13 +2979,13 @@ function getSafeTime(prop) {
 }
 
 /*
- *  A class to model a miappSdk folder.
+ *  A class to model a fidjSdk folder.
  *
  *  @constructor
  *  @param {object} options {name:"MyPhotos", path:"/user/uploads", owner:"00000000-0000-0000-0000-000000000000" }
  *  @returns {callback} callback(err, folder)
  */
-miappSdk.Folder = function (options, callback) {
+fidjSdk.Folder = function (options, callback) {
     var self = this, messages = [];
     console.log("FOLDER OPTIONS", options);
     self._client = options.client;
@@ -2995,11 +2995,11 @@ miappSdk.Folder = function (options, callback) {
         return !(required in self._data);
     });
     if (missingData) {
-        return doCallback(callback, [new miappSdkInvalidArgumentError("Invalid asset data: 'name', 'owner', and 'path' are required properties."), null, self], self);
+        return doCallback(callback, [new fidjSdkInvalidArgumentError("Invalid asset data: 'name', 'owner', and 'path' are required properties."), null, self], self);
     }
     self.save(function (err, response) {
         if (err) {
-            doCallback(callback, [new miappSdkError(response), response, self], self);
+            doCallback(callback, [new fidjSdkError(response), response, self], self);
         } else {
             if (response && response.entities && response.entities.length) {
                 self.set(response.entities[0]);
@@ -3010,9 +3010,9 @@ miappSdk.Folder = function (options, callback) {
 };
 
 /*
- *  Inherit from miappSdk.Entity.
+ *  Inherit from fidjSdk.Entity.
  */
-miappSdk.Folder.prototype = new miappSdk.Entity();
+fidjSdk.Folder.prototype = new fidjSdk.Entity();
 
 /*
  *  fetch the folder and associated assets
@@ -3022,15 +3022,15 @@ miappSdk.Folder.prototype = new miappSdk.Entity();
  *  @param {function} callback(err, self)
  *  @returns {callback} callback(err, self)
  */
-miappSdk.Folder.prototype.fetch = function (callback) {
+fidjSdk.Folder.prototype.fetch = function (callback) {
     var self = this;
-    miappSdk.Entity.prototype.fetch.call(self, function (err, data) {
+    fidjSdk.Entity.prototype.fetch.call(self, function (err, data) {
         console.log("self", self.get());
         console.log("data", data);
         if (!err) {
             self.getAssets(function (err, response) {
                 if (err) {
-                    doCallback(callback, [new miappSdkError(response), resonse, self], self);
+                    doCallback(callback, [new fidjSdkError(response), resonse, self], self);
                 } else {
                     doCallback(callback, [null, self], self);
                 }
@@ -3046,24 +3046,24 @@ miappSdk.Folder.prototype.fetch = function (callback) {
  *
  *  @method addAsset
  *  @public
- *  @param {object} options {asset:(uuid || miappSdk.Asset || {name:"photo.jpg", path:"/user/uploads", "content-type":"image/jpeg", owner:"F01DE600-0000-0000-0000-000000000000" }) }
+ *  @param {object} options {asset:(uuid || fidjSdk.Asset || {name:"photo.jpg", path:"/user/uploads", "content-type":"image/jpeg", owner:"F01DE600-0000-0000-0000-000000000000" }) }
  *  @returns {callback} callback(err, folder)
  */
-miappSdk.Folder.prototype.addAsset = function (options, callback) {
+fidjSdk.Folder.prototype.addAsset = function (options, callback) {
     var self = this;
     if ("asset" in options) {
         var asset = null;
         switch (typeof options.asset) {
             case "object":
                 asset = options.asset;
-                if (!(asset instanceof miappSdk.Entity)) {
-                    asset = new miappSdk.Asset(asset);
+                if (!(asset instanceof fidjSdk.Entity)) {
+                    asset = new fidjSdk.Asset(asset);
                 }
                 break;
 
             case "string":
                 if (isUUID(options.asset)) {
-                    asset = new miappSdk.Asset({
+                    asset = new fidjSdk.Asset({
                         client: self._client,
                         data: {
                             uuid: options.asset,
@@ -3073,10 +3073,10 @@ miappSdk.Folder.prototype.addAsset = function (options, callback) {
                 }
                 break;
         }
-        if (asset && asset instanceof miappSdk.Entity) {
+        if (asset && asset instanceof fidjSdk.Entity) {
             asset.fetch(function (err, data) {
                 if (err) {
-                    doCallback(callback, [new miappSdkError(data), data, self], self);
+                    doCallback(callback, [new fidjSdkError(data), data, self], self);
                 } else {
                     var endpoint = ["folders", self.get("uuid"), "assets", asset.get("uuid")].join("/");
                     var options = {
@@ -3088,7 +3088,7 @@ miappSdk.Folder.prototype.addAsset = function (options, callback) {
             });
         }
     } else {
-        doCallback(callback, [new miappSdkInvalidArgumentError("No asset specified"), null, self], self);
+        doCallback(callback, [new fidjSdkInvalidArgumentError("No asset specified"), null, self], self);
     }
 };
 
@@ -3097,10 +3097,10 @@ miappSdk.Folder.prototype.addAsset = function (options, callback) {
  *
  *  @method removeAsset
  *  @public
- *  @param {object} options {asset:(uuid || miappSdk.Asset || {name:"photo.jpg", path:"/user/uploads", "content-type":"image/jpeg", owner:"F01DE600-0000-0000-0000-000000000000" }) }
+ *  @param {object} options {asset:(uuid || fidjSdk.Asset || {name:"photo.jpg", path:"/user/uploads", "content-type":"image/jpeg", owner:"F01DE600-0000-0000-0000-000000000000" }) }
  *  @returns {callback} callback(err, folder)
  */
-miappSdk.Folder.prototype.removeAsset = function (options, callback) {
+fidjSdk.Folder.prototype.removeAsset = function (options, callback) {
     var self = this;
     if ("asset" in options) {
         var asset = null;
@@ -3111,7 +3111,7 @@ miappSdk.Folder.prototype.removeAsset = function (options, callback) {
 
             case "string":
                 if (isUUID(options.asset)) {
-                    asset = new miappSdk.Asset({
+                    asset = new fidjSdk.Asset({
                         client: self._client,
                         data: {
                             uuid: options.asset,
@@ -3128,14 +3128,14 @@ miappSdk.Folder.prototype.removeAsset = function (options, callback) {
                 endpoint: endpoint
             }, function (err, response) {
                 if (err) {
-                    doCallback(callback, [new miappSdkError(response), response, self], self);
+                    doCallback(callback, [new fidjSdkError(response), response, self], self);
                 } else {
                     doCallback(callback, [null, response, self], self);
                 }
             });
         }
     } else {
-        doCallback(callback, [new miappSdkInvalidArgumentError("No asset specified"), null, self], self);
+        doCallback(callback, [new fidjSdkInvalidArgumentError("No asset specified"), null, self], self);
     }
 };
 
@@ -3146,7 +3146,7 @@ miappSdk.Folder.prototype.removeAsset = function (options, callback) {
  *  @public
  *  @returns {callback} callback(err, assets)
  */
-miappSdk.Folder.prototype.getAssets = function (callback) {
+fidjSdk.Folder.prototype.getAssets = function (callback) {
     return this.getConnections("assets", callback);
 };
 
@@ -3169,13 +3169,13 @@ if (!XMLHttpRequest.prototype.sendAsBinary) {
 }
 
 /*
- *  A class to model a miappSdk asset.
+ *  A class to model a fidjSdk asset.
  *
  *  @constructor
  *  @param {object} options {name:"photo.jpg", path:"/user/uploads", "content-type":"image/jpeg", owner:"F01DE600-0000-0000-0000-000000000000" }
  *  @returns {callback} callback(err, asset)
  */
-miappSdk.Asset = function (options, callback) {
+fidjSdk.Asset = function (options, callback) {
     var self = this, messages = [];
     self._client = options.client;
     self._data = options.data || {};
@@ -3184,11 +3184,11 @@ miappSdk.Asset = function (options, callback) {
         return !(required in self._data);
     });
     if (missingData) {
-        doCallback(callback, [new miappSdkError("Invalid asset data: 'name', 'owner', and 'path' are required properties."), null, self], self);
+        doCallback(callback, [new fidjSdkError("Invalid asset data: 'name', 'owner', and 'path' are required properties."), null, self], self);
     } else {
         self.save(function (err, data) {
             if (err) {
-                doCallback(callback, [new miappSdkError(data), data, self], self);
+                doCallback(callback, [new fidjSdkError(data), data, self], self);
             } else {
                 if (data && data.entities && data.entities.length) {
                     self.set(data.entities[0]);
@@ -3200,9 +3200,9 @@ miappSdk.Asset = function (options, callback) {
 };
 
 /*
- *  Inherit from miappSdk.Entity.
+ *  Inherit from fidjSdk.Entity.
  */
-miappSdk.Asset.prototype = new miappSdk.Entity();
+fidjSdk.Asset.prototype = new fidjSdk.Entity();
 
 /*
  *  Add an asset to a folder.
@@ -3212,14 +3212,14 @@ miappSdk.Asset.prototype = new miappSdk.Entity();
  *  @param {object} options {folder:"F01DE600-0000-0000-0000-000000000000"}
  *  @returns {callback} callback(err, asset)
  */
-miappSdk.Asset.prototype.addToFolder = function (options, callback) {
+fidjSdk.Asset.prototype.addToFolder = function (options, callback) {
     var self = this, error = null;
     if ("folder" in options && isUUID(options.folder)) {
-        var folder = miappSdk.Folder({
+        var folder = fidjSdk.Folder({
             uuid: options.folder
         }, function (err, folder) {
             if (err) {
-                doCallback(callback, [miappSdkError.fromResponse(folder), folder, self], self);
+                doCallback(callback, [fidjSdkError.fromResponse(folder), folder, self], self);
             } else {
                 var endpoint = ["folders", folder.get("uuid"), "assets", self.get("uuid")].join("/");
                 var options = {
@@ -3228,7 +3228,7 @@ miappSdk.Asset.prototype.addToFolder = function (options, callback) {
                 };
                 this._client.request(options, function (err, response) {
                     if (err) {
-                        doCallback(callback, [miappSdkError.fromResponse(folder), response, self], self);
+                        doCallback(callback, [fidjSdkError.fromResponse(folder), response, self], self);
                     } else {
                         doCallback(callback, [null, folder, self], self);
                     }
@@ -3236,13 +3236,13 @@ miappSdk.Asset.prototype.addToFolder = function (options, callback) {
             }
         });
     } else {
-        doCallback(callback, [new miappSdkError("folder not specified"), null, self], self);
+        doCallback(callback, [new fidjSdkError("folder not specified"), null, self], self);
     }
 };
 
-miappSdk.Entity.prototype.attachAsset = function (file, callback) {
+fidjSdk.Entity.prototype.attachAsset = function (file, callback) {
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
-        doCallback(callback, [new miappSdkError("The File APIs are not fully supported by your browser."), null, this], this);
+        doCallback(callback, [new fidjSdkError("The File APIs are not fully supported by your browser."), null, this], this);
         return;
     }
     var self = this;
@@ -3262,7 +3262,7 @@ miappSdk.Entity.prototype.attachAsset = function (file, callback) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", endpoint, true);
     xhr.onerror = function (err) {
-        doCallback(callback, [new miappSdkError("The File APIs are not fully supported by your browser.")], xhr, self);
+        doCallback(callback, [new fidjSdkError("The File APIs are not fully supported by your browser.")], xhr, self);
     };
     xhr.onload = function (ev) {
         if (xhr.status >= 500 && attempts > 0) {
@@ -3272,7 +3272,7 @@ miappSdk.Entity.prototype.attachAsset = function (file, callback) {
             }, 100);
         } else if (xhr.status >= 300) {
             self.set("attempts");
-            doCallback(callback, [new miappSdkError(JSON.parse(xhr.responseText)), xhr, self], self);
+            doCallback(callback, [new fidjSdkError(JSON.parse(xhr.responseText)), xhr, self], self);
         } else {
             self.set("attempts");
             self.fetch();
@@ -3299,12 +3299,12 @@ miappSdk.Entity.prototype.attachAsset = function (file, callback) {
  *  @param {object} data Can be a javascript Blob or File object
  *  @returns {callback} callback(err, asset)
  */
-miappSdk.Asset.prototype.upload = function (data, callback) {
+fidjSdk.Asset.prototype.upload = function (data, callback) {
     this.attachAsset(data, function (err, response) {
         if (!err) {
             doCallback(callback, [null, response, self], self);
         } else {
-            doCallback(callback, [new miappSdkError(err), response, self], self);
+            doCallback(callback, [new fidjSdkError(err), response, self], self);
         }
     });
 };
@@ -3316,7 +3316,7 @@ miappSdk.Asset.prototype.upload = function (data, callback) {
  *  @public
  *  @returns {callback} callback(err, blob) blob is a javascript Blob object.
  */
-miappSdk.Entity.prototype.downloadAsset = function (callback) {
+fidjSdk.Entity.prototype.downloadAsset = function (callback) {
     var self = this;
     var endpoint;
     var type = this._data.type;
@@ -3338,7 +3338,7 @@ miappSdk.Entity.prototype.downloadAsset = function (callback) {
     };
     xhr.onerror = function (err) {
         callback(true, err);
-        doCallback(callback, [new miappSdkError(err), xhr, self], self);
+        doCallback(callback, [new fidjSdkError(err), xhr, self], self);
     };
     if (type != "assets" && type != "asset") {
         xhr.setRequestHeader("Accept", self._data["file-metadata"]["content-type"]);
@@ -3355,37 +3355,37 @@ miappSdk.Entity.prototype.downloadAsset = function (callback) {
  *  @public
  *  @returns {callback} callback(err, blob) blob is a javascript Blob object.
  */
-miappSdk.Asset.prototype.download = function (callback) {
+fidjSdk.Asset.prototype.download = function (callback) {
     this.downloadAsset(function (err, response) {
         if (!err) {
             doCallback(callback, [null, response, self], self);
         } else {
-            doCallback(callback, [new miappSdkError(err), response, self], self);
+            doCallback(callback, [new fidjSdkError(err), response, self], self);
         }
     });
 };
 
 (function (global) {
-    var name = "miappSdkError", short, _name = global[name],
+    var name = "fidjSdkError", short, _name = global[name],
         _short = short && short !== undefined ? global[short] : undefined;
 
     /*
-     *  Instantiates a new miappSdkError
+     *  Instantiates a new fidjSdkError
      *
-     *  @method miappSdkError
+     *  @method fidjSdkError
      *  @public
      *  @params {<string>} message
      *  @params {<string>} id       - the error code, id, or name
      *  @params {<int>} timestamp
      *  @params {<int>} duration
-     *  @params {<string>} exception    - the Java exception from miappSdk
-     *  @return Returns - a new miappSdkError object
+     *  @params {<string>} exception    - the Java exception from fidjSdk
+     *  @return Returns - a new fidjSdkError object
      *
      *  Example:
      *
-     *  miappSdkError(message);
+     *  fidjSdkError(message);
      */
-    function miappSdkError(message, name, timestamp, duration, exception) {
+    function fidjSdkError(message, name, timestamp, duration, exception) {
         this.message = message;
         this.name = name;
         this.timestamp = timestamp || Date.now();
@@ -3393,42 +3393,42 @@ miappSdk.Asset.prototype.download = function (callback) {
         this.exception = exception;
     }
 
-    miappSdkError.prototype = new Error();
-    miappSdkError.prototype.constructor = miappSdkError;
+    fidjSdkError.prototype = new Error();
+    fidjSdkError.prototype.constructor = fidjSdkError;
     /*
-     *  Creates a miappSdkError from the JSON response returned from the backend
+     *  Creates a fidjSdkError from the JSON response returned from the backend
      *
      *  @method fromResponse
      *  @public
-     *  @params {object} response - the deserialized HTTP response from the miappSdk API
-     *  @return Returns a new miappSdkError object.
+     *  @params {object} response - the deserialized HTTP response from the fidjSdk API
+     *  @return Returns a new fidjSdkError object.
      *
      *  Example:
      *  {
      *  "error":"organization_application_not_found",
      *  "timestamp":1391618508079,
      *  "duration":0,
-     *  "exception":"org.miappSdk.rest.exceptions.OrganizationApplicationNotFoundException",
+     *  "exception":"org.fidjSdk.rest.exceptions.OrganizationApplicationNotFoundException",
      *  "error_description":"Could not find application for yourorgname/sandboxxxxx from URI: yourorgname/sandboxxxxx"
      *  }
      */
-    miappSdkError.fromResponse = function (response) {
+    fidjSdkError.fromResponse = function (response) {
         if (response && "undefined" !== typeof response) {
-            return new miappSdkError(response.error_description, response.error, response.timestamp, response.duration, response.exception);
+            return new fidjSdkError(response.error_description, response.error, response.timestamp, response.duration, response.exception);
         } else {
-            return new miappSdkError();
+            return new fidjSdkError();
         }
     };
-    miappSdkError.createSubClass = function (name) {
+    fidjSdkError.createSubClass = function (name) {
         if (name in global && global[name]) return global[name];
         global[name] = function () {
         };
         global[name].name = name;
-        global[name].prototype = new miappSdkError();
+        global[name].prototype = new fidjSdkError();
         return global[name];
     };
 
-    function miappSdkHTTPResponseError(message, name, timestamp, duration, exception) {
+    function fidjSdkHTTPResponseError(message, name, timestamp, duration, exception) {
         this.message = message;
         this.name = name;
         this.timestamp = timestamp || Date.now();
@@ -3436,9 +3436,9 @@ miappSdk.Asset.prototype.download = function (callback) {
         this.exception = exception;
     }
 
-    miappSdkHTTPResponseError.prototype = new miappSdkError();
+    fidjSdkHTTPResponseError.prototype = new fidjSdkError();
 
-    function miappSdkInvalidHTTPMethodError(message, name, timestamp, duration, exception) {
+    function fidjSdkInvalidHTTPMethodError(message, name, timestamp, duration, exception) {
         this.message = message;
         this.name = name || "invalid_http_method";
         this.timestamp = timestamp || Date.now();
@@ -3446,9 +3446,9 @@ miappSdk.Asset.prototype.download = function (callback) {
         this.exception = exception;
     }
 
-    miappSdkInvalidHTTPMethodError.prototype = new miappSdkError();
+    fidjSdkInvalidHTTPMethodError.prototype = new fidjSdkError();
 
-    function miappSdkInvalidURIError(message, name, timestamp, duration, exception) {
+    function fidjSdkInvalidURIError(message, name, timestamp, duration, exception) {
         this.message = message;
         this.name = name || "invalid_uri";
         this.timestamp = timestamp || Date.now();
@@ -3456,9 +3456,9 @@ miappSdk.Asset.prototype.download = function (callback) {
         this.exception = exception;
     }
 
-    miappSdkInvalidURIError.prototype = new miappSdkError();
+    fidjSdkInvalidURIError.prototype = new fidjSdkError();
 
-    function miappSdkInvalidArgumentError(message, name, timestamp, duration, exception) {
+    function fidjSdkInvalidArgumentError(message, name, timestamp, duration, exception) {
         this.message = message;
         this.name = name || "invalid_argument";
         this.timestamp = timestamp || Date.now();
@@ -3466,9 +3466,9 @@ miappSdk.Asset.prototype.download = function (callback) {
         this.exception = exception;
     }
 
-    miappSdkInvalidArgumentError.prototype = new miappSdkError();
+    fidjSdkInvalidArgumentError.prototype = new fidjSdkError();
 
-    function miappSdkKeystoreDatabaseUpgradeNeededError(message, name, timestamp, duration, exception) {
+    function fidjSdkKeystoreDatabaseUpgradeNeededError(message, name, timestamp, duration, exception) {
         this.message = message;
         this.name = name;
         this.timestamp = timestamp || Date.now();
@@ -3476,15 +3476,15 @@ miappSdk.Asset.prototype.download = function (callback) {
         this.exception = exception;
     }
 
-    miappSdkKeystoreDatabaseUpgradeNeededError.prototype = new miappSdkError();
-    global.miappSdkHTTPResponseError = miappSdkHTTPResponseError;
-    global.miappSdkInvalidHTTPMethodError = miappSdkInvalidHTTPMethodError;
-    global.miappSdkInvalidURIError = miappSdkInvalidURIError;
-    global.miappSdkInvalidArgumentError = miappSdkInvalidArgumentError;
-    global.miappSdkKeystoreDatabaseUpgradeNeededError = miappSdkKeystoreDatabaseUpgradeNeededError;
-    global[name] = miappSdkError;
+    fidjSdkKeystoreDatabaseUpgradeNeededError.prototype = new fidjSdkError();
+    global.fidjSdkHTTPResponseError = fidjSdkHTTPResponseError;
+    global.fidjSdkInvalidHTTPMethodError = fidjSdkInvalidHTTPMethodError;
+    global.fidjSdkInvalidURIError = fidjSdkInvalidURIError;
+    global.fidjSdkInvalidArgumentError = fidjSdkInvalidArgumentError;
+    global.fidjSdkKeystoreDatabaseUpgradeNeededError = fidjSdkKeystoreDatabaseUpgradeNeededError;
+    global[name] = fidjSdkError;
     if (short !== undefined) {
-        global[short] = miappSdkError;
+        global[short] = fidjSdkError;
     }
     global[name].noConflict = function () {
         if (_name) {
@@ -3493,10 +3493,10 @@ miappSdk.Asset.prototype.download = function (callback) {
         if (short !== undefined) {
             global[short] = _short;
         }
-        return miappSdkError;
+        return fidjSdkError;
     };
     return global[name];
 })(this || window);
 
 
-export miappSdk;
+export fidjSdk;

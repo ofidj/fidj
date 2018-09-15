@@ -1,2 +1,2 @@
-export * from './miapp.sdk.angular';
-export * from './miapp.sdk.ng';
+export * from './fidj.sdk.angular';
+export * from './fidj.sdk.ng';

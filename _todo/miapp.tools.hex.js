@@ -1,10 +1,10 @@
 'use strict';
 
-// Namespace miapp
-var miapp;
-if (!miapp) miapp = {};
+// Namespace fidj
+var fidj;
+if (!fidj) fidj = {};
 
-miapp.Hex = (function () {
+fidj.Hex = (function () {
 
     var Hex = {};
 

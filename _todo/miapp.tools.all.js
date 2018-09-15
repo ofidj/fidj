@@ -2,9 +2,9 @@
 
 
 // Usefull
-var miappBlockMove = function (evt,stopBubble) {
+var fidjBlockMove = function (evt,stopBubble) {
     'use strict';
-    //console.log('miappBlockMove');
+    //console.log('fidjBlockMove');
     // All but scrollable element = .c4p-container-scroll-y
     //if (evt.preventDefault) evt.preventDefault() ;
     //if (evt.preventDefault && !$(evt.target).parents('.c4p-container-scroll-y')[0]) {
@@ -20,14 +20,14 @@ var miappBlockMove = function (evt,stopBubble) {
 
 };
 
-var miappAllowMove = function (e) {
-    //console.log('miappAllowMove');
+var fidjAllowMove = function (e) {
+    //console.log('fidjAllowMove');
     return true ;
 };
 
 
-var miappFakeConsoleLog = function (e) {
-    //console.log('miappAllowMove');
+var fidjFakeConsoleLog = function (e) {
+    //console.log('fidjAllowMove');
     return true;
 };
 
@@ -53,48 +53,48 @@ var Camera;
 
 // A consistent way to create a unique ID which will never overflow.
 
-miapp.uid  = ['0', '0', '0'];
-miapp.idStr = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-miapp.idNext = {
+fidj.uid  = ['0', '0', '0'];
+fidj.idStr = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+fidj.idNext = {
     '0':1, '1':2, '2':3, '3':4, '4':5, '5':6, '6':7, '7':8, '8':9, '9':10,
     'A':11, 'B':12, 'C':13, 'D':14, 'E':15, 'F':16, 'G':17, 'H':18, 'I':19, 'J':20,
     'K':21, 'L':22, 'M':23, 'N':24, 'O':25, 'P':26, 'Q':27, 'R':28, 'S':29, 'T':30,
     'U':31, 'V':32, 'W':33, 'X':34, 'Y':35, 'Z':0
 };
 
-miapp.nextUid = function() {
-    var index = miapp.uid.length;
+fidj.nextUid = function() {
+    var index = fidj.uid.length;
     while (index) {
         index--;
-        var i = miapp.idNext[miapp.uid[index]];
-        miapp.uid[index] = miapp.idStr[i];
+        var i = fidj.idNext[fidj.uid[index]];
+        fidj.uid[index] = fidj.idStr[i];
         if (i > 0) {
-            return miapp.uid.join('');
+            return fidj.uid.join('');
         }
     }
-    miapp.uid.unshift('0');
-    return miapp.uid.join('');
+    fidj.uid.unshift('0');
+    return fidj.uid.join('');
 };
 
-miapp.getUid = function() {
-    return miapp.uid.join('');
+fidj.getUid = function() {
+    return fidj.uid.join('');
 };
 
-miapp.initUid = function(seed) {
-    if (miapp.isUndefined(seed)) {
-        miapp.uid  = ['0', '0', '0'];
+fidj.initUid = function(seed) {
+    if (fidj.isUndefined(seed)) {
+        fidj.uid  = ['0', '0', '0'];
         return;
     }
     seed = seed.toUpperCase();
-    miapp.uid  = [];
+    fidj.uid  = [];
     for (var i = 0, n = seed.length; i < n; i++) {
         var c = seed.charAt(i);
-        if (miapp.isDefined(miapp.idNext[c])) {
-            miapp.uid.push(c);
+        if (fidj.isDefined(fidj.idNext[c])) {
+            fidj.uid.push(c);
         }
     }
-    while (miapp.uid.length < 3) {
-        miapp.uid.unshift('0');
+    while (fidj.uid.length < 3) {
+        fidj.uid.unshift('0');
     }
 };
 
@@ -104,7 +104,7 @@ miapp.initUid = function(seed) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isUndefined = function(obj) {
+fidj.isUndefined = function(obj) {
     return (typeof(obj) == 'undefined');
 };
 
@@ -114,7 +114,7 @@ miapp.isUndefined = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isDefined = function(obj) {
+fidj.isDefined = function(obj) {
     return (typeof(obj) != 'undefined');
 };
 
@@ -124,7 +124,7 @@ miapp.isDefined = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isUndefinedOrNull = function(obj) {
+fidj.isUndefinedOrNull = function(obj) {
     return (typeof(obj) == 'undefined') || (obj === null);
 };
 
@@ -134,7 +134,7 @@ miapp.isUndefinedOrNull = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isDefinedAndNotNull = function(obj) {
+fidj.isDefinedAndNotNull = function(obj) {
     return (typeof(obj) != 'undefined') && (obj !== null);
 };
 
@@ -148,7 +148,7 @@ miapp.isDefinedAndNotNull = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isEmptyOrFalse = function(obj) {
+fidj.isEmptyOrFalse = function(obj) {
     'use strict';
     switch (typeof(obj)) {
         case 'object' :
@@ -186,7 +186,7 @@ miapp.isEmptyOrFalse = function(obj) {
  * @param obj
  * @returns {boolean}
  */
-miapp.isTrueOrNonEmpty = function(obj) {
+fidj.isTrueOrNonEmpty = function(obj) {
     switch (typeof(obj)) {
         case 'object' :
             /*for (var key in obj) {
@@ -224,9 +224,9 @@ miapp.isTrueOrNonEmpty = function(obj) {
  * @param scope
  * @param expr
  */
-miapp.safeApply = function (scope, expr, beforeFct, afterFct) {
+fidj.safeApply = function (scope, expr, beforeFct, afterFct) {
 
-    if (beforeFct) miapp.safeApply(scope,beforeFct);
+    if (beforeFct) fidj.safeApply(scope,beforeFct);
 
     // Check scope.$root.$$phase because it is always true during any $apply(), while scope.$$phase is NOT always true
     if (scope.$root && scope.$root.$$phase) {
@@ -250,117 +250,117 @@ miapp.safeApply = function (scope, expr, beforeFct, afterFct) {
         expr();
     }
 
-    if (afterFct) miapp.safeApply(scope,afterFct);
+    if (afterFct) fidj.safeApply(scope,afterFct);
 };
 
 /**
  * Solution to work around an XHR issue : sometimes no end if no $Apply under Chrome for example.
  * This solution trigger an $apply to hope triggering the XHR end.
  */
-miapp.promiseWakeupNb = 0; // number of simultaneous active httpPromise
-miapp.promiseWakeupTimeout = null;
-miapp.promiseWakeup = function (scope, httpPromise, fctOnHttpSuccess, fctOnHttpError) {
+fidj.promiseWakeupNb = 0; // number of simultaneous active httpPromise
+fidj.promiseWakeupTimeout = null;
+fidj.promiseWakeup = function (scope, httpPromise, fctOnHttpSuccess, fctOnHttpError) {
     var promiseWakeupOnHttpSuccess = function(response) {
-        //miapp.InternalLog.log("miapp.promiseWakeup.tick", "promiseWakeupOnHttpSuccess?");
-        miapp.promiseWakeupNb--;
+        //fidj.InternalLog.log("fidj.promiseWakeup.tick", "promiseWakeupOnHttpSuccess?");
+        fidj.promiseWakeupNb--;
         // Keep tick function active until all httpPromise end
-        if (miapp.promiseWakeupNb <= 0) {
-            miapp.InternalLog.log("miapp.promiseWakeup.tick", "stop");
-            miapp.promiseWakeupNb = 0;
-            clearTimeout(miapp.promiseWakeupTimeout);
-            miapp.promiseWakeupTimeout = null;
+        if (fidj.promiseWakeupNb <= 0) {
+            fidj.InternalLog.log("fidj.promiseWakeup.tick", "stop");
+            fidj.promiseWakeupNb = 0;
+            clearTimeout(fidj.promiseWakeupTimeout);
+            fidj.promiseWakeupTimeout = null;
         }
         fctOnHttpSuccess(response);
     };
     var promiseWakeupOnHttpError = function(response) {
-        //miapp.InternalLog.log("miapp.promiseWakeup.tick", "promiseWakeupOnHttpError?");
-        miapp.promiseWakeupNb--;
+        //fidj.InternalLog.log("fidj.promiseWakeup.tick", "promiseWakeupOnHttpError?");
+        fidj.promiseWakeupNb--;
         // Keep tick function active until all httpPromise end
-        if (miapp.promiseWakeupNb <= 0) {
-            miapp.InternalLog.log("miapp.promiseWakeup.tick", "stop");
-            miapp.promiseWakeupNb = 0;
-            clearTimeout(miapp.promiseWakeupTimeout);
-            miapp.promiseWakeupTimeout = null;
+        if (fidj.promiseWakeupNb <= 0) {
+            fidj.InternalLog.log("fidj.promiseWakeup.tick", "stop");
+            fidj.promiseWakeupNb = 0;
+            clearTimeout(fidj.promiseWakeupTimeout);
+            fidj.promiseWakeupTimeout = null;
         }
         fctOnHttpError(response);
     };
     function tick() {
-        if (miapp.promiseWakeupNb > 0) {
-            //miapp.InternalLog.log("miapp.promiseWakeup.tick", "scope.$apply");
-            miapp.safeApply(scope);
+        if (fidj.promiseWakeupNb > 0) {
+            //fidj.InternalLog.log("fidj.promiseWakeup.tick", "scope.$apply");
+            fidj.safeApply(scope);
             // Usage of $timeout breaks e2e tests for the moment : https://github.com/angular/angular.js/issues/2402
             //$timeout(tick, 1000, false);// DO NOT call $apply
-            miapp.promiseWakeupTimeout = setTimeout(tick, 1000);
+            fidj.promiseWakeupTimeout = setTimeout(tick, 1000);
         } else {
-            //miapp.InternalLog.log("miapp.promiseWakeup.tick", "ignored");
+            //fidj.InternalLog.log("fidj.promiseWakeup.tick", "ignored");
         }
     }
     // Launch only one tick function if many httpPromise occur
-    if (miapp.promiseWakeupNb === 0) {
-        //miapp.InternalLog.log("miapp.promiseWakeup.tick", "start");
-        miapp.promiseWakeupTimeout = setTimeout(tick, 1000);
+    if (fidj.promiseWakeupNb === 0) {
+        //fidj.InternalLog.log("fidj.promiseWakeup.tick", "start");
+        fidj.promiseWakeupTimeout = setTimeout(tick, 1000);
     }
-    miapp.promiseWakeupNb++;
-    //miapp.InternalLog.log("miapp.promiseWakeup.tick", "before?");
+    fidj.promiseWakeupNb++;
+    //fidj.InternalLog.log("fidj.promiseWakeup.tick", "before?");
     httpPromise.then(promiseWakeupOnHttpSuccess, promiseWakeupOnHttpError);
-    //miapp.InternalLog.log("miapp.promiseWakeup.tick", "after?");
+    //fidj.InternalLog.log("fidj.promiseWakeup.tick", "after?");
 };
 
 function openChildBrowser(url, extension, onLocationChange, onClose) {
 
-    //miapp.InternalLog.log('openChildBrowser', url+' extension:'+extension);
+    //fidj.InternalLog.log('openChildBrowser', url+' extension:'+extension);
     var closeChildBrowserAfterLocationChange = false;// To NOT call onClose() if onLocationChange() has been called
     if (!window.device){
         // Chrome case
         // We can not bind on window events because Salesforce page modify/erase our event bindings.
-        miapp.InternalLog.log('openChildBrowser', 'window.open');
+        fidj.InternalLog.log('openChildBrowser', 'window.open');
         var new_window = window.open(url, '_blank', 'menubar=no,scrollbars=yes,resizable=1,height=400,width=600');
         var initialLocation;
         var initialUrl;
-        if (miapp.isDefinedAndNotNull(new_window.location)) {
+        if (fidj.isDefinedAndNotNull(new_window.location)) {
             initialLocation = new_window.location.href;
         }
-        if (miapp.isDefinedAndNotNull(new_window.document)) {
+        if (fidj.isDefinedAndNotNull(new_window.document)) {
             initialUrl = new_window.document.URL;
         }
-        miapp.InternalLog.log('openChildBrowser', 'initialLocation=' + initialLocation + ' initialUrl=' + initialUrl);
+        fidj.InternalLog.log('openChildBrowser', 'initialLocation=' + initialLocation + ' initialUrl=' + initialUrl);
         var locationChanged = false;
         //if (onLocationChange) new_window.onbeforeunload = onLocationChange;
         var new_window_tracker = function () {
-            if (miapp.isDefinedAndNotNull(new_window.location) && (typeof new_window.location.href == "string")) {
-                //miapp.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
-            } else if (miapp.isDefinedAndNotNull(new_window.document) && (typeof new_window.document.URL == "string")) {
-                //miapp.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
+            if (fidj.isDefinedAndNotNull(new_window.location) && (typeof new_window.location.href == "string")) {
+                //fidj.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
+            } else if (fidj.isDefinedAndNotNull(new_window.document) && (typeof new_window.document.URL == "string")) {
+                //fidj.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
             }
             if (!locationChanged) {
-                if (miapp.isDefinedAndNotNull(new_window.location) &&
+                if (fidj.isDefinedAndNotNull(new_window.location) &&
                     (typeof new_window.location.href == "string") &&
                     (initialLocation != new_window.location.href)) {
-                    miapp.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
+                    fidj.InternalLog.log('openChildBrowser', 'new location=' + new_window.location.href);
                     locationChanged = true;
                     setTimeout(new_window_tracker, 100);
                     return;
-                } else if (miapp.isDefinedAndNotNull(new_window.document) &&
+                } else if (fidj.isDefinedAndNotNull(new_window.document) &&
                     (typeof new_window.document.URL == "string") &&
                     (initialUrl != new_window.document.URL)) {
-                    miapp.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
+                    fidj.InternalLog.log('openChildBrowser', 'new url=' + new_window.document.URL);
                     locationChanged = true;
                     setTimeout(new_window_tracker, 100);
                     return;
                 }
             } else {
-                if (miapp.isDefinedAndNotNull(new_window.location) &&
+                if (fidj.isDefinedAndNotNull(new_window.location) &&
                     (typeof new_window.location.href == "string") &&
                     (new_window.location.href.indexOf('about:blank') >= 0)) {
-                    miapp.InternalLog.log('openChildBrowser', 'onLocationChange');
+                    fidj.InternalLog.log('openChildBrowser', 'onLocationChange');
                     if (onLocationChange) onLocationChange();
                     closeChildBrowserAfterLocationChange = true;
                     new_window.close();
                     return;
-                } else if (miapp.isDefinedAndNotNull(new_window.document) &&
+                } else if (fidj.isDefinedAndNotNull(new_window.document) &&
                     (typeof new_window.document.URL == "string") &&
                     (new_window.document.URL.indexOf('about:blank') >= 0)) {
-                    miapp.InternalLog.log('openChildBrowser', 'onUrlChange');
+                    fidj.InternalLog.log('openChildBrowser', 'onUrlChange');
                     if (onLocationChange) onLocationChange();
                     closeChildBrowserAfterLocationChange = true;
                     new_window.close();
@@ -368,28 +368,28 @@ function openChildBrowser(url, extension, onLocationChange, onClose) {
                 }
             }
             if (new_window.closed) {
-                miapp.InternalLog.log('openChildBrowser', 'onClose');
+                fidj.InternalLog.log('openChildBrowser', 'onClose');
                 if (!closeChildBrowserAfterLocationChange) {
                     if (onClose) onClose();
                 }
                 return;
             }
-            //miapp.InternalLog.log('openChildBrowser', 'track locationChanged=' + locationChanged);
+            //fidj.InternalLog.log('openChildBrowser', 'track locationChanged=' + locationChanged);
             setTimeout(new_window_tracker, 100);
         };
         setTimeout(new_window_tracker, 100);
 
   }
   else {
-        miapp.InternalLog.log('openChildBrowser', 'cordova : window.open');
+        fidj.InternalLog.log('openChildBrowser', 'cordova : window.open');
         var target = '_blank';
         if (extension != 'url' && window.device.platform === "Android") target = '_system';
         var ref = window.open(url, target,'location=no' );//'_blank', 'location=yes');'_system','location=no'
         ref.addEventListener('loadstart', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'loadstart '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'loadstart '+e.url);
         });
         ref.addEventListener('loadstop', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'loadstop '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'loadstop '+e.url);
           if (typeof e.url == "string" && e.url.indexOf("about:blank") >= 0) {
               closeChildBrowserAfterLocationChange = true;
               if (onLocationChange) onLocationChange();
@@ -397,10 +397,10 @@ function openChildBrowser(url, extension, onLocationChange, onClose) {
           }
         });
         ref.addEventListener('loaderror', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'loaderror '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'loaderror '+e.url);
         });
         ref.addEventListener('exit', function(e){
-          miapp.InternalLog.log('openChildBrowser', 'exit '+e.url);
+          fidj.InternalLog.log('openChildBrowser', 'exit '+e.url);
           if(!closeChildBrowserAfterLocationChange){
             if (onClose) onClose();
           }
@@ -422,7 +422,7 @@ function isArray(obj) {
     if (typeof obj !== 'object') {
         return false;
     }
-    if (miapp.isUndefined(obj) || (obj === null)) {
+    if (fidj.isUndefined(obj) || (obj === null)) {
         return false;
     }
     if (Object.prototype.toString.call(obj) === '[object Array]') {
@@ -451,7 +451,7 @@ function getErrorObject(){
     try { throw Error(''); } catch(err) { return err; }
 }
 
-function miappExportJson(input, maxDepth) {
+function fidjExportJson(input, maxDepth) {
     var str = '{\n', key, first = true, type;
     for (key in input) {
         if (!input.hasOwnProperty(key)) continue;
@@ -467,7 +467,7 @@ function miappExportJson(input, maxDepth) {
 
         if (typeof input[key] === "object") {
             if (maxDepth > 0) {
-                str += miappExportJsonObject('\t\t', input[key], maxDepth-1, type);
+                str += fidjExportJsonObject('\t\t', input[key], maxDepth-1, type);
             }
         }
         str +='\t' + ']';
@@ -477,7 +477,7 @@ function miappExportJson(input, maxDepth) {
     return str;
 }
 
-function miappExportJsonObject(offset, input, maxDepth, type) {
+function fidjExportJsonObject(offset, input, maxDepth, type) {
     var str = "", key, first = true;
     for (key in input) {
         if (!input.hasOwnProperty(key)) continue;
@@ -493,7 +493,7 @@ function miappExportJsonObject(offset, input, maxDepth, type) {
                 } else {
                     str += offset + '\"' +key+ '\":{';
                 }
-                str += miappExportJsonObject(offset + '\t', input[key], maxDepth-1, type);
+                str += fidjExportJsonObject(offset + '\t', input[key], maxDepth-1, type);
 
                 if (maxDepth == 2) {
                     str += offset + '}';
@@ -539,14 +539,14 @@ function logEvent(e) {
     if (type == 'error' && bCon) {
         message+= ' (prolly a syntax error in manifest)';
     }
-    miapp.InternalLog.log(message);
+    fidj.InternalLog.log(message);
 }
 
 //window.applicationCache.addEventListener(
 //    'updateready',
 //    function(){
 //        window.applicationCache.swapCache();
-//        miapp.InternalLog.log('swap cache has been called');
+//        fidj.InternalLog.log('swap cache has been called');
 //    },
 //    false
 //);
@@ -591,7 +591,7 @@ function checkCache() {
 function checkConnection() {
 
     var bCon = false;
-    miapp.InternalLog.log('checkConnection','launched');
+    fidj.InternalLog.log('checkConnection','launched');
     /*
         if (!navigator.onLine) used or not ?
     var networkState = navigator.connection.type;
@@ -613,11 +613,11 @@ function checkConnection() {
 
 	if (!navigator.network || !navigator.network.connection){
 		if (navigator.onLine) {
-            miapp.InternalLog.log('checkConnection','without cordova but online');
+            fidj.InternalLog.log('checkConnection','without cordova but online');
 			return true;
 		}
         else {
-            miapp.InternalLog.log('checkConnection','without cordova but online');
+            fidj.InternalLog.log('checkConnection','without cordova but online');
             return false;
         }
 	}
@@ -633,19 +633,19 @@ function checkConnection() {
     states[Connection.CELL_4G]  = 'Cell 4G connection';
     states[Connection.NONE]     = 'No network connection';
 
-    miapp.InternalLog.log('checkConnection','Connection type: ' + states[networkState]);
+    fidj.InternalLog.log('checkConnection','Connection type: ' + states[networkState]);
     bCon = (networkState != Connection.NONE);
     return bCon;
      */
 
      if (!navigator.connection || !navigator.connection.type){
-        if (miapp.BrowserCapabilities && miapp.BrowserCapabilities.online) {
+        if (fidj.BrowserCapabilities && fidj.BrowserCapabilities.online) {
             bCon = true;
         }
-        else if (!miapp.BrowserCapabilities) {
+        else if (!fidj.BrowserCapabilities) {
             bCon = navigator.onLine;
         }
-        miapp.InternalLog.log('checkConnection','without Cordova but online ? '+bCon);
+        fidj.InternalLog.log('checkConnection','without Cordova but online ? '+bCon);
     }
     else {
 
@@ -659,7 +659,7 @@ function checkConnection() {
         states[Connection.CELL_4G]  = 'Cell 4G connection';
         states[Connection.CELL]     = 'Cell generic connection';
         states[Connection.NONE]     = 'No network connection';
-        miapp.InternalLog.log('checkConnection','Cordova Connection type: ' + states[networkState]);
+        fidj.InternalLog.log('checkConnection','Cordova Connection type: ' + states[networkState]);
         bCon = (networkState != Connection.NONE);
     }
     return bCon;
@@ -670,9 +670,9 @@ function checkConnection() {
 function getUrlVars(ihref)
 {
 	var href = ihref;
-	if(miapp.isUndefined(href) || !href) href = window.location.href;
+	if(fidj.isUndefined(href) || !href) href = window.location.href;
 
-    miapp.InternalLog.log('getUrlVars','href:'+href);
+    fidj.InternalLog.log('getUrlVars','href:'+href);
 
     var vars = [], hash;
     var hashes = href.slice(href.indexOf('#') + 1).split('&');
@@ -808,13 +808,13 @@ function SHA256(s){
 
 }
 
-var miappTranslateDatesToPxSize = function(date_start, date_end, totalSize) {
+var fidjTranslateDatesToPxSize = function(date_start, date_end, totalSize) {
     var date1 = date_start;
-    if (typeof date1 == 'string') date1 = miappDateParse(date_start);
+    if (typeof date1 == 'string') date1 = fidjDateParse(date_start);
     if (!date1) return totalSize;// date_start is invalid
 
     var date2 = date_end;
-    if (typeof date2 == 'string') date2 = miappDateParse(date_end);
+    if (typeof date2 == 'string') date2 = fidjDateParse(date_end);
     if (!date2) return totalSize;// date_end is invalid
 
     var milliseconds = date2.getTime() - date1.getTime();
@@ -827,9 +827,9 @@ var miappTranslateDatesToPxSize = function(date_start, date_end, totalSize) {
     return Math.round(days * totalSize);
 };
 
-var miappTranslateDateToPx = function(date, totalSize) {
+var fidjTranslateDateToPx = function(date, totalSize) {
     var date1 = date;
-    if (typeof date1 == 'string') date1 = miappDateParse(date);
+    if (typeof date1 == 'string') date1 = fidjDateParse(date);
     if (!date1) return 0;// date is invalid
 
     var days = (date1.getHours()*60 + date1.getMinutes()) / 1440;
@@ -845,7 +845,7 @@ var miappTranslateDateToPx = function(date, totalSize) {
  * @param f
  * @returns {Function}
  */
-miapp.not = function(f) {
+fidj.not = function(f) {
     return function () {
         var result = f.apply(this, arguments);
         return !result;
@@ -860,7 +860,7 @@ miapp.not = function(f) {
  * @returns {Function}
  */
 // Contrast this with the map() function from earlier.
-miapp.mapper = function(f) {
+fidj.mapper = function(f) {
     return function(a) {
         return map(a, f);
     };
@@ -872,7 +872,7 @@ miapp.mapper = function(f) {
  * @param f idempotent function keyed on its arguments string representations
  * @returns {Function}
  */
-miapp.memoize = function(f) {
+fidj.memoize = function(f) {
     var cache = {}; // Value cache stored in the closure.
     return function () {
         // Create a string version of the arguments to use as a cache key.
@@ -888,7 +888,7 @@ miapp.memoize = function(f) {
 /*
 // Note that when we write a recursive function that we will be memoizing,
 // we typically want to recurse to the memoized version, not the original.
-var factorial = miapp.memoize(function(n) {
+var factorial = fidj.memoize(function(n) {
     return (n <= 1) ? 1 : n * factorial(n-1);
 });
 factorial(5) // => 120. Also caches values for 4, 3, 2 and 1.
@@ -906,7 +906,7 @@ factorial(5) // => 120. Also caches values for 4, 3, 2 and 1.
  * @param p
  * @returns {*}
  */
-miapp.extend = function(o, p) {
+fidj.extend = function(o, p) {
     for (var prop in p) { // For all props in p.
         o[prop] = p[prop]; // Add the property to o.
     }
@@ -923,7 +923,7 @@ miapp.extend = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.merge = function(o, p) {
+fidj.merge = function(o, p) {
     for (var prop in p) { // For all props in p.
         if (o.hasOwnProperty(prop)) continue; // Except those already in o.
         o[prop] = p[prop]; // Add the property to o.
@@ -939,7 +939,7 @@ miapp.merge = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.restrict = function(o, p) {
+fidj.restrict = function(o, p) {
     for (var prop in o) { // For all props in o
         if (!(prop in p)) delete o[prop]; // Delete if not in p
     }
@@ -954,7 +954,7 @@ miapp.restrict = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.subtract = function(o, p) {
+fidj.subtract = function(o, p) {
     for (var prop in p) { // For all props in p
         delete o[prop]; // Delete from o (deleting a nonexistent prop is harmless)
     }
@@ -970,8 +970,8 @@ miapp.subtract = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.union = function(o, p) {
-    return miapp.extend(miapp.extend({}, o), p);
+fidj.union = function(o, p) {
+    return fidj.extend(fidj.extend({}, o), p);
 };
 
 /**
@@ -982,8 +982,8 @@ miapp.union = function(o, p) {
  * @param p
  * @returns {*}
  */
-miapp.intersection = function(o, p) {
-    return miapp.restrict(miapp.extend({}, o), p);
+fidj.intersection = function(o, p) {
+    return fidj.restrict(fidj.extend({}, o), p);
 };
 
 /**
@@ -992,7 +992,7 @@ miapp.intersection = function(o, p) {
  * @param o
  * @returns {Array}
  */
-miapp.keys = function(o) {
+fidj.keys = function(o) {
     if (typeof o !== "object") throw new TypeError();
     var result = [];
     for (var prop in o) {
@@ -1012,7 +1012,7 @@ miapp.keys = function(o) {
  * @param props
  * @returns {*}
  */
-miapp.create = function(proto, props) {
+fidj.create = function(proto, props) {
     if (proto === null) throw new TypeError();
     if (Object.create) {
         return Object.create(proto, props);
@@ -1022,7 +1022,7 @@ miapp.create = function(proto, props) {
     function F() {} // dummy constructor function.
     F.prototype = proto;
     var o = new F();
-    return miapp.extend(o, props);
+    return fidj.extend(o, props);
 };
 
 /**
@@ -1031,7 +1031,7 @@ miapp.create = function(proto, props) {
  * @param x
  * @returns {boolean}
  */
-miapp.even = function(x) {
+fidj.even = function(x) {
     return x % 2 === 0;
 };
 
@@ -1041,23 +1041,23 @@ miapp.even = function(x) {
  * @param x
  * @returns {boolean}
  */
-miapp.odd = miapp.not(miapp.even);
+fidj.odd = fidj.not(fidj.even);
 
 /**
  * Loop via Array.forEach method.
- * If the function passed to foreach() throws miapp.foreach.break, the loop will terminate early.
+ * If the function passed to foreach() throws fidj.foreach.break, the loop will terminate early.
  *
  * @param a array object
  * @param f callback function as first argument in Array.forEach()
  * @param t thisObject as second argument in Array.forEach()
  * @returns {boolean}
  */
-miapp.foreach = function(a, f, t) {
+fidj.foreach = function(a, f, t) {
     try {
         a.forEach(f, t);
     } catch (e) {
-        if (e === miapp.foreach.break) return;
+        if (e === fidj.foreach.break) return;
         throw e;
     }
 };
-miapp.foreach.break = new Error("StopIteration");
+fidj.foreach.break = new Error("StopIteration");

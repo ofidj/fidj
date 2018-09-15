@@ -1,29 +1,29 @@
 
-var miapp;
-if (!miapp) miapp = {};
+var fidj;
+if (!fidj) fidj = {};
 
 function successHandler(data) {
-    miapp.InternalLog.log('Analytics', "initialization success : "+data);
+    fidj.InternalLog.log('Analytics', "initialization success : "+data);
 }
 function errorHandler(data) {
-    miapp.InternalLog.log('Analytics', "initialization pb : "+data);
+    fidj.InternalLog.log('Analytics', "initialization pb : "+data);
 }
 
 
 /**
  * Usage analytics module : (based on Google, ...)
  */
-miapp.Analytics = (function() {
+fidj.Analytics = (function() {
     'use strict';
 
-    var mAnalyticsLS = 'miapp.Analytics';
-    var mAnalyticsFunctionnalitiesLS = 'miapp.Analytics.functionalities';
+    var mAnalyticsLS = 'fidj.Analytics';
+    var mAnalyticsFunctionnalitiesLS = 'fidj.Analytics.functionalities';
 
 
 	function Analytics(localStorage, googleAnalytics_UA_ID) {
 
         this.localStorage = null;
-        if (miapp.isDefined(localStorage) && localStorage)
+        if (fidj.isDefined(localStorage) && localStorage)
           this.localStorage = localStorage;
 
         this.mAnalyticsArray = [];
@@ -51,12 +51,12 @@ miapp.Analytics = (function() {
 
         // GA Official queue
         if(typeof _gaq !== 'undefined') {
-          miapp.InternalLog.log('Analytics', 'googleAnalytics official launched.');
+          fidj.InternalLog.log('Analytics', 'googleAnalytics official launched.');
           this.gaQueue = _gaq || [];
           this.gaQueue.push(['_setAccount', this.googleAnalytics_UA_ID]);
           this.gaQueue.push(['_trackPageview']);
         }
-        else {miapp.InternalLog.log('Analytics', 'googleAnalytics not defined.');}
+        else {fidj.InternalLog.log('Analytics', 'googleAnalytics not defined.');}
 
         // Plugin ? used ?
         /*if(typeof analytics !== 'undefined') {
@@ -68,7 +68,7 @@ miapp.Analytics = (function() {
         // GAPlugin
         if (typeof window.plugins !== 'undefined') {
             if(typeof window.plugins.gaPlugin !== 'undefined') {
-                miapp.InternalLog.log('Analytics', "GAPlugin launched.");
+                fidj.InternalLog.log('Analytics', "GAPlugin launched.");
                 this.gaPlugin = window.plugins.gaPlugin;
                 this.gaPlugin.init(successHandler, errorHandler, this.googleAnalytics_UA_ID, 10);
             }
@@ -83,16 +83,16 @@ miapp.Analytics = (function() {
 
     Analytics.prototype.setVid = function(vid) {
         this.vid = vid;
-        miapp.InternalLog.log('Analytics', 'set vid ' + this.vid);
+        fidj.InternalLog.log('Analytics', 'set vid ' + this.vid);
     };
     Analytics.prototype.setUid = function(uid) {
-        miapp.InternalLog.log('Analytics', 'set uid ' + uid);
+        fidj.InternalLog.log('Analytics', 'set uid ' + uid);
         if (!uid || uid === '') return;
         this.uid = uid;
     };
     Analytics.prototype.setEnabled = function(enable) {
         this.bEnabled = (enable === true);
-        miapp.InternalLog.log('Analytics', 'set enabled ' + this.bEnabled);
+        fidj.InternalLog.log('Analytics', 'set enabled ' + this.bEnabled);
     };
 
 
@@ -123,7 +123,7 @@ miapp.Analytics = (function() {
             }
             if (shouldBeTrackedAsEvent) this.mAnalyticsFunctionnalitiesArray.push(action);
         }
-        miapp.InternalLog.log('Analytics', 'shouldBeTrackedAsEvent ?' + shouldBeTrackedAsEvent);
+        fidj.InternalLog.log('Analytics', 'shouldBeTrackedAsEvent ?' + shouldBeTrackedAsEvent);
 
         //Store event & view
         var paramEvent = {
@@ -144,7 +144,7 @@ miapp.Analytics = (function() {
         };
 
         // Push arr into message queue to be stored in local storage
-        miapp.InternalLog.log('Analytics', 'add ' + paramEvent.toString());
+        fidj.InternalLog.log('Analytics', 'add ' + paramEvent.toString());
         if (shouldBeTrackedAsEvent) this.mAnalyticsArray.push(paramEvent);
         this.mAnalyticsArray.push(paramView);
         if (this.localStorage) this.localStorage.set(mAnalyticsLS, this.mAnalyticsArray);
@@ -157,7 +157,7 @@ miapp.Analytics = (function() {
 	Analytics.prototype.run = function() {
 
       if (!this.bEnabled) return;
-      miapp.InternalLog.log('Analytics', 'run - pushing ' + this.mAnalyticsArray.length + ' elements');
+      fidj.InternalLog.log('Analytics', 'run - pushing ' + this.mAnalyticsArray.length + ' elements');
       //if (this.uuid == '') {
       //    this.uuid = (window.device) ? window.device.uuid : window.location.hostname;
       //}
@@ -169,7 +169,7 @@ miapp.Analytics = (function() {
                     if(param.type == 'view') {
                         // this.vid(14XXX - VERSION) + category(Once, Uses, Interest) + action(Login, Contact Creation, Meeting Show ...)
                         var url = '' + this.vid + ' - ' + param.category + ' - ' + param.action;
-                        miapp.InternalLog.log('Analytics', 'track view ' + url);
+                        fidj.InternalLog.log('Analytics', 'track view ' + url);
                         if (this.gaQueue) this.gaQueue.push(['_trackPageview', url]);
                         if (this.gaPanalytics) this.gaPanalytics.trackView(url);
                         if (this.gaPlugin) this.gaPlugin.trackPage( successHandler, errorHandler, url);
@@ -181,7 +181,7 @@ miapp.Analytics = (function() {
                         var act = param.category +' - '+ param.action;
                         var lab = param.uid;
                         var val = param.value;
-                        miapp.InternalLog.log('Analytics', 'track event ' + cat + ', ' + act + ', ' + lab + ', ' + val);
+                        fidj.InternalLog.log('Analytics', 'track event ' + cat + ', ' + act + ', ' + lab + ', ' + val);
                         if (this.gaQueue) this.gaQueue.push(['_trackEvent', cat, act, lab, val]);
                         //this.gaPanalytics.trackEvent(param.category, param.action, param.mode);
                         if (this.gaPanalytics) this.gaPanalytics.trackEvent(cat, act, lab, val);
@@ -190,7 +190,7 @@ miapp.Analytics = (function() {
             }
         }
         catch(e) {
-              miapp.ErrorLog.log('Analytics', ' run pb : ' + miapp.formatError(e));
+              fidj.ErrorLog.log('Analytics', ' run pb : ' + fidj.formatError(e));
               bOK = false;
         }
 

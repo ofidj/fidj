@@ -1,13 +1,13 @@
 'use strict';
 
-// Namespace miapp
-var miapp;
-if (!miapp) miapp = {};
+// Namespace fidj
+var fidj;
+if (!fidj) fidj = {};
 
 /**
  * Management of browser capabilities
  */
-miapp.BrowserCapabilities = (function (navigator, window, document) {
+fidj.BrowserCapabilities = (function (navigator, window, document) {
     var capacities = {vendor: '', cssVendor: ''};
 
     function prefixStyle(style) {

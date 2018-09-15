@@ -1,6 +1,6 @@
 /**
  * localStorage class factory
- * Usage : var LocalStorage = miapp.LocalStorageFactory(window.localStorage); // to create a new class
+ * Usage : var LocalStorage = fidj.LocalStorageFactory(window.localStorage); // to create a new class
  * Usage : var localStorageService = new LocalStorage(); // to create a new instance
  */
 export class LocalStorage {
@@ -12,22 +12,22 @@ export class LocalStorage {
     constructor(storageService, private storageKey) {
         this.storage = storageService || window.localStorage;
         if (!this.storage) {
-            throw new Error('miapp.LocalStorageFactory needs a storageService!');
+            throw new Error('fidj.LocalStorageFactory needs a storageService!');
         }
         // todo LocalStorage refacto
-        //            if (!miapp.Xml) {
-        //                throw new Error('miapp.Xml needs to be loaded before miapp.LocalStorage!');
+        //            if (!fidj.Xml) {
+        //                throw new Error('fidj.Xml needs to be loaded before fidj.LocalStorage!');
         //            }
-        //            if (!miapp.Json) {
-        //                throw new Error('miapp.Json needs to be loaded before miapp.LocalStorage!');
+        //            if (!fidj.Json) {
+        //                throw new Error('fidj.Json needs to be loaded before fidj.LocalStorage!');
         //            }
-        //            if (!miapp.Xml.isXml || !miapp.Xml.xml2String || !miapp.Xml.string2Xml) {
-        //                throw new Error('miapp.Xml with isXml(), xml2String()
-        // and string2Xml() needs to be loaded before miapp.LocalStorage!');
+        //            if (!fidj.Xml.isXml || !fidj.Xml.xml2String || !fidj.Xml.string2Xml) {
+        //                throw new Error('fidj.Xml with isXml(), xml2String()
+        // and string2Xml() needs to be loaded before fidj.LocalStorage!');
         //            }
-        //            if (!miapp.Json.object2String || !miapp.Json.string2Object) {
-        //                throw new Error('miapp.Json with object2String()
-        // and string2Object() needs to be loaded before miapp.LocalStorage!');
+        //            if (!fidj.Json.object2String || !fidj.Json.string2Object) {
+        //                throw new Error('fidj.Json with object2String()
+        // and string2Object() needs to be loaded before fidj.LocalStorage!');
         //            }
         //
     }
@@ -87,9 +87,9 @@ export class LocalStorage {
             }
             const value = JSON.parse(item);
 
-            // var value = miapp.Json.string2Object(item);
+            // var value = fidj.Json.string2Object(item);
             // if ('xml' in value) {
-            //     return miapp.Xml.string2Xml(value.xml);
+            //     return fidj.Xml.string2Xml(value.xml);
             // } else
             if ('string' in value) {
                 return value.string;

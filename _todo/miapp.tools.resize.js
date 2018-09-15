@@ -155,7 +155,7 @@ a4p.Resize = (function (navigator, window, document) {
 
         if (dirty && !endRefreshResizersCount) {
             endRefreshResizersCount++;
-            endRefreshResizersTimer = miapp.BrowserCapabilities.nextFrame(endRefreshResizers);
+            endRefreshResizersTimer = fidj.BrowserCapabilities.nextFrame(endRefreshResizers);
         } else {
             // AFTER having updated resizers, we now can broadcast EVT_WINDOW to Sense and Scroll objects
             // BEWARE : we MUST update resizers BEFORE transmitting event to Sense which will refresh SCROLLERS, or else maxScrollX==WrapperW-ScrollerW are false
@@ -182,7 +182,7 @@ a4p.Resize = (function (navigator, window, document) {
 
         // Method 2 : TWO calls via nextFrame
         if (endRefreshResizersTimer) {
-            miapp.BrowserCapabilities.cancelFrame(endRefreshResizersTimer);
+            fidj.BrowserCapabilities.cancelFrame(endRefreshResizersTimer);
             endRefreshResizersTimer = null;
         }
 
@@ -192,7 +192,7 @@ a4p.Resize = (function (navigator, window, document) {
         // we should call again refreshResizers() if something has changed.
         // But we do it only once more after Browser had recalculated its layout.
         endRefreshResizersCount = 0;
-        endRefreshResizersTimer = miapp.BrowserCapabilities.nextFrame(endRefreshResizers);
+        endRefreshResizersTimer = fidj.BrowserCapabilities.nextFrame(endRefreshResizers);
 
         // Method 3 : TWO calls via setTimeout
         /*
@@ -337,7 +337,7 @@ a4p.Resize = (function (navigator, window, document) {
                     attr: name,
                     value: newValue
                 });
-            }, miapp.BrowserCapabilities.isAndroid ? 200 : 0);
+            }, fidj.BrowserCapabilities.isAndroid ? 200 : 0);
         }
     }
 
@@ -469,8 +469,8 @@ a4p.Resize = (function (navigator, window, document) {
         });
 
         if (!orientationChangeHandlerStarted) {
-            //a4p.InternalLog.log('a4p.Resize', 'window.addEventListener('+miapp.BrowserCapabilities.RESIZE_EVENT+', Resize.handleDocOrientationChange)');
-            window.addEventListener(miapp.BrowserCapabilities.RESIZE_EVENT, Resize.handleDocOrientationChange, false);
+            //a4p.InternalLog.log('a4p.Resize', 'window.addEventListener('+fidj.BrowserCapabilities.RESIZE_EVENT+', Resize.handleDocOrientationChange)');
+            window.addEventListener(fidj.BrowserCapabilities.RESIZE_EVENT, Resize.handleDocOrientationChange, false);
             orientationChangeHandlerStarted = true;
             window.setTimeout(function () {
                 a4p.safeApply($rootScope, function () {

@@ -7,11 +7,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators" : true,
     "declaration": true,
-    "outFile": "dist/miapp.angularjs.js",
+    "outFile": "dist/fidj.angularjs.js",
     "lib": ["es2015", "dom"]
   },
   "files": [
-    "./src/miapp.angularjs.ts"
+    "./src/fidj.angularjs.ts"
   ],
   "angularCompilerOptions": {
     "skipTemplateCodegen": true

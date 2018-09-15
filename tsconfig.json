@@ -5,10 +5,13 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators" : true,
+    "experimentalDecorators": true,
     "declaration": true,
-    "outFile": "dist/miapp.angular.js",
-    "lib": ["es2015", "dom"]
+    "outFile": "dist/fidj.angular.js",
+    "lib": [
+      "es2015",
+      "dom"
+    ]
   },
   "files": [
     "./src/index.ts"

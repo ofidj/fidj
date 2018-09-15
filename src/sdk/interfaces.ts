@@ -1,4 +1,4 @@
-// export namespace miapp {
+// export namespace fidj {
 // }
 export interface ErrorInterface {
     code: number;
@@ -24,7 +24,7 @@ export interface EndpointFilterInterface {
  */
 export interface ModuleServiceInterface {
 
-    init(miappId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface>;
+    init(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface>;
 
     login(login: string, password: string): Promise<any | ErrorInterface>;
 

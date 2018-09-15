@@ -17,10 +17,10 @@ function strCompare(str1, str2) {
 
 // BEWARE : timestamps from Saleforce are in SECONDS, while timestamp in Javascript is in MILLI-SECONDS since 1/1/1970.
 
-function miappFormat(input) {
+function fidjFormat(input) {
 
-    if (miapp.isUndefined(input) || !input) {
-        miapp.ErrorLog.log('miappFormat', 'invalid string ' + input);
+    if (fidj.isUndefined(input) || !input) {
+        fidj.ErrorLog.log('fidjFormat', 'invalid string ' + input);
         return '';
     }
 
@@ -41,7 +41,7 @@ function miappFormat(input) {
  * @param {Number} month The month as an integer between 1 and 12.
  * @returns {Date}
  */
-function miappFirstDayOfMonth(year, month) {
+function fidjFirstDayOfMonth(year, month) {
     return new Date(year, month - 1, 1, 0, 0, 0, 0);
 }
 
@@ -53,7 +53,7 @@ function miappFirstDayOfMonth(year, month) {
  * @param {Number} month The month as an integer between 1 and 12.
  * @returns {Date}
  */
-function miappLastDayOfMonth(year, month) {
+function fidjLastDayOfMonth(year, month) {
     return new Date(year, month, 0, 0, 0, 0, 0);
 }
 
@@ -65,7 +65,7 @@ function miappLastDayOfMonth(year, month) {
  * @param {Number} dayOfWeek 1 for Monday, 2 for Thuesday, ... , 7 for Sunday (date.getDay() || 7)
  * @returns {Date}
  */
-function miappDayOfSameWeek(date, dayOfWeek) {
+function fidjDayOfSameWeek(date, dayOfWeek) {
     return new Date(date.getFullYear(), date.getMonth(),
         date.getDate() + dayOfWeek - (date.getDay() || 7), 0, 0, 0, 0);
 }
@@ -87,11 +87,11 @@ function miappDayOfSameWeek(date, dayOfWeek) {
  * @param {Date} date Any date of this week
  * @returns {Number}
  */
-function miappWeek(date) {
-    var thursday = miappDayOfSameWeek(date, 4);// Thursday of date's week is in right year to calculate Week number
-    //var firstDayOfYear =  miappFirstDayOfMonth(thursday.getFullYear(), 1);
+function fidjWeek(date) {
+    var thursday = fidjDayOfSameWeek(date, 4);// Thursday of date's week is in right year to calculate Week number
+    //var firstDayOfYear =  fidjFirstDayOfMonth(thursday.getFullYear(), 1);
     var fourthJanuary = new Date(thursday.getFullYear(), 0, 4, 0, 0, 0, 0);// This day is always in Week 1
-    var thursdayOfWeek1 = miappDayOfSameWeek(fourthJanuary, 4);// Thursday of Week 1
+    var thursdayOfWeek1 = fidjDayOfSameWeek(fourthJanuary, 4);// Thursday of Week 1
     var nbDays = Math.round((thursday.getTime() - thursdayOfWeek1.getTime()) / 86400000);
     return (1 + Math.floor(nbDays / 7));
 }

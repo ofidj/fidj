@@ -1,11 +1,11 @@
 
 
-// Namespace miapp
-var miapp;
-if (!miapp) miapp = {};
+// Namespace fidj
+var fidj;
+if (!fidj) fidj = {};
 
 
-miapp.Utf8 = (function () {
+fidj.Utf8 = (function () {
 'use strict';
 
     var Utf8 = {};

@@ -14,7 +14,7 @@ setup_git() {
     git config --global user.email "travis@travis-ci.org"
     git config --global user.name "Travis CI"
     git remote -v
-    git remote add upstream "https://${GH_TOKEN}@github.com/miappio/fidj.git"
+    git remote add upstream "https://${GH_TOKEN}@github.com/ofidj/fidj.git"
 
     REVISION=$(git rev-parse --short HEAD)
     PACKAGE_VERSION=$(cat package.json \

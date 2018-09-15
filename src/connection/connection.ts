@@ -6,9 +6,9 @@ import {ConnectionFindOptionsInterface} from './interfaces';
 
 export class Connection {
 
-    public miappId: string;
-    public miappVersion: string;
-    public miappCrypto: boolean;
+    public fidjId: string;
+    public fidjVersion: string;
+    public fidjCrypto: boolean;
     public accessToken: string;
     public accessTokenPrevious: string;
     public idToken: string;
@@ -134,7 +134,7 @@ export class Connection {
             data = JSON.stringify(dataAsObj);
         }
 
-        if (this.miappCrypto && this.cryptoSalt) {
+        if (this.fidjCrypto && this.cryptoSalt) {
             const key = this.cryptoSalt;
             return Xor.encrypt(data, key);
         } else {
@@ -146,7 +146,7 @@ export class Connection {
         let decrypted = null;
 
         try {
-            if (!decrypted && this.miappCrypto && this.cryptoSaltNext) {
+            if (!decrypted && this.fidjCrypto && this.cryptoSaltNext) {
                 const key = this.cryptoSaltNext;
                 decrypted = Xor.decrypt(data, key);
                 decrypted = JSON.parse(decrypted);
@@ -159,7 +159,7 @@ export class Connection {
         }
 
         try {
-            if (!decrypted && this.miappCrypto && this.cryptoSalt) {
+            if (!decrypted && this.fidjCrypto && this.cryptoSalt) {
                 const key = this.cryptoSalt;
                 decrypted = Xor.decrypt(data, key);
                 decrypted = JSON.parse(decrypted);
@@ -169,7 +169,7 @@ export class Connection {
         }
 
         try {
-            if (!decrypted && this.miappCrypto && this.cryptoSalt) {
+            if (!decrypted && this.fidjCrypto && this.cryptoSalt) {
                 const key = this.cryptoSalt;
                 decrypted = Xor.decrypt(data, key, true);
                 decrypted = JSON.parse(decrypted);
@@ -355,8 +355,8 @@ export class Connection {
         this._storage.set(Connection._states, this.states);
 
         // expose roles, message
-        // clientUser.roles = self.miappRoles();
-        // clientUser.message = self.miappMessage();
+        // clientUser.roles = self.fidjRoles();
+        // clientUser.message = self.fidjMessage();
         clientUser.roles = JSON.parse(this.getIdPayload({roles: []})).roles;
         clientUser.message = JSON.parse(this.getIdPayload({message: ''})).message;
         this.setUser(clientUser);
@@ -386,15 +386,15 @@ export class Connection {
 
     getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface> {
 
-        // todo : let ea = ['https://miapp.io/api', 'https://miapp-proxy.herokuapp.com/api'];
+        // todo : let ea = ['https://fidj/api', 'https://fidj-proxy.herokuapp.com/api'];
         let ea: EndpointInterface[] = [
-            {key: 'miapp.default', url: 'https://miapp.io/api', blocked: false}];
+            {key: 'fidj.default', url: 'https://fidj/api', blocked: false}];
         let filteredEa = [];
 
         if (!this._sdk.prod) {
             ea = [
-                {key: 'miapp.default', url: 'http://localhost:5894/api', blocked: false},
-                {key: 'miapp.default', url: 'https://miapp-sandbox.herokuapp.com/api', blocked: false}
+                {key: 'fidj.default', url: 'http://localhost:5894/api', blocked: false},
+                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/api', blocked: false}
             ];
         }
 

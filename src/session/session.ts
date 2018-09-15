@@ -57,10 +57,10 @@ export class Session {
                     opts = {location: 'default', adapter: 'cordova-sqlite'};
                     //    const plugin = require('pouchdb-adapter-cordova-sqlite');
                     //    if (plugin) { Pouch.plugin(plugin); }
-                    //    this.db = new Pouch('miapp_db', {adapter: 'cordova-sqlite'});
+                    //    this.db = new Pouch('fidj_db', {adapter: 'cordova-sqlite'});
                 }
                 // } else {
-                this.db = new FidjPouch('miapp_db_' + uid, opts); // , {adapter: 'websql'} ???
+                this.db = new FidjPouch('fidj_db_' + uid, opts); // , {adapter: 'websql'} ???
                 // }
 
                 this.db.info()
@@ -73,7 +73,7 @@ export class Session {
                         // const newopts: any = opts || {};
                         // newopts.adapter = 'idb';
                         //
-                        // const newdb = new Pouch('miapp_db', opts);
+                        // const newdb = new Pouch('fidj_db', opts);
                         // this.db.replicate.to(newdb)
                         //     .then(() => {
                         //         this.db = newdb;
@@ -145,7 +145,7 @@ export class Session {
                         return this.remoteDb.replicate.to(this.db,
                             {
                                 filter: (doc) => {
-                                    return (!!userId && !!doc && doc.miappUserId === userId);
+                                    return (!!userId && !!doc && doc.fidjUserId === userId);
                                 }
                             })
                             .on('complete', () => {
@@ -183,26 +183,26 @@ export class Session {
         const dataWithoutIds = JSON.parse(JSON.stringify(data));
         const toStore: any = {
             _id: _id,
-            miappUserId: uid,
-            miappOrgId: oid,
-            miappAppVersion: ave
+            fidjUserId: uid,
+            fidjOrgId: oid,
+            fidjAppVersion: ave
         };
         if (dataWithoutIds._rev) {
             toStore._rev = '' + dataWithoutIds._rev;
         }
         delete dataWithoutIds._id;
         delete dataWithoutIds._rev;
-        delete dataWithoutIds.miappUserId;
-        delete dataWithoutIds.miappOrgId;
-        delete dataWithoutIds.miappAppVersion;
-        delete dataWithoutIds.miappData;
+        delete dataWithoutIds.fidjUserId;
+        delete dataWithoutIds.fidjOrgId;
+        delete dataWithoutIds.fidjAppVersion;
+        delete dataWithoutIds.fidjData;
 
         let resultAsString = Session.write(Session.value(dataWithoutIds));
         if (crypto) {
             resultAsString = crypto.obj[crypto.method](resultAsString);
-            toStore.miappDacr = resultAsString;
+            toStore.fidjDacr = resultAsString;
         } else {
-            toStore.miappData = resultAsString;
+            toStore.fidjData = resultAsString;
         }
 
         return new Promise((resolve, reject) => {
@@ -256,12 +256,12 @@ export class Session {
         return new Promise((resolve, reject) => {
             this.db.get(data_id)
                 .then(row => {
-                    if (!!row && (!!row.miappDacr || !!row.miappData)) {
-                        let data = row.miappDacr;
+                    if (!!row && (!!row.fidjDacr || !!row.fidjData)) {
+                        let data = row.fidjDacr;
                         if (crypto && data) {
                             data = crypto.obj[crypto.method](data);
-                        } else if (row.miappData) {
-                            data = JSON.parse(row.miappData);
+                        } else if (row.fidjData) {
+                            data = JSON.parse(row.fidjData);
                         }
                         const resultAsJson = Session.extractJson(data);
                         if (resultAsJson) {
@@ -292,12 +292,12 @@ export class Session {
                 .then(rows => {
                     const all = [];
                     rows.rows.forEach(row => {
-                        if (!!row && !!row.doc._id && (!!row.doc.miappDacr || !!row.doc.miappData)) {
-                            let data = row.doc.miappDacr;
+                        if (!!row && !!row.doc._id && (!!row.doc.fidjDacr || !!row.doc.fidjData)) {
+                            let data = row.doc.fidjDacr;
                             if (crypto && data) {
                                 data = crypto.obj[crypto.method](data);
-                            } else if (row.doc.miappData) {
-                                data = JSON.parse(row.doc.miappData);
+                            } else if (row.doc.fidjData) {
+                                data = JSON.parse(row.doc.fidjData);
                             }
                             const resultAsJson = Session.extractJson(data);
                             if (resultAsJson) {
@@ -333,7 +333,7 @@ export class Session {
             (this.db as any).allDocs({
                 // filter:  (doc) => {
                 //    if (!self.connection.user || !self.connection.user._id) return doc;
-                //    if (doc.miappUserId === self.connection.user._id) return doc;
+                //    if (doc.fidjUserId === self.connection.user._id) return doc;
                 // }
             })
                 .then((response) => {

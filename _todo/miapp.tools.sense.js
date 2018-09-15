@@ -12,8 +12,8 @@ a4p.Scroll = (function (navigator, window, document) {
     function scrollbarH(self) {
         if (!self.hScrollbar) {
             if (self.hScrollbarWrapper) {
-                if (miapp.BrowserCapabilities.hasTransform) {
-                    self.hScrollbarIndicator.style[miapp.BrowserCapabilities.transform] = '';
+                if (fidj.BrowserCapabilities.hasTransform) {
+                    self.hScrollbarIndicator.style[fidj.BrowserCapabilities.transform] = '';
                 }
                 self.DOMelement.removeChild(self.hScrollbarWrapper);
                 self.hScrollbarWrapper = null;
@@ -41,12 +41,12 @@ a4p.Scroll = (function (navigator, window, document) {
             bar.style.overflow = 'hidden';
             bar.style.opacity = (self.options.hideScrollbar ? '0' : '1');
             bar.style.pointerEvents = 'none';
-            bar.style[miapp.BrowserCapabilities.transitionProperty] = 'opacity';
-            bar.style[miapp.BrowserCapabilities.transitionDuration] = (self.options.fadeScrollbar ? '350ms' : '0ms');
+            bar.style[fidj.BrowserCapabilities.transitionProperty] = 'opacity';
+            bar.style[fidj.BrowserCapabilities.transitionDuration] = (self.options.fadeScrollbar ? '350ms' : '0ms');
             /*
              bar.style.cssText += ';pointer-events:none;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-property:opacity;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-duration:'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-property:opacity;'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-duration:'
              + (self.options.fadeScrollbar ? '350ms' : '0') + ';overflow:hidden;opacity:'
              + (self.options.hideScrollbar ? '0' : '1');
              */
@@ -62,38 +62,38 @@ a4p.Scroll = (function (navigator, window, document) {
                 bar.style.borderWidth = '1px';
                 bar.style.borderStyle = 'solid';
                 bar.style.borderColor = 'rgba(255,255,255,0.9)';
-                bar.style[miapp.BrowserCapabilities.vendor + 'BackgroundClip'] = 'padding-box';
+                bar.style[fidj.BrowserCapabilities.vendor + 'BackgroundClip'] = 'padding-box';
                 bar.style.boxSizing = 'border-box';
-                bar.style[miapp.BrowserCapabilities.vendor + 'BoxSizing'] = 'border-box';
+                bar.style[fidj.BrowserCapabilities.vendor + 'BoxSizing'] = 'border-box';
                 bar.style.borderRadius = '3px';
-                bar.style[miapp.BrowserCapabilities.vendor + 'BorderRadius'] = '3px';
+                bar.style[fidj.BrowserCapabilities.vendor + 'BorderRadius'] = '3px';
                 /*
                  bar.style.cssText =
                  'position:absolute;z-index:100;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.9);'
-                 + miapp.BrowserCapabilities.cssVendor + 'background-clip:padding-box;'
-                 + miapp.BrowserCapabilities.cssVendor + 'box-sizing:border-box;'
+                 + fidj.BrowserCapabilities.cssVendor + 'background-clip:padding-box;'
+                 + fidj.BrowserCapabilities.cssVendor + 'box-sizing:border-box;'
                  + 'height:100%;'
-                 + miapp.BrowserCapabilities.cssVendor + 'border-radius:3px;border-radius:3px';
+                 + fidj.BrowserCapabilities.cssVendor + 'border-radius:3px;border-radius:3px';
                  */
             }
             bar.style.pointerEvents = 'none';
-            bar.style[miapp.BrowserCapabilities.transitionProperty] = miapp.BrowserCapabilities.cssVendor + 'transform';
-            bar.style[miapp.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
-            bar.style[miapp.BrowserCapabilities.transitionDuration] = '0ms';
-            bar.style[miapp.BrowserCapabilities.transform] = 'translate(0,0)' + miapp.BrowserCapabilities.translateZ;
+            bar.style[fidj.BrowserCapabilities.transitionProperty] = fidj.BrowserCapabilities.cssVendor + 'transform';
+            bar.style[fidj.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
+            bar.style[fidj.BrowserCapabilities.transitionDuration] = '0ms';
+            bar.style[fidj.BrowserCapabilities.transform] = 'translate(0,0)' + fidj.BrowserCapabilities.translateZ;
             /*
              bar.style.cssText += ';pointer-events:none;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-property:'
-             + miapp.BrowserCapabilities.cssVendor + 'transform;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1);'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-duration:0;'
-             + miapp.BrowserCapabilities.cssVendor + 'transform: translate(0,0)' + miapp.BrowserCapabilities.translateZ;
+             + fidj.BrowserCapabilities.cssVendor + 'transition-property:'
+             + fidj.BrowserCapabilities.cssVendor + 'transform;'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1);'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-duration:0;'
+             + fidj.BrowserCapabilities.cssVendor + 'transform: translate(0,0)' + fidj.BrowserCapabilities.translateZ;
              */
             if (self.options.useTransition) {
-                bar.style[miapp.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
+                bar.style[fidj.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
                 /*
                  bar.style.cssText += ';'
-                 + miapp.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1)';
+                 + fidj.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1)';
                  */
             }
             self.hScrollbarWrapper.appendChild(bar);
@@ -112,7 +112,7 @@ a4p.Scroll = (function (navigator, window, document) {
     function scrollbarV(self) {
         if (!self.vScrollbar) {
             if (self.vScrollbarWrapper) {
-                if (miapp.BrowserCapabilities.hasTransform) self.vScrollbarIndicator.style[miapp.BrowserCapabilities.transform] = '';
+                if (fidj.BrowserCapabilities.hasTransform) self.vScrollbarIndicator.style[fidj.BrowserCapabilities.transform] = '';
                 self.DOMelement.removeChild(self.vScrollbarWrapper);
                 self.vScrollbarWrapper = null;
                 self.vScrollbarIndicator = null;
@@ -139,12 +139,12 @@ a4p.Scroll = (function (navigator, window, document) {
             bar.style.overflow = 'hidden';
             bar.style.opacity = (self.options.hideScrollbar ? '0' : '1');
             bar.style.pointerEvents = 'none';
-            bar.style[miapp.BrowserCapabilities.transitionProperty] = 'opacity';
-            bar.style[miapp.BrowserCapabilities.transitionDuration] = (self.options.fadeScrollbar ? '350ms' : '0ms');
+            bar.style[fidj.BrowserCapabilities.transitionProperty] = 'opacity';
+            bar.style[fidj.BrowserCapabilities.transitionDuration] = (self.options.fadeScrollbar ? '350ms' : '0ms');
             /*
              bar.style.cssText += ';pointer-events:none;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-property:opacity;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-duration:'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-property:opacity;'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-duration:'
              + (self.options.fadeScrollbar ? '350ms' : '0') + ';overflow:hidden;opacity:'
              + (self.options.hideScrollbar ? '0' : '1');
              */
@@ -160,38 +160,38 @@ a4p.Scroll = (function (navigator, window, document) {
                 bar.style.borderWidth = '1px';
                 bar.style.borderStyle = 'solid';
                 bar.style.borderColor = 'rgba(255,255,255,0.9)';
-                bar.style[miapp.BrowserCapabilities.vendor + 'BackgroundClip'] = 'padding-box';
+                bar.style[fidj.BrowserCapabilities.vendor + 'BackgroundClip'] = 'padding-box';
                 bar.style.boxSizing = 'border-box';
-                bar.style[miapp.BrowserCapabilities.vendor + 'BoxSizing'] = 'border-box';
+                bar.style[fidj.BrowserCapabilities.vendor + 'BoxSizing'] = 'border-box';
                 bar.style.borderRadius = '3px';
-                bar.style[miapp.BrowserCapabilities.vendor + 'BorderRadius'] = '3px';
+                bar.style[fidj.BrowserCapabilities.vendor + 'BorderRadius'] = '3px';
                 /*
                  bar.style.cssText =
                  'position:absolute;z-index:100;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.9);'
-                 + miapp.BrowserCapabilities.cssVendor + 'background-clip:padding-box;'
-                 + miapp.BrowserCapabilities.cssVendor + 'box-sizing:border-box;'
+                 + fidj.BrowserCapabilities.cssVendor + 'background-clip:padding-box;'
+                 + fidj.BrowserCapabilities.cssVendor + 'box-sizing:border-box;'
                  + 'width:100%;'
-                 + miapp.BrowserCapabilities.cssVendor + 'border-radius:3px;border-radius:3px';
+                 + fidj.BrowserCapabilities.cssVendor + 'border-radius:3px;border-radius:3px';
                  */
             }
             bar.style.pointerEvents = 'none';
-            bar.style[miapp.BrowserCapabilities.transitionProperty] = miapp.BrowserCapabilities.cssVendor + 'transform';
-            bar.style[miapp.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
-            bar.style[miapp.BrowserCapabilities.transitionDuration] = '0ms';
-            bar.style[miapp.BrowserCapabilities.transform] = 'translate(0,0)' + miapp.BrowserCapabilities.translateZ;
+            bar.style[fidj.BrowserCapabilities.transitionProperty] = fidj.BrowserCapabilities.cssVendor + 'transform';
+            bar.style[fidj.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
+            bar.style[fidj.BrowserCapabilities.transitionDuration] = '0ms';
+            bar.style[fidj.BrowserCapabilities.transform] = 'translate(0,0)' + fidj.BrowserCapabilities.translateZ;
             /*
              bar.style.cssText += ';pointer-events:none;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-property:'
-             + miapp.BrowserCapabilities.cssVendor + 'transform;'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1);'
-             + miapp.BrowserCapabilities.cssVendor + 'transition-duration:0;'
-             + miapp.BrowserCapabilities.cssVendor + 'transform: translate(0,0)' + miapp.BrowserCapabilities.translateZ;
+             + fidj.BrowserCapabilities.cssVendor + 'transition-property:'
+             + fidj.BrowserCapabilities.cssVendor + 'transform;'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1);'
+             + fidj.BrowserCapabilities.cssVendor + 'transition-duration:0;'
+             + fidj.BrowserCapabilities.cssVendor + 'transform: translate(0,0)' + fidj.BrowserCapabilities.translateZ;
              */
             if (self.options.useTransition) {
-                bar.style[miapp.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
+                bar.style[fidj.BrowserCapabilities.transitionTimingFunction] = 'cubic-bezier(0.33,0.66,0.66,1)';
                 /*
                  bar.style.cssText += ';'
-                 + miapp.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1)';
+                 + fidj.BrowserCapabilities.cssVendor + 'transition-timing-function:cubic-bezier(0.33,0.66,0.66,1)';
                  */
             }
             self.vScrollbarWrapper.appendChild(bar);
@@ -222,8 +222,8 @@ a4p.Scroll = (function (navigator, window, document) {
         y = self.vScroll ? y : 0;
 
         if (self.options.useTransform) {
-            self.scroller.style[miapp.BrowserCapabilities.transform] =
-                'translate(' + x + 'px,' + y + 'px) scale(' + self.scale + ')' + miapp.BrowserCapabilities.translateZ;
+            self.scroller.style[fidj.BrowserCapabilities.transform] =
+                'translate(' + x + 'px,' + y + 'px) scale(' + self.scale + ')' + fidj.BrowserCapabilities.translateZ;
         } else {
             x = Math.round(x);
             y = Math.round(y);
@@ -265,10 +265,10 @@ a4p.Scroll = (function (navigator, window, document) {
             }
         }
 
-        self.hScrollbarWrapper.style[miapp.BrowserCapabilities.transitionDelay] = '0';
+        self.hScrollbarWrapper.style[fidj.BrowserCapabilities.transitionDelay] = '0';
         self.hScrollbarWrapper.style.opacity = (hidden && self.options.hideScrollbar) ? '0' : '1';
-        self.hScrollbarIndicator.style[miapp.BrowserCapabilities.transform] =
-            'translate(' + pos + 'px,0)' + miapp.BrowserCapabilities.translateZ;
+        self.hScrollbarIndicator.style[fidj.BrowserCapabilities.transform] =
+            'translate(' + pos + 'px,0)' + fidj.BrowserCapabilities.translateZ;
     }
 
     function scrollbarPosV(self, hidden) {
@@ -296,10 +296,10 @@ a4p.Scroll = (function (navigator, window, document) {
             }
         }
 
-        self.vScrollbarWrapper.style[miapp.BrowserCapabilities.transitionDelay] = '0';
+        self.vScrollbarWrapper.style[fidj.BrowserCapabilities.transitionDelay] = '0';
         self.vScrollbarWrapper.style.opacity = (hidden && self.options.hideScrollbar) ? '0' : '1';
-        self.vScrollbarIndicator.style[miapp.BrowserCapabilities.transform] =
-            'translate(0,' + pos + 'px)' + miapp.BrowserCapabilities.translateZ;
+        self.vScrollbarIndicator.style[fidj.BrowserCapabilities.transform] =
+            'translate(0,' + pos + 'px)' + fidj.BrowserCapabilities.translateZ;
     }
 
     function resetPos(self, time) {
@@ -315,11 +315,11 @@ a4p.Scroll = (function (navigator, window, document) {
             }
 
             if (self.hScrollbar && self.options.hideScrollbar) {
-                if (miapp.BrowserCapabilities.vendor == 'webkit') self.hScrollbarWrapper.style[miapp.BrowserCapabilities.transitionDelay] = '300ms';
+                if (fidj.BrowserCapabilities.vendor == 'webkit') self.hScrollbarWrapper.style[fidj.BrowserCapabilities.transitionDelay] = '300ms';
                 self.hScrollbarWrapper.style.opacity = '0';
             }
             if (self.vScrollbar && self.options.hideScrollbar) {
-                if (miapp.BrowserCapabilities.vendor == 'webkit') self.vScrollbarWrapper.style[miapp.BrowserCapabilities.transitionDelay] = '300ms';
+                if (fidj.BrowserCapabilities.vendor == 'webkit') self.vScrollbarWrapper.style[fidj.BrowserCapabilities.transitionDelay] = '300ms';
                 self.vScrollbarWrapper.style.opacity = '0';
             }
 
@@ -366,10 +366,10 @@ a4p.Scroll = (function (navigator, window, document) {
                 var handler = function (evt) {
                     transitionEnd(self, evt);
                 };
-                self.scroller.addEventListener(miapp.BrowserCapabilities.TRNEND_EVENT, handler, false);
+                self.scroller.addEventListener(fidj.BrowserCapabilities.TRNEND_EVENT, handler, false);
                 self.bindTransitionEnd = {
                     destroy: function () {
-                        self.scroller.removeEventListener(miapp.BrowserCapabilities.TRNEND_EVENT, handler, false);
+                        self.scroller.removeEventListener(fidj.BrowserCapabilities.TRNEND_EVENT, handler, false);
                     }
                 }
             }
@@ -400,7 +400,7 @@ a4p.Scroll = (function (navigator, window, document) {
                     //console.log('Scroll : animate2() x=' + (self.x + step.deltaX) + ' y=' + (self.y + step.deltaY));
                     pos(self, self.x + deltaX, self.y + deltaY, step.reset);
                     if (self.animating) {
-                        self.aniTime = miapp.BrowserCapabilities.nextFrame(animate);
+                        self.aniTime = fidj.BrowserCapabilities.nextFrame(animate);
                     }
                 }
             };
@@ -416,7 +416,7 @@ a4p.Scroll = (function (navigator, window, document) {
             }
         } else {
             if (self.aniTime) {
-                miapp.BrowserCapabilities.cancelFrame(self.aniTime);
+                fidj.BrowserCapabilities.cancelFrame(self.aniTime);
                 self.aniTime = null;
             }
         }
@@ -427,7 +427,7 @@ a4p.Scroll = (function (navigator, window, document) {
             var x, y;
             if (self.options.useTransform) {
                 // Very lame general purpose alternative to CSSMatrix
-                var matrix = getComputedStyle(self.scroller, null)[miapp.BrowserCapabilities.transform].replace(/[^0-9\-.,]/g, '').split(',');
+                var matrix = getComputedStyle(self.scroller, null)[fidj.BrowserCapabilities.transform].replace(/[^0-9\-.,]/g, '').split(',');
                 x = +(matrix[12] || matrix[4] || 0);
                 y = +(matrix[13] || matrix[5] || 0);
             } else {
@@ -450,9 +450,9 @@ a4p.Scroll = (function (navigator, window, document) {
 
     function transitionTime(self, time) {
         time += 'ms';
-        self.scroller.style[miapp.BrowserCapabilities.transitionDuration] = time;
-        if (self.hScrollbar) self.hScrollbarIndicator.style[miapp.BrowserCapabilities.transitionDuration] = time;
-        if (self.vScrollbar) self.vScrollbarIndicator.style[miapp.BrowserCapabilities.transitionDuration] = time;
+        self.scroller.style[fidj.BrowserCapabilities.transitionDuration] = time;
+        if (self.hScrollbar) self.hScrollbarIndicator.style[fidj.BrowserCapabilities.transitionDuration] = time;
+        if (self.vScrollbar) self.vScrollbarIndicator.style[fidj.BrowserCapabilities.transitionDuration] = time;
     }
 
     function offset(self, el) {
@@ -619,9 +619,9 @@ a4p.Scroll = (function (navigator, window, document) {
             // Scrollbar
             hScrollbar: true,
             vScrollbar: true,
-            fixedScrollbar: miapp.BrowserCapabilities.isAndroid,
-            hideScrollbar: miapp.BrowserCapabilities.isIDevice,
-            fadeScrollbar: miapp.BrowserCapabilities.isIDevice && miapp.BrowserCapabilities.has3d,
+            fixedScrollbar: fidj.BrowserCapabilities.isAndroid,
+            hideScrollbar: fidj.BrowserCapabilities.isIDevice,
+            fadeScrollbar: fidj.BrowserCapabilities.isIDevice && fidj.BrowserCapabilities.has3d,
             scrollbarClass: '', // Apply a css class named this value + suffixe of 'H' or 'V' to the scrollbar wrapper
 
             // Zoom
@@ -650,7 +650,7 @@ a4p.Scroll = (function (navigator, window, document) {
             this.options[i] = options[i];
         }
         // Normalize options
-        this.options.useTransform = miapp.BrowserCapabilities.hasTransform && this.options.useTransform;
+        this.options.useTransform = fidj.BrowserCapabilities.hasTransform && this.options.useTransform;
         this.options.hScrollbar = this.options.hScroll && this.options.hScrollbar;
         this.options.vScrollbar = this.options.vScroll && this.options.vScrollbar;
         if (this.options.wheelAction == 'zoom') this.options.zoom = true;
@@ -658,7 +658,7 @@ a4p.Scroll = (function (navigator, window, document) {
             a4p.ErrorLog.log("a4p.sense", "Zoom option impossible because Browser cannot use transform");
         }
         this.options.zoom = this.options.useTransform && this.options.zoom;
-        this.options.useTransition = miapp.BrowserCapabilities.hasTransitionEnd && this.options.useTransition;
+        this.options.useTransition = fidj.BrowserCapabilities.hasTransitionEnd && this.options.useTransition;
         if (this.options.useTransition) this.options.fixedScrollbar = true;
 
         //this.minScrollY = -this.options.topOffset || 0;
@@ -667,17 +667,17 @@ a4p.Scroll = (function (navigator, window, document) {
         this.DOMelement.style.overflow = 'hidden';
         this.DOMelement.style.position = 'relative';
         /* to have scrollbar right positionned in this container */
-        this.scroller.style[miapp.BrowserCapabilities.transitionProperty] =
-            this.options.useTransform ? miapp.BrowserCapabilities.cssVendor + 'transform' : 'top left';
-        this.scroller.style[miapp.BrowserCapabilities.transitionDuration] = '0';
-        this.scroller.style[miapp.BrowserCapabilities.transformOrigin] = '0 0';
+        this.scroller.style[fidj.BrowserCapabilities.transitionProperty] =
+            this.options.useTransform ? fidj.BrowserCapabilities.cssVendor + 'transform' : 'top left';
+        this.scroller.style[fidj.BrowserCapabilities.transitionDuration] = '0';
+        this.scroller.style[fidj.BrowserCapabilities.transformOrigin] = '0 0';
         if (this.options.useTransition) {
-            this.scroller.style[miapp.BrowserCapabilities.transitionTimingFunction] =
+            this.scroller.style[fidj.BrowserCapabilities.transitionTimingFunction] =
                 'cubic-bezier(0.33,0.66,0.66,1)';
         }
         if (this.options.useTransform) {
-            this.scroller.style[miapp.BrowserCapabilities.transform] =
-                'translate(' + this.x + 'px,' + this.y + 'px)' + miapp.BrowserCapabilities.translateZ;
+            this.scroller.style[fidj.BrowserCapabilities.transform] =
+                'translate(' + this.x + 'px,' + this.y + 'px)' + fidj.BrowserCapabilities.translateZ;
         } else {
             this.scroller.style.position = 'absolute';
             this.scroller.style.top = this.y + 'px';
@@ -713,7 +713,7 @@ a4p.Scroll = (function (navigator, window, document) {
     }
 
     Scroll.prototype.destroy = function () {
-        this.scroller.style[miapp.BrowserCapabilities.transform] = '';
+        this.scroller.style[fidj.BrowserCapabilities.transform] = '';
 
         // Remove the scrollbars
         this.hScrollbar = false;
@@ -812,7 +812,7 @@ a4p.Scroll = (function (navigator, window, document) {
         scrollbarV(this);
 
         if (!this.zoomed) {
-            this.scroller.style[miapp.BrowserCapabilities.transitionDuration] = '0';
+            this.scroller.style[fidj.BrowserCapabilities.transitionDuration] = '0';
             resetPos(this, 400);
         }
     };
@@ -947,9 +947,9 @@ a4p.Scroll = (function (navigator, window, document) {
         this.y = this.y > -this.options.topOffset ? -this.options.topOffset : this.y < this.maxScrollY ? this.maxScrollY : this.y;
         //console.log('zoom() : limits => this.x=' + this.x + ' this.y=' + this.y);
 
-        this.scroller.style[miapp.BrowserCapabilities.transitionDuration] = time + 'ms';
-        this.scroller.style[miapp.BrowserCapabilities.transform] =
-            'translate(' + this.x + 'px,' + this.y + 'px) scale(' + scale + ')' + miapp.BrowserCapabilities.translateZ;
+        this.scroller.style[fidj.BrowserCapabilities.transitionDuration] = time + 'ms';
+        this.scroller.style[fidj.BrowserCapabilities.transform] =
+            'translate(' + this.x + 'px,' + this.y + 'px) scale(' + scale + ')' + fidj.BrowserCapabilities.translateZ;
         this.zoomed = false;
     };
 
@@ -1025,8 +1025,8 @@ a4p.Scroll = (function (navigator, window, document) {
         self.lastScale = scale / self.scale;
         var newX = self.originX - self.originX * self.lastScale + self.x;
         var newY = self.originY - self.originY * self.lastScale + self.y;
-        self.scroller.style[miapp.BrowserCapabilities.transform] =
-            'translate(' + newX + 'px,' + newY + 'px) scale(' + scale + ')' + miapp.BrowserCapabilities.translateZ;
+        self.scroller.style[fidj.BrowserCapabilities.transform] =
+            'translate(' + newX + 'px,' + newY + 'px) scale(' + scale + ')' + fidj.BrowserCapabilities.translateZ;
         if (self.options.onZoom) {
             self.options.onZoom.call(self, {scale: scale});
         }
@@ -1098,9 +1098,9 @@ a4p.Scroll = (function (navigator, window, document) {
         self.setScale(scale);
         self.x = self.originX - self.originX * self.lastScale + self.x;
         self.y = self.originY - self.originY * self.lastScale + self.y;
-        self.scroller.style[miapp.BrowserCapabilities.transitionDuration] = '200ms';
-        self.scroller.style[miapp.BrowserCapabilities.transform] =
-            'translate(' + self.x + 'px,' + self.y + 'px) scale(' + self.scale + ')' + miapp.BrowserCapabilities.translateZ;
+        self.scroller.style[fidj.BrowserCapabilities.transitionDuration] = '200ms';
+        self.scroller.style[fidj.BrowserCapabilities.transform] =
+            'translate(' + self.x + 'px,' + self.y + 'px) scale(' + self.scale + ')' + fidj.BrowserCapabilities.translateZ;
         self.zoomed = false;
         self.refresh();
         if (self.options.onZoomEnd) {
@@ -1623,7 +1623,7 @@ a4p.Sense = (function (navigator, window, document) {
     document.addEventListener('mouseup', handleDocMouseUp, false);
 
     function bindOnStart(sense, newScroll) {
-        if (miapp.BrowserCapabilities.hasTouch) {
+        if (fidj.BrowserCapabilities.hasTouch) {
             if (!sense.bindTouchStart) {
                 sense.bindTouchStart = bindEvent(sense.DOMelement, 'touchstart', function (evt) {
                     handleTouchStart(sense, evt);
@@ -1664,7 +1664,7 @@ a4p.Sense = (function (navigator, window, document) {
             sense.bindMouseWheel.destroy();
             sense.bindMouseWheel = false;
         }
-        if (miapp.BrowserCapabilities.hasTouch) {
+        if (fidj.BrowserCapabilities.hasTouch) {
             if (sense.bindTouchStart) {
                 sense.bindTouchStart.destroy();
                 sense.bindTouchStart = false;
@@ -1678,7 +1678,7 @@ a4p.Sense = (function (navigator, window, document) {
     }
 
     function bindOnTouchOther(sense) {
-        if (miapp.BrowserCapabilities.hasTouch && sense.bindTouchStart) {
+        if (fidj.BrowserCapabilities.hasTouch && sense.bindTouchStart) {
             var found = false;
             for (var i = touchListeners.length - 1; i >= 0; i--) {
                 if (touchListeners[i].id == sense.id) {
@@ -1712,7 +1712,7 @@ a4p.Sense = (function (navigator, window, document) {
     }
 
     function bindOnMouseOther(sense) {
-        if (!miapp.BrowserCapabilities.hasTouch && sense.bindMouseDown && !sense.bindMouseOther) {
+        if (!fidj.BrowserCapabilities.hasTouch && sense.bindMouseDown && !sense.bindMouseOther) {
             var found = false;
             for (var i = mouseListeners.length - 1; i >= 0; i--) {
                 if (mouseListeners[i].id == sense.id) {
@@ -1737,7 +1737,7 @@ a4p.Sense = (function (navigator, window, document) {
 
     function unbindAllOtherExceptFor(sense) {
         var i;
-        if (miapp.BrowserCapabilities.hasTouch) {
+        if (fidj.BrowserCapabilities.hasTouch) {
             for (i = touchListeners.length - 1; i >= 0; i--) {
                 if (touchListeners[i].id != sense.id) {
                     touchListeners[i].resetState();
@@ -1760,7 +1760,7 @@ a4p.Sense = (function (navigator, window, document) {
 
     function unbindOther(sense) {
         var i;
-        if (miapp.BrowserCapabilities.hasTouch) {
+        if (fidj.BrowserCapabilities.hasTouch) {
             for (i = touchListeners.length - 1; i >= 0; i--) {
                 if (touchListeners[i].id == sense.id) {
                     touchListeners.splice(i, 1);
@@ -3335,7 +3335,7 @@ a4p.Sense = (function (navigator, window, document) {
         }, 750);
     }
 
-    Sense.hasTouch = miapp.BrowserCapabilities.hasTouch;
+    Sense.hasTouch = fidj.BrowserCapabilities.hasTouch;
 
     Sense.prototype.destroy = function () {
         if (this.destroyListener != null) {

@@ -1,0 +1,58 @@
+import { Client } from './client';
+import { ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface } from '../sdk/interfaces';
+import { LocalStorage } from '../tools';
+import { ConnectionFindOptionsInterface } from './interfaces';
+export declare class Connection {
+    private _sdk;
+    private _storage;
+    fidjId: string;
+    fidjVersion: string;
+    fidjCrypto: boolean;
+    accessToken: string;
+    accessTokenPrevious: string;
+    idToken: string;
+    refreshToken: string;
+    states: {
+        [s: string]: {
+            state: boolean;
+            time: number;
+            lastTimeWasOk: number;
+        };
+    };
+    apis: Array<EndpointInterface>;
+    private cryptoSalt;
+    private cryptoSaltNext;
+    private client;
+    private user;
+    private static _accessToken;
+    private static _accessTokenPrevious;
+    private static _idToken;
+    private static _refreshToken;
+    private static _states;
+    private static _cryptoSalt;
+    private static _cryptoSaltNext;
+    constructor(_sdk: SdkInterface, _storage: LocalStorage);
+    isReady(): boolean;
+    destroy(force?: boolean): void;
+    setClient(client: Client): void;
+    setUser(user: any): void;
+    getUser(): any;
+    getClient(): Client;
+    setCryptoSalt(value: string): void;
+    setCryptoSaltAsVerified(): void;
+    encrypt(data: any): string;
+    decrypt(data: string): any;
+    isLogin(): boolean;
+    logout(): Promise<void | ErrorInterface>;
+    getClientId(): string;
+    getIdToken(): string;
+    getIdPayload(def?: any): string;
+    getAccessPayload(def?: any): string;
+    getPreviousAccessPayload(def?: any): string;
+    refreshConnection(): Promise<any | ErrorInterface>;
+    setConnection(clientUser: any): void;
+    setConnectionOffline(options: ModuleServiceLoginOptionsInterface): void;
+    getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface>;
+    getDBs(options?: ConnectionFindOptionsInterface): EndpointInterface[];
+    verifyConnectionStates(): Promise<any | ErrorInterface>;
+}

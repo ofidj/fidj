@@ -1,8 +1,8 @@
 
 
-// Namespace miapp
-var miapp;
-if (!miapp) miapp = {};
+// Namespace fidj
+var fidj;
+if (!fidj) fidj = {};
 
 /**
  *
@@ -10,7 +10,7 @@ if (!miapp) miapp = {};
  *  http://www.webtoolkit.info/
  *
  **/
-miapp.Sha1 = (function () {
+fidj.Sha1 = (function () {
 'use strict';
 
     var Sha1 = {};
@@ -21,7 +21,7 @@ miapp.Sha1 = (function () {
      * Hash string
      */
     Sha1.hash = function (input) {
-        var s = miapp.Utf8.encode(input);
+        var s = fidj.Utf8.encode(input);
         return binb2rstr(binb_sha1(rstr2binb(s), s.length * 8));
     };
 
@@ -31,8 +31,8 @@ miapp.Sha1 = (function () {
     Sha1.key256 = function (password) {
         var nBytes = 256 / 8;  // no bytes in key
         var halfLen = password.length / 2;
-        var hash1 = miapp.Sha1.hash(password.substr(0, halfLen));
-        var hash2 = miapp.Sha1.hash(password.substr(halfLen));
+        var hash1 = fidj.Sha1.hash(password.substr(0, halfLen));
+        var hash2 = fidj.Sha1.hash(password.substr(halfLen));
         return hash1.substr(0, 16) + hash2.substr(0, nBytes - 16);  // expand key to 16/24/32 bytes long
     };
 
