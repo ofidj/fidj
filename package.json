@@ -6,7 +6,7 @@
     "test": "karma start ./test/karma.unit-tests.conf.js",
     "build": "npm run build:angular",
     "build:angular": "ng-packagr -p ng-package.json && gulp dist:clean",
-    "build:angularjs": "tsc -p tsconfig.angularjs.json && uglifyjs dist/fidj.angularjs.js -o dist/fidj.angularjs.min.js --compress --mangle",
+    "build:angularjs": "tsc -p tsconfig.angularjs.json && uglifyjs .dist/fidj.angularjs.js -o .dist/fidj.angularjs.min.js --compress --mangle",
     "docs": "typedoc --ignoreCompilerErrors --mode file --out ./docs ./src/index.ts",
     "bump": "gulp bump"
   },
