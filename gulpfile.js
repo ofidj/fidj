@@ -4,13 +4,13 @@ const replace = require('gulp-replace');
 const fs = require('fs');
 
 gulp.task('dist:clean', function (done) {
-    const packageJson = JSON.parse(fs.readFileSync('./.dist/package.json').toString());
+    const packageJson = JSON.parse(fs.readFileSync('./dist/package.json').toString());
     delete packageJson.devDependencies;
     delete packageJson.scripts;
 
     // todo #hack to remove : tslib
     delete packageJson.dependencies.tslib;
-    fs.writeFileSync('./.dist/package.json', JSON.stringify(packageJson, null, 2));
+    fs.writeFileSync('./dist/package.json', JSON.stringify(packageJson, null, 2));
 
     // todo #hack to remove : pouchdb-adapter-cordova-sqlite
     delete packageJson.dependencies['pouchdb-adapter-cordova-sqlite'];

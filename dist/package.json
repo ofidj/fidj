@@ -2,14 +2,6 @@
   "name": "fidj",
   "version": "2.1.11",
   "description": "fidj.ovh js framework",
-  "scripts": {
-    "test": "karma start ./test/karma.unit-tests.conf.js",
-    "build": "npm run build:angular",
-    "build:angular": "ng-packagr -p ng-package.json && gulp dist:clean",
-    "build:angularjs": "tsc -p tsconfig.angularjs.json && uglifyjs dist/fidj.angularjs.js -o dist/fidj.angularjs.min.js --compress --mangle",
-    "docs": "typedoc --ignoreCompilerErrors --mode file --out ./docs ./src/index.ts",
-    "bump": "gulp bump"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ofidj/fidj.git"
@@ -32,7 +24,8 @@
   "dependencies": {
     "ajv": "^6.5.3",
     "pouchdb": "^7.0.0",
-    "pouchdb-adapter-cordova-sqlite": "^2.0.5"
+    "pouchdb-adapter-cordova-sqlite": "^2.0.5",
+    "tslib": "^1.9.0"
   },
   "devDependencies": {
     "@angular/cli": "^6.2.2",
@@ -72,7 +65,7 @@
     "shx": "^0.3.2",
     "tslint": "*",
     "typedoc": "*",
-    "typescript": "^2.7.2",
+    "typescript": "*",
     "uglify-js": "*",
     "zone.js": "^0.8.26"
   },
@@ -94,5 +87,15 @@
     "angular": "^1.5.3",
     "angular-mocks": "^1.5.3"
   },
-  "angularjsMain": "fidj.angularjs.js"
+  "angularjsMain": "fidj.angularjs.js",
+  "main": "bundles/fidj.umd.js",
+  "module": "fesm5/fidj.js",
+  "es2015": "fesm2015/fidj.js",
+  "esm5": "esm5/fidj.js",
+  "esm2015": "esm2015/fidj.js",
+  "fesm5": "fesm5/fidj.js",
+  "fesm2015": "fesm2015/fidj.js",
+  "typings": "fidj.d.ts",
+  "metadata": "fidj.metadata.json",
+  "sideEffects": false
 }

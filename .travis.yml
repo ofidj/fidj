@@ -12,7 +12,7 @@ after_success:
 - bash .travis.deploy.sh
 before_deploy:
 - ls -al
-- cd .dist
+- cd dist
 deploy:
   provider: npm
   email: mat@mlefree.com
