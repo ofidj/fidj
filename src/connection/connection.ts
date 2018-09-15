@@ -388,7 +388,7 @@ export class Connection {
 
         // todo : let ea = ['https://fidj/api', 'https://fidj-proxy.herokuapp.com/api'];
         let ea: EndpointInterface[] = [
-            {key: 'fidj.default', url: 'https://fidj/api', blocked: false}];
+            {key: 'fidj.default', url: 'https://fidj.ovh/api', blocked: false}];
         let filteredEa = [];
 
         if (!this._sdk.prod) {
