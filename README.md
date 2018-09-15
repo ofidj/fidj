@@ -87,5 +87,5 @@ https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/
 
 # Thanks
 
-[@fidj](https://fidj) @mat_cloud 
+[@fidj](https://fidj.ovh) @mat_cloud 
  
