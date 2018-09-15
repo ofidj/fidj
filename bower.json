@@ -1,0 +1,56 @@
+{
+  "name": "fidj",
+  "version": "2.1.10",
+  "description": "miapp.io client SDK",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miappio/fidj.git"
+  },
+  "keywords": [
+    "miapp.io",
+    "mobile",
+    "angular",
+    "ng",
+    "ionic",
+    "integration"
+  ],
+  "author": "miapp.io",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miappio/fidj/issues"
+  },
+  "homepage": "https://github.com/miappio/fidj#readme",
+  "dependencies": {
+    "ajv": "^5.5.1",
+    "pouchdb": "^6.4.3"
+  },
+  "ignore": [
+    "**/.*",
+    "*.sh",
+    "_todo",
+    "src",
+    "docs",
+    "node_modules",
+    "bower_components",
+    "test",
+    "gulpfile.js",
+    "ng-package.json",
+    "tsconfig.json",
+    "tslint.json"
+  ],
+  "angularjsDependencies": {
+    "angular": "^1.5.3",
+    "angular-mocks": "^1.5.3"
+  },
+  "angularjsMain": "miapp.angularjs.js",
+  "main": "bundles/fidj.umd.js",
+  "module": "fesm5/fidj.js",
+  "es2015": "fesm2015/fidj.js",
+  "esm5": "esm5/fidj.js",
+  "esm2015": "esm2015/fidj.js",
+  "fesm5": "fesm5/fidj.js",
+  "fesm2015": "fesm2015/fidj.js",
+  "typings": "fidj.d.ts",
+  "metadata": "fidj.metadata.json",
+  "sideEffects": false
+}

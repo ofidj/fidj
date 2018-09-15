@@ -1,0 +1,97 @@
+{
+  "name": "fidj",
+  "version": "2.1.10",
+  "description": "miapp.io client SDK",
+  "scripts": {
+    "test": "karma start ./test/karma.unit-tests.conf.js",
+    "build": "npm run build:angular",
+    "build:angular": "ng-packagr -p ng-package.json && gulp dist:clean",
+    "build:angularjs": "tsc -p tsconfig.angularjs.json && uglifyjs dist/miapp.angularjs.js -o dist/miapp.angularjs.min.js --compress --mangle",
+    "docs": "typedoc --ignoreCompilerErrors --mode file --out ./docs ./src/index.ts",
+    "bump": "gulp bump"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miappio/fidj.git"
+  },
+  "keywords": [
+    "miapp.io",
+    "mobile",
+    "angular",
+    "ng",
+    "ionic",
+    "integration"
+  ],
+  "author": "miapp.io",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/miappio/fidj/issues"
+  },
+  "homepage": "https://github.com/miappio/fidj#readme",
+  "dependencies": {
+    "ajv": "^5.5.1",
+    "pouchdb": "^6.4.3",
+    "pouchdb-adapter-cordova-sqlite": "^2.0.3"
+  },
+  "devDependencies": {
+    "@angular/cli": "^1.7.4",
+    "@angular/common": "^5.2.11",
+    "@angular/compiler": "^5.2.11",
+    "@angular/compiler-cli": "^5.2.11",
+    "@angular/core": "^5.2.11",
+    "@angular/platform-browser": "^5.2.11",
+    "@angular/platform-browser-dynamic": "^5.2.11",
+    "@types/jasmine": "^2.8.8",
+    "@types/jasmine-ajax": "^3.1.37",
+    "@types/node": "^8.10.20",
+    "ajv": "^5.5.1",
+    "async": "^2.6.1",
+    "awesome-typescript-loader": "^3.5.0",
+    "babel-polyfill": "^6.26.0",
+    "del": "^2.2.2",
+    "gulp": "^4.0.0",
+    "gulp-bump": "^2.8.0",
+    "gulp-replace": "^0.6.1",
+    "jasmine-core": "^3.1.0",
+    "karma": "^2.0.4",
+    "karma-chrome-launcher": "*",
+    "karma-es6-shim": "*",
+    "karma-html-reporter": "*",
+    "karma-jasmine": "^1.1.2",
+    "karma-jasmine-ajax": "*",
+    "karma-jasmine-html-reporter": "^1.1.0",
+    "karma-jasmine-html-reporter-livereload": "*",
+    "karma-phantomjs-launcher": "*",
+    "karma-spec-reporter": "*",
+    "karma-typescript": "^3.0.13",
+    "karma-typescript-angular2-transform": "*",
+    "ng-packagr": "^3.0.3",
+    "node-sass": "^4.9.2",
+    "rxjs": "^5.5.11",
+    "shx": "^0.2.2",
+    "tslint": "^5.10.0",
+    "typedoc": "^0.10.0",
+    "typescript": "^2.9.2",
+    "uglify-js": "^3.4.1",
+    "zone.js": "^0.8.25"
+  },
+  "ignore": [
+    "**/.*",
+    "*.sh",
+    "_todo",
+    "src",
+    "docs",
+    "node_modules",
+    "bower_components",
+    "test",
+    "gulpfile.js",
+    "ng-package.json",
+    "tsconfig.json",
+    "tslint.json"
+  ],
+  "angularjsDependencies": {
+    "angular": "^1.5.3",
+    "angular-mocks": "^1.5.3"
+  },
+  "angularjsMain": "miapp.angularjs.js"
+}

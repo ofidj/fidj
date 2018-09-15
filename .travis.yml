@@ -1,0 +1,18 @@
+language:
+- node_js
+node_js:
+- 10.1.0
+script:
+- npm test
+after_success:
+- bash .travis.deploy.sh
+before_deploy:
+- cd dist
+deploy:
+  provider: npm
+  email: mat@mlefree.com
+  skip_cleanup: true
+  api_key:
+    secure: UbrkDmG6/cKrLtvvSZZ0KZ3zbXJTQ/DpqYrKRYepI7PccE4yl5/hH6acZUbhBAZa2IRaymMYJzjO/LT+DD2egR/IpR28pEqTgTO9IJzFGXnGU8QeAJSN3NM1SRjLNJp8Ns+9BwzGPsAbWXcdRkk6MRCdXwEH7reQfkggw0OWJxCuwdYCf8wo5NLpVE0RkIDpX0VwYYDwG3nkHAnnln3OMpgLO/s05QDrNJYE+Q4nk6fqR9fU4GkjKad4PFCqT0kvWtLLCSCaho25Id7jqA+ciykYHC6hcWxfpN82TQVlAFPDRzfc3TBrz9H1LbTh7mnCOx3vQdqNp2X3tE/R/OGwPKmYPc3wp+BBohSQlvsuk8AZseMWpv83/Bae9JLBpZAmRgPuheQriKXNIzYXk0BXmNw/MxVmKrtvd/ZDXaiRj3rfQ9po7Hsi/E9pzbMhT0MTLhbSgca3UPTaP5bdZfzpbk7BSVit8Dljet2HcicMM0wRJKuTm9l2heScXJQ/YTCEcg7KscfuEIsAulWPMwKwF4DeHPX45iMHqawjcDEmmtjQ0GJ32DGkeLmsbPmTxFjQe4uC8KzqaJRmtpWuIcFQ98e1jtboWp3Y/eAtkROLE53k8ZKo2F5toWXVGt7BK1mDwHGbASWTNOcwZCoMvCwyQ22UoQIzBhxUCCn9GHN84wE=
+  on:
+    branch: master
