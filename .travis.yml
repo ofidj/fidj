@@ -7,6 +7,7 @@ script:
 after_success:
 - bash .travis.deploy.sh
 before_deploy:
+- ls -al
 - cd dist
 deploy:
   provider: npm
