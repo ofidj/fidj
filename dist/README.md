@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/ofidj/fidj.svg?branch=master)](https://travis-ci.org/ofidj/fidj) 
 [![NPM version](https://badge.fury.io/js/fidj.svg)](https://www.npmjs.com/package/fidj) 
 [![Bower version](https://badge.fury.io/bo/fidj.svg)](https://libraries.io/bower/fidj)
-[![Package Quality](http://npm.packagequality.com/badge/fidj.png)](http://packagequality.com/#?package=fidj)
+[![Package Quality](http://npm.packagequality.com/shield/fidj.svg)](http://packagequality.com/#?package=fidj)
 
 > [Install](https://github.com/ofidj/fidj#install) | [APIs](https://ofidj.github.io/fidj) | [Support](https://github.com/ofidj/fidj#develop) | [Thanks!](https://github.com/ofidj/fidj#thanks)
 
