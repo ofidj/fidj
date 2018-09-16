@@ -76,22 +76,19 @@
 				Fidj.ovh will support you to manager auth, session storage.</p>
 				<h3 id="easiest-way">Easiest way</h3>
 				<p>From scratch, with <em>yeoman</em> like described here : <a href="https://github.com/ofidj/fidj/wiki/How-build-a-freemium-angular-mobile-application-in-10-minutes">https://github.com/ofidj/fidj/wiki/How-build-a-freemium-angular-mobile-application-in-10-minutes</a></p>
-				<pre><code class="lang-bash">yo fidj
-</code></pre>
+				<pre><code class="language-bash">yo fidj</code></pre>
 				<h3 id="normal-way">Normal way</h3>
 				<p>Install with NPM :</p>
-				<pre><code class="lang-bash">npm install fidj --save
-</code></pre>
+				<pre><code class="language-bash">npm install fidj --save</code></pre>
 				<p>Or Bower :</p>
-				<pre><code class="lang-bash">bower install fidj
-</code></pre>
+				<pre><code class="language-bash">bower install fidj</code></pre>
 				<p>Then look at APIs and integration patterns described in <a href="https://ofidj.github.io/fidj/">https://ofidj.github.io/fidj/</a></p>
 				<ul>
 					<li>with <a href="https://ofidj.github.io/fidj/classes/fidjservice.html">Angular</a></li>
 					<li>with pure js</li>
 				</ul>
 				<p>or in brief (if your familiar with promise) :</p>
-				<pre><code class="lang-js"><span class="hljs-comment">// init your app</span>
+				<pre><code class="language-js"><span class="hljs-comment">// init your app</span>
 fidjService.init(<span class="hljs-string">'FidjId from https://fidj'</span>)
 .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-comment">// login (auto register) your user</span>
@@ -111,22 +108,19 @@ fidjService.init(<span class="hljs-string">'FidjId from https://fidj'</span>)
     alert(err);
     fidjService.logout();
 });
-
 </code></pre>
 				<h1 id="2-you-re-a-fidj-dev">2) You&#39;re a fidj dev</h1>
 				<p>Thank you for your support !</p>
 				<p>Fidj.ovh is an Open Source project - we need you to provide great tools to great apps.</p>
 				<h2 id="develop">Develop</h2>
 				<p>Fork the project</p>
-				<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> https://github.com/ofidj/fidj.git
+				<pre><code class="language-bash">git <span class="hljs-built_in">clone</span> https://github.com/ofidj/fidj.git
 <span class="hljs-built_in">cd</span> fidj
-npm install
-</code></pre>
+npm install</code></pre>
 				<p>and pull request ...</p>
 				<h3 id="testing">Testing</h3>
 				<p>With npm :</p>
-				<pre><code class="lang-bash">$ npm <span class="hljs-built_in">test</span>
-</code></pre>
+				<pre><code class="language-bash">$ npm <span class="hljs-built_in">test</span></code></pre>
 				<p>With a swagger UI :<br><a href="https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/">https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/</a></p>
 				<h1 id="thanks">Thanks</h1>
 				<p><a href="https://fidj.ovh">@fidj</a> @mat_cloud </p>
