@@ -1,6 +1,6 @@
 {
   "name": "fidj",
-  "version": "2.1.15",
+  "version": "2.1.16",
   "description": "fidj.ovh js framework",
   "scripts": {
     "test": "karma start ./test/karma.unit-tests.conf.js",
