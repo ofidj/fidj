@@ -393,7 +393,7 @@ export class Connection {
 
         if (!this._sdk.prod) {
             ea = [
-                {key: 'fidj.default', url: 'http://localhost:5894/api', blocked: false},
+                {key: 'fidj.default', url: 'http://localhost:3201/api', blocked: false},
                 {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/api', blocked: false}
             ];
         }

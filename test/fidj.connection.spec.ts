@@ -494,27 +494,27 @@ describe('fidj.connection', () => {
 
             // without initialisation : default endpoints
             expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/api');
             expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints({filter: 'theBestOldOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/api');
 
             // with corrupted access_token endpoints : default endpoints
             srv.accessToken = 'aaa.bbb.ccc';
             expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/api');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:5894/api');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/api');
 
             // with access_token without endpoints : default endpoints
             srv.accessToken = mocks.tokens.withoutAnyUrl;
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/api');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:5894/api');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/api');
 
             // with valid access_token endpoints : valid new enpoints
             srv.accessToken = mocks.tokens.withApis01;
@@ -567,9 +567,9 @@ describe('fidj.connection', () => {
             srv.accessTokenPrevious = previous;
             srv.accessToken = null;
             expect(srv.getApiEndpoints().length).toBe(4);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/api');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints()[2].url).toBe('http://api_1');
             expect(srv.getApiEndpoints()[3].url).toBe('http://api_2');
 
@@ -577,9 +577,9 @@ describe('fidj.connection', () => {
             srv.accessTokenPrevious = previous;
             srv.accessToken = 'aaa.bbb.ccc';
             expect(srv.getApiEndpoints().length).toBe(4);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/api');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:5894/api');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/api');
             expect(srv.getApiEndpoints()[2].url).toBe('http://api_1');
             expect(srv.getApiEndpoints()[3].url).toBe('http://api_2');
 

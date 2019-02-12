@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/ofidj/fidj#readme",
   "dependencies": {
-    "ajv": "^6.5.3",
     "pouchdb": "^7.0.0"
   },
   "ignore": [
