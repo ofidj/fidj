@@ -404,7 +404,7 @@ var Xor = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /** @type {?} */
-var version = '2.1.15';
+var version = '2.1.16';
 
 /**
  * @fileoverview added by tsickle

@@ -296,7 +296,7 @@ Xor.header = 'artemis-lotsum';
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /** @type {?} */
-const version = '2.1.15';
+const version = '2.1.16';
 
 /**
  * @fileoverview added by tsickle
