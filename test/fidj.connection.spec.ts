@@ -37,6 +37,28 @@ describe('fidj.connection', () => {
                 .catch((err) => done.fail(err));
         });
 
+        it('should POST to a URI as json', (done) => {
+
+            const jsonData = {name: _dogName};
+            jasmine.Ajax.stubRequest(/.*sandbox*/)
+                .andReturn({
+                    status: 200,
+                    //contentType: 'application/json',
+                    responseText: JSON.stringify(jsonData)
+                });
+            new Ajax()
+                .post({url: _dogURI, data: jsonData, headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}})
+                .then((data) => {
+                    const request = jasmine.Ajax.requests.mostRecent();
+                    expect(request.url).toBe(_dogURI);
+                    // console.log('data:', data);
+                    expect(data.name).toBe(_dogName);
+                    done();
+                })
+                .catch((err) => done.fail(err));
+        });
+
+
         it('should GET a URI', (done) => {
             jasmine.Ajax.stubRequest(/.*sandbox*/).andReturn(
                 {
