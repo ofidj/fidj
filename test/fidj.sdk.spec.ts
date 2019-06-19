@@ -277,6 +277,30 @@ describe('fidj.sdk', () => {
                 });
         });
 
+        it('should fidjLogout OK : without initialisation and with Forced', function (done) {
+
+            const srv = new InternalService(_log, _q);
+            (srv as any).connection = {
+                getClient: () => {
+                },
+                logout: () => {
+                }
+            };
+            spyOn((srv as any).connection, 'getClient').and.returnValue(false);
+            spyOn((srv as any).connection, 'logout').and.returnValue(Promise.resolve());
+            spyOn((srv as any), '_removeAll').and.returnValue(Promise.resolve());
+            srv
+                .fidjLogout(true)
+                .then(() => {
+                    expect((srv as any).connection.getClient).toHaveBeenCalledTimes(1);
+                    expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);
+                    done();
+                })
+                .catch(function (err) {
+                    done.fail(err);
+                });
+        });
+
         it('should fidjLogout OK', function (done) {
 
             const srv = new InternalService(_log, _q);

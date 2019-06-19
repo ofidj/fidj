@@ -152,12 +152,12 @@ export class Session {
                                 // this.logger
                                 resolve();
                             })
-                            .on('denied', (err) => reject({code: 403, reason: err}))
-                            .on('error', (err) => reject({code: 401, reason: err}));
+                            .on('denied', (err) => reject({code: 403, reason: {second: err}}))
+                            .on('error', (err) => reject({code: 401, reason:  {second: err}}));
 
                     })
-                    .on('denied', (err) => reject({code: 403, reason: err}))
-                    .on('error', (err) => reject({code: 401, reason: err}));
+                    .on('denied', (err) => reject({code: 403, reason:  {first: err}}))
+                    .on('error', (err) => reject({code: 401, reason:  {first: err}}));
 
             } catch (err) {
                 reject(new Error(500, err));
@@ -361,7 +361,7 @@ export class Session {
 
     static write(item: any): string {
         let value = 'null';
-        const t = typeof(item);
+        const t = typeof (item);
         if (t === 'undefined') {
             value = 'null';
         } else if (value === null) {
@@ -380,7 +380,7 @@ export class Session {
 
     static value(item: any): any {
         let result = item;
-        if (typeof(item) !== 'object') {
+        if (typeof (item) !== 'object') {
             // return item;
         } else if ('string' in item) {
             result = item.string;
@@ -390,7 +390,7 @@ export class Session {
             result = item.bool.valueOf();
         } else if ('json' in item) {
             result = item.json;
-            if (typeof(result) !== 'object') {
+            if (typeof (result) !== 'object') {
                 result = JSON.parse(result);
             }
         }

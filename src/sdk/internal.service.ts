@@ -46,10 +46,14 @@ export class InternalService {
             warn: () => {
             }
         };
-        if (logger && window.console && logger === window.console) {
+        if (logger) {
+            this.logger = logger;
+        } else if (window.console) { // && logger === window.console
+            this.logger.log = window.console.log;
             this.logger.error = window.console.error;
             this.logger.warn = window.console.warn;
         }
+        // console.log('logger: ', this.logger);
         this.logger.log('fidj.sdk.service : constructor');
         if (promise) {
             this.promise = promise;
@@ -240,9 +244,9 @@ export class InternalService {
         return this.connection.isLogin();
     };
 
-    public fidjLogout(): Promise<void | ErrorInterface> {
+    public fidjLogout(force?: boolean): Promise<void | ErrorInterface> {
         const self = this;
-        if (!self.connection.getClient()) {
+        if (!self.connection.getClient() && !force) {
             return self._removeAll()
                 .then(() => {
                     return this.session.create(self.connection.fidjId, true);

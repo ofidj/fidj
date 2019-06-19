@@ -106,11 +106,11 @@ export class FidjService implements ModuleServiceInterface {
         return this.fidjService.fidjMessage();
     };
 
-    public logout(): Promise<void | ErrorInterface> {
-        if (!this.fidjService) {
+    public logout(force?: boolean): Promise<void | ErrorInterface> {
+        if (force || !this.fidjService) {
             return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.logout : not initialized.'));
         }
-        return this.fidjService.fidjLogout();
+        return this.fidjService.fidjLogout(force);
     };
 
     /**
@@ -182,16 +182,16 @@ export class FidjService implements ModuleServiceInterface {
 }
 
 export class LoggerService implements LoggerInterface {
-    log(message: string) {
-        // console.log(message);
+    log(message: string, args: [any]) {
+        console.log(message, args);
     }
 
-    error(message: string) {
-        console.error(message);
+    error(message: string, args: [any]) {
+        console.error(message, args);
     }
 
-    warn(message: string) {
-        console.warn(message);
+    warn(message: string, args: [any]) {
+        console.warn(message, args);
     }
 }
 
