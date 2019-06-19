@@ -27,7 +27,7 @@ export interface ModuleServiceInterface {
     postOnEndpoint(key: string, data: any): Promise<any | ErrorInterface>;
     getIdToken(): string;
     getMessage(): string;
-    logout(): Promise<void | ErrorInterface>;
+    logout(force?: boolean): Promise<void | ErrorInterface>;
     sync(fnInitFirstData?: any): Promise<any | ErrorInterface>;
     put(data: any): Promise<any | ErrorInterface>;
     remove(dataId: any): Promise<any | ErrorInterface>;

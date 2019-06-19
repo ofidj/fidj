@@ -45,7 +45,7 @@ export declare class InternalService {
     fidjRoles(): Array<string>;
     fidjMessage(): string;
     fidjIsLogin(): boolean;
-    fidjLogout(): Promise<void | ErrorInterface>;
+    fidjLogout(force?: boolean): Promise<void | ErrorInterface>;
     /**
      * Synchronize DB
      *

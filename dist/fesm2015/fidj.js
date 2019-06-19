@@ -296,7 +296,7 @@ Xor.header = 'artemis-lotsum';
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /** @type {?} */
-const version = '2.1.17';
+const version = '2.1.18';
 
 /**
  * @fileoverview added by tsickle
@@ -1755,11 +1755,11 @@ class Session {
                         // this.logger
                         resolve();
                     })
-                        .on('denied', (err) => reject({ code: 403, reason: err }))
-                        .on('error', (err) => reject({ code: 401, reason: err }));
+                        .on('denied', (err) => reject({ code: 403, reason: { second: err } }))
+                        .on('error', (err) => reject({ code: 401, reason: { second: err } }));
                 })
-                    .on('denied', (err) => reject({ code: 403, reason: err }))
-                    .on('error', (err) => reject({ code: 401, reason: err }));
+                    .on('denied', (err) => reject({ code: 403, reason: { first: err } }))
+                    .on('error', (err) => reject({ code: 401, reason: { first: err } }));
             }
             catch (err) {
                 reject(new Error$1(500, err));
@@ -2093,10 +2093,16 @@ class InternalService {
             warn: () => {
             }
         };
-        if (logger && window.console && logger === window.console) {
+        if (logger) {
+            this.logger = logger;
+        }
+        else if (window.console) { // && logger === window.console
+            // && logger === window.console
+            this.logger.log = window.console.log;
             this.logger.error = window.console.error;
             this.logger.warn = window.console.warn;
         }
+        // console.log('logger: ', this.logger);
         this.logger.log('fidj.sdk.service : constructor');
         if (promise) {
             this.promise = promise;
@@ -2298,12 +2304,13 @@ class InternalService {
     }
     ;
     /**
+     * @param {?=} force
      * @return {?}
      */
-    fidjLogout() {
+    fidjLogout(force) {
         /** @type {?} */
         const self = this;
-        if (!self.connection.getClient()) {
+        if (!self.connection.getClient() && !force) {
             return self._removeAll()
                 .then(() => {
                 return this.session.create(self.connection.fidjId, true);
@@ -2766,13 +2773,14 @@ class FidjService {
     }
     ;
     /**
+     * @param {?=} force
      * @return {?}
      */
-    logout() {
-        if (!this.fidjService) {
+    logout(force) {
+        if (force || !this.fidjService) {
             return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.logout : not initialized.'));
         }
-        return this.fidjService.fidjLogout();
+        return this.fidjService.fidjLogout(force);
     }
     ;
     /**
@@ -2855,24 +2863,27 @@ FidjService.ctorParameters = () => [];
 class LoggerService {
     /**
      * @param {?} message
+     * @param {?} args
      * @return {?}
      */
-    log(message) {
-        // console.log(message);
+    log(message, args) {
+        console.log(message, args);
     }
     /**
      * @param {?} message
+     * @param {?} args
      * @return {?}
      */
-    error(message) {
-        console.error(message);
+    error(message, args) {
+        console.error(message, args);
     }
     /**
      * @param {?} message
+     * @param {?} args
      * @return {?}
      */
-    warn(message) {
-        console.warn(message);
+    warn(message, args) {
+        console.warn(message, args);
     }
 }
 

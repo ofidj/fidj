@@ -28,7 +28,7 @@ export declare class FidjService implements ModuleServiceInterface {
     postOnEndpoint(key: string, data: any): Promise<any | ErrorInterface>;
     getIdToken(): string;
     getMessage(): string;
-    logout(): Promise<void | ErrorInterface>;
+    logout(force?: boolean): Promise<void | ErrorInterface>;
     /**
      *
      * Synchronize DB
@@ -67,7 +67,7 @@ export declare class FidjService implements ModuleServiceInterface {
     findAll(): Promise<any[] | ErrorInterface>;
 }
 export declare class LoggerService implements LoggerInterface {
-    log(message: string): void;
-    error(message: string): void;
-    warn(message: string): void;
+    log(message: string, args: [any]): void;
+    error(message: string, args: [any]): void;
+    warn(message: string, args: [any]): void;
 }

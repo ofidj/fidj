@@ -406,7 +406,7 @@
      * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var version = '2.1.17';
+    var version = '2.1.18';
 
     /**
      * @fileoverview added by tsickle
@@ -2075,11 +2075,11 @@
                                 // this.logger
                                 resolve();
                             })
-                                .on('denied', function (err) { return reject({ code: 403, reason: err }); })
-                                .on('error', function (err) { return reject({ code: 401, reason: err }); });
+                                .on('denied', function (err) { return reject({ code: 403, reason: { second: err } }); })
+                                .on('error', function (err) { return reject({ code: 401, reason: { second: err } }); });
                         })
-                            .on('denied', function (err) { return reject({ code: 403, reason: err }); })
-                            .on('error', function (err) { return reject({ code: 401, reason: err }); });
+                            .on('denied', function (err) { return reject({ code: 403, reason: { first: err } }); })
+                            .on('error', function (err) { return reject({ code: 401, reason: { first: err } }); });
                     }
                     catch (err) {
                         reject(new Error$1(500, err));
@@ -2461,10 +2461,16 @@
                 warn: function () {
                 }
             };
-            if (logger && window.console && logger === window.console) {
+            if (logger) {
+                this.logger = logger;
+            }
+            else if (window.console) { // && logger === window.console
+                // && logger === window.console
+                this.logger.log = window.console.log;
                 this.logger.error = window.console.error;
                 this.logger.warn = window.console.warn;
             }
+            // console.log('logger: ', this.logger);
             this.logger.log('fidj.sdk.service : constructor');
             if (promise) {
                 this.promise = promise;
@@ -2694,16 +2700,18 @@
                 return this.connection.isLogin();
             };
         /**
+         * @param {?=} force
          * @return {?}
          */
         InternalService.prototype.fidjLogout = /**
+         * @param {?=} force
          * @return {?}
          */
-            function () {
+            function (force) {
                 var _this = this;
                 /** @type {?} */
                 var self = this;
-                if (!self.connection.getClient()) {
+                if (!self.connection.getClient() && !force) {
                     return self._removeAll()
                         .then(function () {
                         return _this.session.create(self.connection.fidjId, true);
@@ -3236,16 +3244,18 @@
                 return this.fidjService.fidjMessage();
             };
         /**
+         * @param {?=} force
          * @return {?}
          */
         FidjService.prototype.logout = /**
+         * @param {?=} force
          * @return {?}
          */
-            function () {
-                if (!this.fidjService) {
+            function (force) {
+                if (force || !this.fidjService) {
                     return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.logout : not initialized.'));
                 }
-                return this.fidjService.fidjLogout();
+                return this.fidjService.fidjLogout(force);
             };
         /**
          *
@@ -3361,36 +3371,42 @@
         }
         /**
          * @param {?} message
+         * @param {?} args
          * @return {?}
          */
         LoggerService.prototype.log = /**
          * @param {?} message
+         * @param {?} args
          * @return {?}
          */
-            function (message) {
-                // console.log(message);
+            function (message, args) {
+                console.log(message, args);
             };
         /**
          * @param {?} message
+         * @param {?} args
          * @return {?}
          */
         LoggerService.prototype.error = /**
          * @param {?} message
+         * @param {?} args
          * @return {?}
          */
-            function (message) {
-                console.error(message);
+            function (message, args) {
+                console.error(message, args);
             };
         /**
          * @param {?} message
+         * @param {?} args
          * @return {?}
          */
         LoggerService.prototype.warn = /**
          * @param {?} message
+         * @param {?} args
          * @return {?}
          */
-            function (message) {
-                console.warn(message);
+            function (message, args) {
+                console.warn(message, args);
             };
         return LoggerService;
     }());
