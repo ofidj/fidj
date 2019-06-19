@@ -42,7 +42,7 @@ export interface ModuleServiceInterface {
 
     getMessage(): string;
 
-    logout(): Promise<void | ErrorInterface>;
+    logout(force?: boolean): Promise<void | ErrorInterface>;
 
     sync(fnInitFirstData?: any): Promise<any | ErrorInterface>;
 

@@ -143,11 +143,11 @@ export class FidjAngularjsService implements ModuleServiceInterface {
      * Logout all fidj services
      * @memberof fidj.angularService
      */
-    logout(): Promise<void | ErrorInterface> {
+    logout(force?: boolean): Promise<void | ErrorInterface> {
         if (!this.fidjService) {
             return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.logout : not initialized.'));
         }
-        return this.fidjService.fidjLogout();
+        return this.fidjService.fidjLogout(force);
     };
 
     sync(fnInitFirstData): Promise<void | ErrorInterface> {
