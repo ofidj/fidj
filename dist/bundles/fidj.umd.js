@@ -406,7 +406,7 @@
      * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var version = '2.1.15';
+    var version = '2.1.17';
 
     /**
      * @fileoverview added by tsickle
