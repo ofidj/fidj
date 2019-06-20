@@ -357,8 +357,11 @@ export class InternalService {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
 
-        if (!self.connection.getClientId() || !self.session.isReady()) {
+        if (!self.connection.getClientId()) {
             return self.promise.reject(new Error(401, 'DB put impossible. Need a user logged in.'));
+        }
+        if (!self.session.isReady()) {
+            return self.promise.reject(new Error(400, 'Need to be synchronised.'));
         }
 
         let _id: string;
@@ -390,8 +393,7 @@ export class InternalService {
         self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
 
         if (!self.session.isReady()) {
-            return self.promise.reject(new Error(401, 'DB remove impossible. ' +
-                'Need a user logged in.'));
+            return self.promise.reject(new Error(400, 'Need to be synchronised.'));
         }
 
         if (!data_id || typeof data_id !== 'string') {
@@ -404,8 +406,11 @@ export class InternalService {
 
     public fidjFindInDb(data_id: string): Promise<any | ErrorInterface> {
         const self = this;
-        if (!self.connection.getClientId() || !self.session.isReady()) {
-            return self.promise.reject(new Error(401, 'fidj.sdk.service.fidjFindInDb : need a user logged in.'));
+        if (!self.connection.getClientId()) {
+            return self.promise.reject(new Error(401, 'Find pb : need a user logged in.'));
+        }
+        if (!self.session.isReady()) {
+            return self.promise.reject(new Error(400, ' Need to be synchronised.'));
         }
 
         let crypto: SessionCryptoInterface;
@@ -422,8 +427,11 @@ export class InternalService {
     public fidjFindAllInDb(): Promise<Array<any> | ErrorInterface> {
         const self = this;
 
-        if (!self.connection.getClientId() || !self.session.isReady()) {
+        if (!self.connection.getClientId()) {
             return self.promise.reject(new Error(401, 'Need a user logged in.'));
+        }
+        if (!self.session.isReady()) {
+            return self.promise.reject(new Error(400, 'Need to be synchronised.'));
         }
 
         let crypto: SessionCryptoInterface;
