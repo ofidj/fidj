@@ -406,7 +406,7 @@
      * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var version = '2.1.18';
+    var version = '2.1.19';
 
     /**
      * @fileoverview added by tsickle
@@ -2832,8 +2832,11 @@
                 /** @type {?} */
                 var self = this;
                 self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
-                if (!self.connection.getClientId() || !self.session.isReady()) {
+                if (!self.connection.getClientId()) {
                     return self.promise.reject(new Error$1(401, 'DB put impossible. Need a user logged in.'));
+                }
+                if (!self.session.isReady()) {
+                    return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
                 }
                 /** @type {?} */
                 var _id;
@@ -2866,8 +2869,7 @@
                 var self = this;
                 self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
                 if (!self.session.isReady()) {
-                    return self.promise.reject(new Error$1(401, 'DB remove impossible. ' +
-                        'Need a user logged in.'));
+                    return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
                 }
                 if (!data_id || typeof data_id !== 'string') {
                     return self.promise.reject(new Error$1(400, 'DB remove impossible. ' +
@@ -2886,8 +2888,11 @@
             function (data_id) {
                 /** @type {?} */
                 var self = this;
-                if (!self.connection.getClientId() || !self.session.isReady()) {
-                    return self.promise.reject(new Error$1(401, 'fidj.sdk.service.fidjFindInDb : need a user logged in.'));
+                if (!self.connection.getClientId()) {
+                    return self.promise.reject(new Error$1(401, 'Find pb : need a user logged in.'));
+                }
+                if (!self.session.isReady()) {
+                    return self.promise.reject(new Error$1(400, ' Need to be synchronised.'));
                 }
                 /** @type {?} */
                 var crypto;
@@ -2908,8 +2913,11 @@
             function () {
                 /** @type {?} */
                 var self = this;
-                if (!self.connection.getClientId() || !self.session.isReady()) {
+                if (!self.connection.getClientId()) {
                     return self.promise.reject(new Error$1(401, 'Need a user logged in.'));
+                }
+                if (!self.session.isReady()) {
+                    return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
                 }
                 /** @type {?} */
                 var crypto;
