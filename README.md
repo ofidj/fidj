@@ -58,7 +58,6 @@ fidjService.init('FidjId from https://fidj')
 
 ```
 
-
 # 2) You're a fidj dev
 Thank you for your support !
 

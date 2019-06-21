@@ -61,6 +61,7 @@ export interface ModuleServiceInitOptionsInterface {
     // forcedEndpoint?: string,
     // forcedDBEndpoint?: string,
     crypto?: boolean,
+    logLevel?: LoggerLevelEnum
 }
 
 export interface ModuleServiceLoginOptionsInterface {
@@ -75,8 +76,17 @@ export interface SdkInterface {
     prod: boolean
 }
 
+export enum LoggerLevelEnum {
+    LOG = 1,
+    WARN = 2,
+    ERROR = 3,
+    NONE = 4
+}
+
 export interface LoggerInterface {
+    setLevel: (LoggerLevelEnum) => void;
+
     log: (a?, b?, c?, d?, e?, f?) => any;
-    error: (a?, b?, c?, d?, e?, f?) => any;
     warn: (a?, b?, c?, d?, e?, f?) => any;
+    error: (a?, b?, c?, d?, e?, f?) => any;
 }

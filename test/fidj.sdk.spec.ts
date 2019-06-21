@@ -1,10 +1,10 @@
 import {InternalService} from '../src/sdk/internal.service';
 import {SessionCryptoInterface} from '../src/session';
 import {ConnectionFindOptionsInterface, Error as FidjError} from '../src/connection';
-import * as tools from '../src/tools';
 import {Base64} from '../src/tools';
+import {EndpointFilterInterface, ErrorInterface, LoggerLevelEnum, ModuleServiceInitOptionsInterface} from '../src/sdk/interfaces';
+import {LoggerService} from '../src';
 import createSpy = jasmine.createSpy;
-import {EndpointFilterInterface, ErrorInterface} from '../src/sdk/interfaces';
 
 describe('fidj.sdk', () => {
 
@@ -57,11 +57,33 @@ describe('fidj.sdk', () => {
                 });
         });
 
+        it('should fidjInit use Logger with the right level', function (done) {
+
+            const options: ModuleServiceInitOptionsInterface = {prod: true, crypto: true, logLevel: LoggerLevelEnum.NONE};
+            const log = new LoggerService();
+            spyOn(log, 'log');
+            spyOn(log, 'error');
+            spyOn(log, 'setLevel');
+            const srv = new InternalService(log, _q);
+            srv
+                .fidjInit(null, options)
+                .then(() => {
+                    done.fail('should fail');
+                })
+                .catch(function (err) {
+                    expect(log.log).toHaveBeenCalled();
+                    expect(log.error).toHaveBeenCalled();
+                    expect(log.setLevel).toHaveBeenCalledTimes(1);
+                    expect(log.setLevel).toHaveBeenCalledWith(LoggerLevelEnum.NONE);
+                    done();
+                });
+        });
+
         it('should fidjInit KO : without required fidjId', function (done) {
 
             const srv = new InternalService(_log, _q);
             srv
-                .fidjInit(null)
+                .fidjInit(null, {prod: true, logLevel: LoggerLevelEnum.NONE})
                 .then(() => {
                     done.fail('should fail');
                 })
@@ -78,7 +100,7 @@ describe('fidj.sdk', () => {
             spyOn((srv as any).connection, 'verifyConnectionStates').and.returnValue(_q.reject('no connection'));
 
             srv
-                .fidjInit('testAppWithVerifyReject')
+                .fidjInit('testAppWithVerifyReject', {prod: false, logLevel: LoggerLevelEnum.NONE})
                 .then(() => {
                     done.fail('should fail');
                 })

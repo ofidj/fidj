@@ -48,6 +48,7 @@ export class Session {
         this.dbRecordCount = 0;
         this.dbLastSync = null; // new Date().getTime();
         this.db = null;
+        uid = uid || 'default';
 
         return new Promise((resolve, reject) => {
 

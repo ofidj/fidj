@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {
     LoggerInterface, ModuleServiceInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface,
-    ErrorInterface, EndpointInterface
+    ErrorInterface, EndpointInterface, LoggerLevelEnum
 } from './interfaces';
 import {InternalService} from './internal.service';
 import {Error as FidjError} from '../connection';
@@ -40,13 +40,6 @@ export class FidjService implements ModuleServiceInterface {
         if (!this.fidjService) {
             this.fidjService = new InternalService(this.logger, this.promise);
         }
-        /*
-        if (options && options.forcedEndpoint) {
-            this.fidjService.setAuthEndpoint(options.forcedEndpoint);
-        }
-        if (options && options.forcedDBEndpoint) {
-            this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
-        }*/
         return this.fidjService.fidjInit(fidjId, options);
     };
 
@@ -182,16 +175,37 @@ export class FidjService implements ModuleServiceInterface {
 }
 
 export class LoggerService implements LoggerInterface {
-    log(message: string, args: [any]) {
-        console.log(message, args);
+
+    constructor(private level?: LoggerLevelEnum) {
+        if (!level) {
+            this.level = LoggerLevelEnum.ERROR;
+        }
+
+        if (!window.console) {
+            this.level = LoggerLevelEnum.NONE;
+        }
     }
 
-    error(message: string, args: [any]) {
-        console.error(message, args);
+    log(message: string, args: [any]) {
+        if (this.level === LoggerLevelEnum.LOG) {
+            console.log(message, args);
+        }
     }
 
     warn(message: string, args: [any]) {
-        console.warn(message, args);
+        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN) {
+            console.warn(message, args);
+        }
+    }
+
+    error(message: string, args: [any]) {
+        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
+            console.error(message, args);
+        }
+    }
+
+    setLevel(level: LoggerLevelEnum) {
+        this.level = level;
     }
 }
 

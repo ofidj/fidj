@@ -15,6 +15,7 @@ import {
 import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
 import {Ajax} from '../connection/ajax';
+import {LoggerService} from './angular.service';
 
 // const PouchDB = window['PouchDB'] || require('pouchdb').default;
 
@@ -38,26 +39,15 @@ export class InternalService {
             version: version.version,
             prod: false
         };
-        this.logger = {
-            log: () => {
-            },
-            error: () => {
-            },
-            warn: () => {
-            }
-        };
-        if (logger) {
-            this.logger = logger;
-        } else if (window.console) { // && logger === window.console
-            this.logger.log = window.console.log;
-            this.logger.error = window.console.error;
-            this.logger.warn = window.console.warn;
-        }
-        // console.log('logger: ', this.logger);
-        this.logger.log('fidj.sdk.service : constructor');
         if (promise) {
             this.promise = promise;
         }
+        if (logger) {
+            this.logger = logger;
+        } else {
+            this.logger = new LoggerService();
+        }
+        this.logger.log('fidj.sdk.service : constructor');
         this.storage = new tools.LocalStorage(window.localStorage, 'fidj.');
         this.session = new session.Session();
         this.connection = new connection.Connection(this.sdk, this.storage);
@@ -78,6 +68,17 @@ export class InternalService {
     public fidjInit(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
 
         const self = this;
+        /*
+        if (options && options.forcedEndpoint) {
+            this.fidjService.setAuthEndpoint(options.forcedEndpoint);
+        }
+        if (options && options.forcedDBEndpoint) {
+            this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
+        }*/
+        if (options && options.logLevel) {
+            self.logger.setLevel(options.logLevel);
+        }
+
         self.logger.log('fidj.sdk.service.fidjInit : ', options);
         if (!fidjId) {
             self.logger.error('fidj.sdk.service.fidjInit : bad init');
@@ -85,13 +86,13 @@ export class InternalService {
         }
 
         self.sdk.prod = !options ? true : options.prod;
+        self.connection.fidjId = fidjId;
+        self.connection.fidjVersion = self.sdk.version;
+        self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
 
         return new self.promise((resolve, reject) => {
             self.connection.verifyConnectionStates()
                 .then(() => {
-                    self.connection.fidjId = fidjId;
-                    self.connection.fidjVersion = self.sdk.version;
-                    self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
 
                     let theBestUrl: any = self.connection.getApiEndpoints({filter: 'theBestOne'})[0];
                     let theBestOldUrl: any = self.connection.getApiEndpoints({filter: 'theBestOldOne'})[0];
@@ -203,7 +204,7 @@ export class InternalService {
                     resolve(self.connection.getUser());
                 })
                 .catch((err) => {
-                    self.logger.error('fidj.sdk.service.fidjLogin error: ', err);
+                    self.logger.error('fidj.sdk.service.fidjLoginInDemoMode error: ', err);
                     reject(err);
                 });
         });
@@ -299,7 +300,7 @@ export class InternalService {
                 .then((isEmpty) => {
                     self.logger.log('fidj.sdk.service.fidjSync isEmpty : ', isEmpty, firstSync);
 
-                    return new Promise((resolveEmpty, rejectEmptyNotUsed) => {
+                    return new self.promise((resolveEmpty, rejectEmptyNotUsed) => {
                         if (isEmpty && firstSync && fnInitFirstData) {
                             const ret = fnInitFirstData(fnInitFirstData_Arg);
                             if (ret && ret['catch'] instanceof Function) {
@@ -522,7 +523,11 @@ export class InternalService {
     };
 
     private _createSession(uid: string): Promise<void | ErrorInterface> {
-        this.session.setRemote(this.connection.getDBs({filter: 'theBestOnes'}));
+        const dbs: EndpointInterface[] = this.connection.getDBs({filter: 'theBestOnes'});
+        if (!dbs || dbs.length === 0) {
+            this.logger.warn('Seems that you are in demo mode, no remote DB.');
+        }
+        this.session.setRemote(dbs);
         return this.session.create(uid);
     };
 
