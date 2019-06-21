@@ -37,6 +37,7 @@ export interface ModuleServiceInterface {
 export interface ModuleServiceInitOptionsInterface {
     prod: boolean;
     crypto?: boolean;
+    logLevel?: LoggerLevelEnum;
 }
 export interface ModuleServiceLoginOptionsInterface {
     accessToken?: string;
@@ -48,8 +49,15 @@ export interface SdkInterface {
     version: string;
     prod: boolean;
 }
+export declare enum LoggerLevelEnum {
+    LOG = 1,
+    WARN = 2,
+    ERROR = 3,
+    NONE = 4
+}
 export interface LoggerInterface {
+    setLevel: (LoggerLevelEnum: any) => void;
     log: (a?: any, b?: any, c?: any, d?: any, e?: any, f?: any) => any;
-    error: (a?: any, b?: any, c?: any, d?: any, e?: any, f?: any) => any;
     warn: (a?: any, b?: any, c?: any, d?: any, e?: any, f?: any) => any;
+    error: (a?: any, b?: any, c?: any, d?: any, e?: any, f?: any) => any;
 }

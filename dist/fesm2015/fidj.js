@@ -295,8 +295,24 @@ Xor.header = 'artemis-lotsum';
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
+/** @enum {number} */
+const LoggerLevelEnum = {
+    LOG: 1,
+    WARN: 2,
+    ERROR: 3,
+    NONE: 4,
+};
+LoggerLevelEnum[LoggerLevelEnum.LOG] = 'LOG';
+LoggerLevelEnum[LoggerLevelEnum.WARN] = 'WARN';
+LoggerLevelEnum[LoggerLevelEnum.ERROR] = 'ERROR';
+LoggerLevelEnum[LoggerLevelEnum.NONE] = 'NONE';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
+ */
 /** @type {?} */
-const version = '2.1.19';
+const version = '2.1.20';
 
 /**
  * @fileoverview added by tsickle
@@ -1653,6 +1669,7 @@ class Session {
         this.dbRecordCount = 0;
         this.dbLastSync = null; // new Date().getTime();
         this.db = null;
+        uid = uid || 'default';
         return new Promise((resolve, reject) => {
             /** @type {?} */
             let opts = { location: 'default' };
@@ -2085,28 +2102,16 @@ class InternalService {
             version: version,
             prod: false
         };
-        this.logger = {
-            log: () => {
-            },
-            error: () => {
-            },
-            warn: () => {
-            }
-        };
-        if (logger) {
-            this.logger = logger;
-        }
-        else if (window.console) { // && logger === window.console
-            // && logger === window.console
-            this.logger.log = window.console.log;
-            this.logger.error = window.console.error;
-            this.logger.warn = window.console.warn;
-        }
-        // console.log('logger: ', this.logger);
-        this.logger.log('fidj.sdk.service : constructor');
         if (promise) {
             this.promise = promise;
         }
+        if (logger) {
+            this.logger = logger;
+        }
+        else {
+            this.logger = new LoggerService();
+        }
+        this.logger.log('fidj.sdk.service : constructor');
         this.storage = new LocalStorage(window.localStorage, 'fidj.');
         this.session = new Session();
         this.connection = new Connection(this.sdk, this.storage);
@@ -2123,18 +2128,28 @@ class InternalService {
     fidjInit(fidjId, options) {
         /** @type {?} */
         const self = this;
+        /*
+                if (options && options.forcedEndpoint) {
+                    this.fidjService.setAuthEndpoint(options.forcedEndpoint);
+                }
+                if (options && options.forcedDBEndpoint) {
+                    this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
+                }*/
+        if (options && options.logLevel) {
+            self.logger.setLevel(options.logLevel);
+        }
         self.logger.log('fidj.sdk.service.fidjInit : ', options);
         if (!fidjId) {
             self.logger.error('fidj.sdk.service.fidjInit : bad init');
             return self.promise.reject(new Error$1(400, 'Need a fidjId'));
         }
         self.sdk.prod = !options ? true : options.prod;
+        self.connection.fidjId = fidjId;
+        self.connection.fidjVersion = self.sdk.version;
+        self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
         return new self.promise((resolve, reject) => {
             self.connection.verifyConnectionStates()
                 .then(() => {
-                self.connection.fidjId = fidjId;
-                self.connection.fidjVersion = self.sdk.version;
-                self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
                 /** @type {?} */
                 let theBestUrl = self.connection.getApiEndpoints({ filter: 'theBestOne' })[0];
                 /** @type {?} */
@@ -2249,7 +2264,7 @@ class InternalService {
                 resolve(self.connection.getUser());
             })
                 .catch((err) => {
-                self.logger.error('fidj.sdk.service.fidjLogin error: ', err);
+                self.logger.error('fidj.sdk.service.fidjLoginInDemoMode error: ', err);
                 reject(err);
             });
         });
@@ -2357,7 +2372,7 @@ class InternalService {
             })
                 .then((isEmpty) => {
                 self.logger.log('fidj.sdk.service.fidjSync isEmpty : ', isEmpty, firstSync);
-                return new Promise((resolveEmpty, rejectEmptyNotUsed) => {
+                return new self.promise((resolveEmpty, rejectEmptyNotUsed) => {
                     if (isEmpty && firstSync && fnInitFirstData) {
                         /** @type {?} */
                         const ret = fnInitFirstData(fnInitFirstData_Arg);
@@ -2600,7 +2615,12 @@ class InternalService {
      * @return {?}
      */
     _createSession(uid) {
-        this.session.setRemote(this.connection.getDBs({ filter: 'theBestOnes' }));
+        /** @type {?} */
+        const dbs = this.connection.getDBs({ filter: 'theBestOnes' });
+        if (!dbs || dbs.length === 0) {
+            this.logger.warn('Seems that you are in demo mode, no remote DB.');
+        }
+        this.session.setRemote(dbs);
         return this.session.create(uid);
     }
     ;
@@ -2685,13 +2705,6 @@ class FidjService {
         if (!this.fidjService) {
             this.fidjService = new InternalService(this.logger, this.promise);
         }
-        /*
-                if (options && options.forcedEndpoint) {
-                    this.fidjService.setAuthEndpoint(options.forcedEndpoint);
-                }
-                if (options && options.forcedDBEndpoint) {
-                    this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
-                }*/
         return this.fidjService.fidjInit(fidjId, options);
     }
     ;
@@ -2870,20 +2883,26 @@ FidjService.decorators = [
 FidjService.ctorParameters = () => [];
 class LoggerService {
     /**
-     * @param {?} message
-     * @param {?} args
-     * @return {?}
+     * @param {?=} level
      */
-    log(message, args) {
-        console.log(message, args);
+    constructor(level) {
+        this.level = level;
+        if (!level) {
+            this.level = LoggerLevelEnum.ERROR;
+        }
+        if (!window.console) {
+            this.level = LoggerLevelEnum.NONE;
+        }
     }
     /**
      * @param {?} message
      * @param {?} args
      * @return {?}
      */
-    error(message, args) {
-        console.error(message, args);
+    log(message, args) {
+        if (this.level === LoggerLevelEnum.LOG) {
+            console.log(message, args);
+        }
     }
     /**
      * @param {?} message
@@ -2891,7 +2910,26 @@ class LoggerService {
      * @return {?}
      */
     warn(message, args) {
-        console.warn(message, args);
+        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN) {
+            console.warn(message, args);
+        }
+    }
+    /**
+     * @param {?} message
+     * @param {?} args
+     * @return {?}
+     */
+    error(message, args) {
+        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
+            console.error(message, args);
+        }
+    }
+    /**
+     * @param {?} level
+     * @return {?}
+     */
+    setLevel(level) {
+        this.level = level;
     }
 }
 
@@ -2950,6 +2988,6 @@ FidjModule.ctorParameters = () => [];
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 
-export { Base64, LocalStorage, Xor, FidjModule, FidjService, LoggerService };
+export { Base64, LocalStorage, Xor, FidjModule, FidjService, LoggerService, LoggerLevelEnum as ɵa };
 
 //# sourceMappingURL=fidj.js.map

@@ -1,4 +1,4 @@
-import { LoggerInterface, ModuleServiceInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface, ErrorInterface, EndpointInterface } from './interfaces';
+import { LoggerInterface, ModuleServiceInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface, ErrorInterface, EndpointInterface, LoggerLevelEnum } from './interfaces';
 /**
  * Angular2+ FidjService
  * @see ModuleServiceInterface
@@ -67,7 +67,10 @@ export declare class FidjService implements ModuleServiceInterface {
     findAll(): Promise<any[] | ErrorInterface>;
 }
 export declare class LoggerService implements LoggerInterface {
+    private level?;
+    constructor(level?: LoggerLevelEnum);
     log(message: string, args: [any]): void;
-    error(message: string, args: [any]): void;
     warn(message: string, args: [any]): void;
+    error(message: string, args: [any]): void;
+    setLevel(level: LoggerLevelEnum): void;
 }
