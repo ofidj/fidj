@@ -281,10 +281,10 @@ export class Connection {
         if (this.accessToken) {
             const payload = this.accessToken.split('.')[1];
             const decoded = Base64.decode(payload);
-            const expired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
+            const notExpired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
             // console.log('new Date().getTime() < JSON.parse(decoded).exp :', (new Date().getTime() / 1000), JSON.parse(decoded).exp);
-            this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', expired);
-            if (expired) {
+            this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', notExpired);
+            if (notExpired) {
                 return Promise.resolve(this.getUser());
             }
         }
