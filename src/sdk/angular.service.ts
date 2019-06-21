@@ -36,14 +36,14 @@ export class FidjService implements ModuleServiceInterface {
         // pouchdbRequired.error();
     };
 
-    public init(fidjId, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
+    public init(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
         if (!this.fidjService) {
             this.fidjService = new InternalService(this.logger, this.promise);
         }
         return this.fidjService.fidjInit(fidjId, options);
     };
 
-    public login(login, password): Promise<any | ErrorInterface> {
+    public login(login: string, password: string): Promise<any | ErrorInterface> {
         if (!this.fidjService) {
             return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.login : not initialized.'));
         }

@@ -50,7 +50,7 @@ export class InternalService {
         this.logger.log('fidj.sdk.service : constructor');
         this.storage = new tools.LocalStorage(window.localStorage, 'fidj.');
         this.session = new session.Session();
-        this.connection = new connection.Connection(this.sdk, this.storage);
+        this.connection = new connection.Connection(this.sdk, this.storage, this.logger);
     }
 
     /**
@@ -328,10 +328,12 @@ export class InternalService {
                     return self.connection.refreshConnection();
                 })
                 .then((user) => {
+                    self.logger.log('fidj.sdk.service.fidjSync refreshConnection done : ', user);
                     resolve(); // self.connection.getUser()
                 })
                 .catch((err: ErrorInterface) => {
                     // console.error(err);
+                    self.logger.warn('fidj.sdk.service.fidjSync refreshConnection failed : ', err);
 
                     if (err && (err.code === 403 || err.code === 410)) {
                         this.fidjLogout()
@@ -339,14 +341,14 @@ export class InternalService {
                                 reject({code: 403, reason: 'Synchronization unauthorized : need to login again.'});
                             })
                             .catch(() => {
-                                reject({code: 403, reason: 'Synchronization unauthorized : need to login again.'});
+                                reject({code: 403, reason: 'Synchronization unauthorized : need to login again..'});
                             });
                     } else if (err && err.code) {
                         // todo what to do with this err ?
                         resolve();
                     } else {
-                        const errMessage = 'Error during syncronisation: ' + err.toString();
-                        // self.logger.error(errMessage);
+                        const errMessage = 'Error during synchronisation: ' + err.toString();
+                        self.logger.error(errMessage);
                         reject({code: 500, reason: errMessage});
                     }
                 })

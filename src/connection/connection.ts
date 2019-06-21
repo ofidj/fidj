@@ -1,8 +1,9 @@
 import {Client} from './client';
-import {ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface} from '../sdk/interfaces';
+import {ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface, LoggerInterface} from '../sdk/interfaces';
 import {Base64, LocalStorage, Xor} from '../tools';
 import {Ajax} from './ajax';
 import {ConnectionFindOptionsInterface} from './interfaces';
+import {Error} from '../sdk/error';
 
 export class Connection {
 
@@ -30,7 +31,8 @@ export class Connection {
     private static _cryptoSaltNext = 'v2.cryptoSalt.next';
 
     constructor(private _sdk: SdkInterface,
-                private _storage: LocalStorage) {
+                private _storage: LocalStorage,
+                private _logger: LoggerInterface) {
         this.client = null;
         this.user = null;
         this.cryptoSalt = this._storage.get(Connection._cryptoSalt) || null;
@@ -279,8 +281,10 @@ export class Connection {
         if (this.accessToken) {
             const payload = this.accessToken.split('.')[1];
             const decoded = Base64.decode(payload);
+            const expired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
             // console.log('new Date().getTime() < JSON.parse(decoded).exp :', (new Date().getTime() / 1000), JSON.parse(decoded).exp);
-            if ((new Date().getTime() / 1000) < JSON.parse(decoded).exp) {
+            this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', expired);
+            if (expired) {
                 return Promise.resolve(this.getUser());
             }
         }
@@ -289,7 +293,9 @@ export class Connection {
         if (this.refreshToken) {
             const payload = this.refreshToken.split('.')[1];
             const decoded = Base64.decode(payload);
-            if ((new Date().getTime() / 1000) >= JSON.parse(decoded).exp) {
+            const expired = (new Date().getTime() / 1000) >= JSON.parse(decoded).exp;
+            this._logger.log('fidj.connection.connection.refreshConnection : refreshToken not expired ? ', expired);
+            if (expired) {
                 this._storage.remove(Connection._refreshToken);
             }
         }
@@ -303,7 +309,14 @@ export class Connection {
         this.idToken = null;
 
         // refresh authentication
+        this._logger.log('fidj.connection.connection.refreshConnection : refresh authentication.');
         return new Promise((resolve, reject) => {
+            const client = this.getClient();
+
+            if (!client) {
+                return reject(new Error(400, 'Need an initialized client.'))
+            }
+
             this.getClient().reAuthenticate(this.refreshToken)
                 .then(user => {
                     this.setConnection(user);

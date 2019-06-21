@@ -1,5 +1,7 @@
-import {Ajax, Connection, Client} from '../src/connection';
+import {Ajax, Client, Connection} from '../src/connection';
 import {Base64} from '../src/tools';
+import {LoggerInterface, LoggerLevelEnum} from '../src/sdk/interfaces';
+import {LoggerService} from '../src';
 
 describe('fidj.connection', () => {
 
@@ -352,7 +354,7 @@ describe('fidj.connection', () => {
             }, remove: key => {
             }
         };
-
+        const _log: LoggerInterface = new LoggerService(LoggerLevelEnum.NONE);
         const mocks = {
             tokens: {
                 withoutAnyUrl: 'begin.' + Base64.encode(JSON.stringify({})) + '.end',
@@ -385,7 +387,7 @@ describe('fidj.connection', () => {
         });
 
         it('should isLogin', () => {
-            const cx = new Connection(_sdk, _storage);
+            const cx = new Connection(_sdk, _storage, _log);
             expect(cx).toBeDefined();
 
             let i = cx.isLogin();
@@ -399,7 +401,7 @@ describe('fidj.connection', () => {
         });
 
         it('should isReady', () => {
-            const cx = new Connection(_sdk, _storage);
+            const cx = new Connection(_sdk, _storage, _log);
             let i = cx.isReady();
             expect(i).toBeFalsy();
 
@@ -411,7 +413,7 @@ describe('fidj.connection', () => {
         });
 
         it('should getIdPayload & getAccessPayload', () => {
-            const cx = new Connection(_sdk, _storage);
+            const cx = new Connection(_sdk, _storage, _log);
 
             let payload = cx.getIdPayload();
             expect(payload).toBe(null);
@@ -474,7 +476,7 @@ describe('fidj.connection', () => {
         });
 
         it('should setConnection', () => {
-            const cx = new Connection(_sdk, _storage);
+            const cx = new Connection(_sdk, _storage, _log);
             spyOn(cx, 'setUser').and.returnValue({});
             spyOn((cx as any)._storage, 'set').and.returnValue({});
 
@@ -495,7 +497,7 @@ describe('fidj.connection', () => {
         });
 
         it('should setConnectionOffline', () => {
-            const cx = new Connection(_sdk, _storage);
+            const cx = new Connection(_sdk, _storage, _log);
             spyOn(cx, 'setUser').and.returnValue({});
             spyOn((cx as any)._storage, 'set').and.returnValue({});
 
@@ -512,7 +514,7 @@ describe('fidj.connection', () => {
 
         it('should getApiEndpoints', () => {
 
-            const srv = new Connection(_sdk, _storage);
+            const srv = new Connection(_sdk, _storage, _log);
 
             // without initialisation : default endpoints
             expect(srv.getApiEndpoints().length).toBe(2);
@@ -580,7 +582,7 @@ describe('fidj.connection', () => {
 
         it('should getApiEndpoints based on accessTokenPrev', () => {
 
-            const srv = new Connection(_sdk, _storage);
+            const srv = new Connection(_sdk, _storage, _log);
 
             const previous = mocks.tokens.withApis01;
             const actual = mocks.tokens.withApis02;
@@ -628,7 +630,7 @@ describe('fidj.connection', () => {
 
         it('should getDBs', () => {
 
-            const srv = new Connection(_sdk, _storage);
+            const srv = new Connection(_sdk, _storage, _log);
 
             // without initialisation : no DB
             expect(srv.getDBs().length).toBe(0);
@@ -698,7 +700,7 @@ describe('fidj.connection', () => {
         });
 
         it('should verifyConnectionStates', (done) => {
-            const srv = new Connection(_sdk, _storage);
+            const srv = new Connection(_sdk, _storage, _log);
             jasmine.Ajax.stubRequest(/.*mock*/).andReturn({
                 status: 200,
                 contentType: 'application/json',
@@ -753,7 +755,7 @@ describe('fidj.connection', () => {
 
         it('should refreshConnection : verify tokens', (done) => {
 
-            const srv = new Connection(_sdk, _storage);
+            const srv = new Connection(_sdk, _storage, _log);
             const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' +
                 '.eyJzdWIiOiI1OWU2NTFiZTkzMWEwMDUwYzFjMTQ2ZWEiLCJhdWQiOiI1OWU2NTFiZTkzMWEwMDUwYzFjMT' +
                 'Q2ZWIiLCJleHAiOjE1MDgyNzM2MzAsImRicyI6WyJodHRwOi8vZGIxIiwiaHR0cDovL2RiMiJdLCJlbmRwb2' +
@@ -803,7 +805,7 @@ describe('fidj.connection', () => {
 
         it('should encrypt & decrypt', () => {
 
-            const srv = new Connection(_sdk, _storage);
+            const srv = new Connection(_sdk, _storage, _log);
             srv.fidjCrypto = false;
             srv.setCryptoSalt('salt');
             const dataAsString = 'testA';
