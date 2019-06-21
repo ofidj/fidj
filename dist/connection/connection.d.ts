@@ -1,10 +1,11 @@
 import { Client } from './client';
-import { ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface } from '../sdk/interfaces';
+import { ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface, LoggerInterface } from '../sdk/interfaces';
 import { LocalStorage } from '../tools';
 import { ConnectionFindOptionsInterface } from './interfaces';
 export declare class Connection {
     private _sdk;
     private _storage;
+    private _logger;
     fidjId: string;
     fidjVersion: string;
     fidjCrypto: boolean;
@@ -31,7 +32,7 @@ export declare class Connection {
     private static _states;
     private static _cryptoSalt;
     private static _cryptoSaltNext;
-    constructor(_sdk: SdkInterface, _storage: LocalStorage);
+    constructor(_sdk: SdkInterface, _storage: LocalStorage, _logger: LoggerInterface);
     isReady(): boolean;
     destroy(force?: boolean): void;
     setClient(client: Client): void;

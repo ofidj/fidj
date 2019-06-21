@@ -87,6 +87,7 @@
 						<section class="tsd-index-section tsd-is-external">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="connection.html#_logger" class="tsd-kind-icon">_logger</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="connection.html#_sdk" class="tsd-kind-icon">_sdk</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external"><a href="connection.html#_storage" class="tsd-kind-icon">_storage</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="connection.html#accesstoken" class="tsd-kind-icon">access<wbr>Token</a></li>
@@ -148,13 +149,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Connection<span class="tsd-signature-symbol">(</span>_sdk<span class="tsd-signature-symbol">: </span><a href="../interfaces/sdkinterface.html" class="tsd-signature-type">SdkInterface</a>, _storage<span class="tsd-signature-symbol">: </span><a href="localstorage.html" class="tsd-signature-type">LocalStorage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="connection.html" class="tsd-signature-type">Connection</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Connection<span class="tsd-signature-symbol">(</span>_sdk<span class="tsd-signature-symbol">: </span><a href="../interfaces/sdkinterface.html" class="tsd-signature-type">SdkInterface</a>, _storage<span class="tsd-signature-symbol">: </span><a href="localstorage.html" class="tsd-signature-type">LocalStorage</a>, _logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/loggerinterface.html" class="tsd-signature-type">LoggerInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="connection.html" class="tsd-signature-type">Connection</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L30">connection/connection.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L31">connection/connection.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -165,6 +166,9 @@
 								<li>
 									<h5>_storage: <a href="localstorage.html" class="tsd-signature-type">LocalStorage</a></h5>
 								</li>
+								<li>
+									<h5>_logger: <a href="../interfaces/loggerinterface.html" class="tsd-signature-type">LoggerInterface</a></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="connection.html" class="tsd-signature-type">Connection</a></h4>
 						</li>
@@ -174,12 +178,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-external">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+					<a name="_logger" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _logger</h3>
+					<div class="tsd-signature tsd-kind-icon">_logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/loggerinterface.html" class="tsd-signature-type">LoggerInterface</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L35">connection/connection.ts:35</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
 					<a name="_sdk" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _sdk</h3>
 					<div class="tsd-signature tsd-kind-icon">_sdk<span class="tsd-signature-symbol">:</span> <a href="../interfaces/sdkinterface.html" class="tsd-signature-type">SdkInterface</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L32">connection/connection.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L33">connection/connection.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -189,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">_storage<span class="tsd-signature-symbol">:</span> <a href="localstorage.html" class="tsd-signature-type">LocalStorage</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L33">connection/connection.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L34">connection/connection.ts:34</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -199,7 +213,7 @@
 					<div class="tsd-signature tsd-kind-icon">access<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L12">connection/connection.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L13">connection/connection.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -209,7 +223,7 @@
 					<div class="tsd-signature tsd-kind-icon">access<wbr>Token<wbr>Previous<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L13">connection/connection.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L14">connection/connection.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -219,7 +233,7 @@
 					<div class="tsd-signature tsd-kind-icon">apis<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/endpointinterface.html" class="tsd-signature-type">EndpointInterface</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L17">connection/connection.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L18">connection/connection.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -229,7 +243,7 @@
 					<div class="tsd-signature tsd-kind-icon">client<span class="tsd-signature-symbol">:</span> <a href="client.html" class="tsd-signature-type">Client</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L21">connection/connection.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L22">connection/connection.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -239,7 +253,7 @@
 					<div class="tsd-signature tsd-kind-icon">crypto<wbr>Salt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L19">connection/connection.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L20">connection/connection.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -249,7 +263,7 @@
 					<div class="tsd-signature tsd-kind-icon">crypto<wbr>Salt<wbr>Next<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L20">connection/connection.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L21">connection/connection.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -259,7 +273,7 @@
 					<div class="tsd-signature tsd-kind-icon">fidj<wbr>Crypto<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L11">connection/connection.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L12">connection/connection.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -269,7 +283,7 @@
 					<div class="tsd-signature tsd-kind-icon">fidj<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L9">connection/connection.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L10">connection/connection.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -279,7 +293,7 @@
 					<div class="tsd-signature tsd-kind-icon">fidj<wbr>Version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L10">connection/connection.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L11">connection/connection.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -289,7 +303,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L14">connection/connection.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L15">connection/connection.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -299,7 +313,7 @@
 					<div class="tsd-signature tsd-kind-icon">refresh<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L15">connection/connection.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L16">connection/connection.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -309,7 +323,7 @@
 					<div class="tsd-signature tsd-kind-icon">states<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L16">connection/connection.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L17">connection/connection.ts:17</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -338,7 +352,7 @@
 					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L22">connection/connection.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L23">connection/connection.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -348,7 +362,7 @@
 					<div class="tsd-signature tsd-kind-icon">_access<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v2.accessToken&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L24">connection/connection.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L25">connection/connection.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -358,7 +372,7 @@
 					<div class="tsd-signature tsd-kind-icon">_access<wbr>Token<wbr>Previous<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v2.accessTokenPrevious&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L25">connection/connection.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L26">connection/connection.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -368,7 +382,7 @@
 					<div class="tsd-signature tsd-kind-icon">_crypto<wbr>Salt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v2.cryptoSalt&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L29">connection/connection.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L30">connection/connection.ts:30</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -378,7 +392,7 @@
 					<div class="tsd-signature tsd-kind-icon">_crypto<wbr>Salt<wbr>Next<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v2.cryptoSalt.next&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L30">connection/connection.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L31">connection/connection.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -388,7 +402,7 @@
 					<div class="tsd-signature tsd-kind-icon">_id<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v2.idToken&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L26">connection/connection.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L27">connection/connection.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -398,7 +412,7 @@
 					<div class="tsd-signature tsd-kind-icon">_refresh<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v2.refreshToken&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L27">connection/connection.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L28">connection/connection.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -408,7 +422,7 @@
 					<div class="tsd-signature tsd-kind-icon">_states<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v2.states&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L28">connection/connection.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L29">connection/connection.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -425,7 +439,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L145">connection/connection.ts:145</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L147">connection/connection.ts:147</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -448,7 +462,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L50">connection/connection.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L52">connection/connection.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -471,7 +485,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L128">connection/connection.ts:128</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L130">connection/connection.ts:130</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -494,7 +508,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L243">connection/connection.ts:243</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L245">connection/connection.ts:245</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -517,7 +531,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L387">connection/connection.ts:387</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L400">connection/connection.ts:400</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -540,7 +554,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L104">connection/connection.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L106">connection/connection.ts:106</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="client.html" class="tsd-signature-type">Client</a></h4>
@@ -557,7 +571,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L217">connection/connection.ts:217</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L219">connection/connection.ts:219</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -574,7 +588,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L470">connection/connection.ts:470</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L483">connection/connection.ts:483</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -597,7 +611,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L228">connection/connection.ts:228</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L230">connection/connection.ts:230</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -620,7 +634,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L224">connection/connection.ts:224</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L226">connection/connection.ts:226</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -637,7 +651,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L258">connection/connection.ts:258</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L260">connection/connection.ts:260</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -660,7 +674,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L100">connection/connection.ts:100</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L102">connection/connection.ts:102</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -677,7 +691,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L199">connection/connection.ts:199</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L201">connection/connection.ts:201</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -694,7 +708,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L46">connection/connection.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L48">connection/connection.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -711,7 +725,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L213">connection/connection.ts:213</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L215">connection/connection.ts:215</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/errorinterface.html" class="tsd-signature-type">ErrorInterface</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -728,7 +742,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L273">connection/connection.ts:273</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L275">connection/connection.ts:275</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/errorinterface.html" class="tsd-signature-type">ErrorInterface</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -745,7 +759,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L79">connection/connection.ts:79</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L81">connection/connection.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -768,7 +782,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L330">connection/connection.ts:330</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L343">connection/connection.ts:343</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -791,7 +805,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L365">connection/connection.ts:365</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L378">connection/connection.ts:378</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -814,7 +828,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L108">connection/connection.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L110">connection/connection.ts:110</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -837,7 +851,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L119">connection/connection.ts:119</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L121">connection/connection.ts:121</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -854,7 +868,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L90">connection/connection.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L92">connection/connection.ts:92</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -877,7 +891,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/9407eb5/src/connection/connection.ts#L524">connection/connection.ts:524</a></li>
+									<li>Defined in <a href="https://github.com/ofidj/fidj/blob/66330b4/src/connection/connection.ts#L537">connection/connection.ts:537</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/errorinterface.html" class="tsd-signature-type">ErrorInterface</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -915,6 +929,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
 								<a href="connection.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
+								<a href="connection.html#_logger" class="tsd-kind-icon">_logger</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-external">
 								<a href="connection.html#_sdk" class="tsd-kind-icon">_sdk</a>

@@ -422,7 +422,7 @@
      * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var version = '2.1.20';
+    var version = '2.1.21';
 
     /**
      * @fileoverview added by tsickle
@@ -1212,9 +1212,10 @@
      * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
      */
     var Connection = /** @class */ (function () {
-        function Connection(_sdk, _storage) {
+        function Connection(_sdk, _storage, _logger) {
             this._sdk = _sdk;
             this._storage = _storage;
+            this._logger = _logger;
             this.client = null;
             this.user = null;
             this.cryptoSalt = this._storage.get(Connection._cryptoSalt) || null;
@@ -1570,8 +1571,11 @@
                     var payload = this.accessToken.split('.')[1];
                     /** @type {?} */
                     var decoded = Base64.decode(payload);
+                    /** @type {?} */
+                    var expired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
                     // console.log('new Date().getTime() < JSON.parse(decoded).exp :', (new Date().getTime() / 1000), JSON.parse(decoded).exp);
-                    if ((new Date().getTime() / 1000) < JSON.parse(decoded).exp) {
+                    this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', expired);
+                    if (expired) {
                         return Promise.resolve(this.getUser());
                     }
                 }
@@ -1581,7 +1585,10 @@
                     var payload = this.refreshToken.split('.')[1];
                     /** @type {?} */
                     var decoded = Base64.decode(payload);
-                    if ((new Date().getTime() / 1000) >= JSON.parse(decoded).exp) {
+                    /** @type {?} */
+                    var expired = (new Date().getTime() / 1000) >= JSON.parse(decoded).exp;
+                    this._logger.log('fidj.connection.connection.refreshConnection : refreshToken not expired ? ', expired);
+                    if (expired) {
                         this._storage.remove(Connection._refreshToken);
                     }
                 }
@@ -1593,7 +1600,13 @@
                 this.accessToken = null;
                 this.idToken = null;
                 // refresh authentication
+                this._logger.log('fidj.connection.connection.refreshConnection : refresh authentication.');
                 return new Promise(function (resolve, reject) {
+                    /** @type {?} */
+                    var client = _this.getClient();
+                    if (!client) {
+                        return reject(new Error$1(400, 'Need an initialized client.'));
+                    }
                     _this.getClient().reAuthenticate(_this.refreshToken)
                         .then(function (user) {
                         _this.setConnection(user);
@@ -2482,7 +2495,7 @@
             this.logger.log('fidj.sdk.service : constructor');
             this.storage = new LocalStorage(window.localStorage, 'fidj.');
             this.session = new Session();
-            this.connection = new Connection(this.sdk, this.storage);
+            this.connection = new Connection(this.sdk, this.storage, this.logger);
         }
         /**
          * Init connection & session
@@ -2809,17 +2822,19 @@
                         return self.connection.refreshConnection();
                     })
                         .then(function (user) {
+                        self.logger.log('fidj.sdk.service.fidjSync refreshConnection done : ', user);
                         resolve(); // self.connection.getUser()
                     })
                         .catch(function (err) {
                         // console.error(err);
+                        self.logger.warn('fidj.sdk.service.fidjSync refreshConnection failed : ', err);
                         if (err && (err.code === 403 || err.code === 410)) {
                             _this.fidjLogout()
                                 .then(function () {
                                 reject({ code: 403, reason: 'Synchronization unauthorized : need to login again.' });
                             })
                                 .catch(function () {
-                                reject({ code: 403, reason: 'Synchronization unauthorized : need to login again.' });
+                                reject({ code: 403, reason: 'Synchronization unauthorized : need to login again..' });
                             });
                         }
                         else if (err && err.code) {
@@ -2828,8 +2843,8 @@
                         }
                         else {
                             /** @type {?} */
-                            var errMessage = 'Error during syncronisation: ' + err.toString();
-                            // self.logger.error(errMessage);
+                            var errMessage = 'Error during synchronisation: ' + err.toString();
+                            self.logger.error(errMessage);
                             reject({ code: 500, reason: errMessage });
                         }
                     });

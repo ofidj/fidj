@@ -312,7 +312,7 @@ LoggerLevelEnum[LoggerLevelEnum.NONE] = 'NONE';
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /** @type {?} */
-const version = '2.1.20';
+const version = '2.1.21';
 
 /**
  * @fileoverview added by tsickle
@@ -993,10 +993,12 @@ class Connection {
     /**
      * @param {?} _sdk
      * @param {?} _storage
+     * @param {?} _logger
      */
-    constructor(_sdk, _storage) {
+    constructor(_sdk, _storage, _logger) {
         this._sdk = _sdk;
         this._storage = _storage;
+        this._logger = _logger;
         this.client = null;
         this.user = null;
         this.cryptoSalt = this._storage.get(Connection._cryptoSalt) || null;
@@ -1288,8 +1290,11 @@ class Connection {
             const payload = this.accessToken.split('.')[1];
             /** @type {?} */
             const decoded = Base64.decode(payload);
+            /** @type {?} */
+            const expired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
             // console.log('new Date().getTime() < JSON.parse(decoded).exp :', (new Date().getTime() / 1000), JSON.parse(decoded).exp);
-            if ((new Date().getTime() / 1000) < JSON.parse(decoded).exp) {
+            this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', expired);
+            if (expired) {
                 return Promise.resolve(this.getUser());
             }
         }
@@ -1299,7 +1304,10 @@ class Connection {
             const payload = this.refreshToken.split('.')[1];
             /** @type {?} */
             const decoded = Base64.decode(payload);
-            if ((new Date().getTime() / 1000) >= JSON.parse(decoded).exp) {
+            /** @type {?} */
+            const expired = (new Date().getTime() / 1000) >= JSON.parse(decoded).exp;
+            this._logger.log('fidj.connection.connection.refreshConnection : refreshToken not expired ? ', expired);
+            if (expired) {
                 this._storage.remove(Connection._refreshToken);
             }
         }
@@ -1311,7 +1319,13 @@ class Connection {
         this.accessToken = null;
         this.idToken = null;
         // refresh authentication
+        this._logger.log('fidj.connection.connection.refreshConnection : refresh authentication.');
         return new Promise((resolve, reject) => {
+            /** @type {?} */
+            const client = this.getClient();
+            if (!client) {
+                return reject(new Error$1(400, 'Need an initialized client.'));
+            }
             this.getClient().reAuthenticate(this.refreshToken)
                 .then(user => {
                 this.setConnection(user);
@@ -2114,7 +2128,7 @@ class InternalService {
         this.logger.log('fidj.sdk.service : constructor');
         this.storage = new LocalStorage(window.localStorage, 'fidj.');
         this.session = new Session();
-        this.connection = new Connection(this.sdk, this.storage);
+        this.connection = new Connection(this.sdk, this.storage, this.logger);
     }
     /**
      * Init connection & session
@@ -2400,17 +2414,19 @@ class InternalService {
                 return self.connection.refreshConnection();
             })
                 .then((user) => {
+                self.logger.log('fidj.sdk.service.fidjSync refreshConnection done : ', user);
                 resolve(); // self.connection.getUser()
             })
                 .catch((err) => {
                 // console.error(err);
+                self.logger.warn('fidj.sdk.service.fidjSync refreshConnection failed : ', err);
                 if (err && (err.code === 403 || err.code === 410)) {
                     this.fidjLogout()
                         .then(() => {
                         reject({ code: 403, reason: 'Synchronization unauthorized : need to login again.' });
                     })
                         .catch(() => {
-                        reject({ code: 403, reason: 'Synchronization unauthorized : need to login again.' });
+                        reject({ code: 403, reason: 'Synchronization unauthorized : need to login again..' });
                     });
                 }
                 else if (err && err.code) {
@@ -2419,8 +2435,8 @@ class InternalService {
                 }
                 else {
                     /** @type {?} */
-                    const errMessage = 'Error during syncronisation: ' + err.toString();
-                    // self.logger.error(errMessage);
+                    const errMessage = 'Error during synchronisation: ' + err.toString();
+                    self.logger.error(errMessage);
                     reject({ code: 500, reason: errMessage });
                 }
             });

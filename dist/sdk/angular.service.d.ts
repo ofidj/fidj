@@ -19,8 +19,8 @@ export declare class FidjService implements ModuleServiceInterface {
     private fidjService;
     private promise;
     constructor();
-    init(fidjId: any, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface>;
-    login(login: any, password: any): Promise<any | ErrorInterface>;
+    init(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface>;
+    login(login: string, password: string): Promise<any | ErrorInterface>;
     loginAsDemo(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface>;
     isLoggedIn(): boolean;
     getRoles(): Array<string>;
