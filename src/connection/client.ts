@@ -7,8 +7,9 @@ export class Client {
     public clientId: string;
     private clientUuid: string;
     private clientInfo: string;
-    private refreshToken: string;
-    private static refreshCount = 0;
+    // private refreshToken: string;
+    private static refreshCountInitial = 1;
+    private static refreshCount = Client.refreshCountInitial;
     private static _clientUuid = 'v2.clientUuid';
     private static _clientId = 'v2.clientId';
     private static _refreshCount = 'v2.refreshCount';
@@ -29,7 +30,7 @@ export class Client {
         this.setClientUuid(uuid);
         this.setClientInfo(info);
         this.clientId = this.storage.get(Client._clientId);
-        Client.refreshCount = this.storage.get(Client._refreshCount) || 0;
+        Client.refreshCount = this.storage.get(Client._refreshCount) || Client.refreshCountInitial;
     };
 
     public setClientId(value: string) {
@@ -134,7 +135,7 @@ export class Client {
         // this.storage.remove(Client._clientUuid);
         this.storage.remove(Client._clientId);
         this.storage.remove(Client._refreshCount);
-        Client.refreshCount = 0;
+        Client.refreshCount = Client.refreshCountInitial;
 
         if (!refreshToken || !this.clientId) {
             return Promise.resolve();

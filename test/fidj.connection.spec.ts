@@ -265,7 +265,6 @@ describe('fidj.connection', () => {
 
         it('should reAuthenticate', (done) => {
 
-            const userJson = {_id: '1234'};
             const tokenJson = {token: '1234'};
             jasmine.Ajax.stubRequest(/.*token/).andReturn(
                 {
@@ -290,7 +289,17 @@ describe('fidj.connection', () => {
                     expect(data.grant_type).toEqual('refresh_token');
                     expect(data.audience).toEqual(_appId);
                     expect(data.refresh_token).toEqual('refreshToken');
-                    expect(data.refresh_extra).toEqual(0);
+                    expect(data.refresh_extra).toEqual(1);
+
+                    return client.reAuthenticate('refreshToken');
+                })
+                .then(user => {
+                    const request = jasmine.Ajax.requests.mostRecent();
+                    expect(request.url).toBe(_uri + '/oauth/token');
+                    expect(request.method).toBe('POST');
+                    const data: any = request.data();
+                    expect(data.refresh_token).toEqual('refreshToken');
+                    expect(data.refresh_extra).toEqual(2);
                     done();
                 })
                 .catch(err => {
