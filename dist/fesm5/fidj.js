@@ -420,7 +420,7 @@ LoggerLevelEnum[LoggerLevelEnum.NONE] = 'NONE';
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /** @type {?} */
-var version = '2.1.21';
+var version = '2.1.22';
 
 /**
  * @fileoverview added by tsickle
@@ -1570,10 +1570,10 @@ var Connection = /** @class */ (function () {
             /** @type {?} */
             var decoded = Base64.decode(payload);
             /** @type {?} */
-            var expired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
+            var notExpired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
             // console.log('new Date().getTime() < JSON.parse(decoded).exp :', (new Date().getTime() / 1000), JSON.parse(decoded).exp);
-            this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', expired);
-            if (expired) {
+            this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', notExpired);
+            if (notExpired) {
                 return Promise.resolve(this.getUser());
             }
         }
