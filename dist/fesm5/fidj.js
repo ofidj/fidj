@@ -420,7 +420,7 @@ LoggerLevelEnum[LoggerLevelEnum.NONE] = 'NONE';
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /** @type {?} */
-var version = '2.1.22';
+var version = '2.1.23';
 
 /**
  * @fileoverview added by tsickle
@@ -983,7 +983,7 @@ var Client = /** @class */ (function () {
         this.setClientUuid(uuid);
         this.setClientInfo(info);
         this.clientId = this.storage.get(Client._clientId);
-        Client.refreshCount = this.storage.get(Client._refreshCount) || 0;
+        Client.refreshCount = this.storage.get(Client._refreshCount) || Client.refreshCountInitial;
     }
     /**
      * @param {?} value
@@ -1133,7 +1133,7 @@ var Client = /** @class */ (function () {
         // this.storage.remove(Client._clientUuid);
         this.storage.remove(Client._clientId);
         this.storage.remove(Client._refreshCount);
-        Client.refreshCount = 0;
+        Client.refreshCount = Client.refreshCountInitial;
         if (!refreshToken || !this.clientId) {
             return Promise.resolve();
         }
@@ -1164,7 +1164,8 @@ var Client = /** @class */ (function () {
     function () {
         return !!this.URI;
     };
-    Client.refreshCount = 0;
+    Client.refreshCountInitial = 1;
+    Client.refreshCount = Client.refreshCountInitial;
     Client._clientUuid = 'v2.clientUuid';
     Client._clientId = 'v2.clientId';
     Client._refreshCount = 'v2.refreshCount';

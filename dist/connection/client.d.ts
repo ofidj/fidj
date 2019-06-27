@@ -8,7 +8,7 @@ export declare class Client {
     clientId: string;
     private clientUuid;
     private clientInfo;
-    private refreshToken;
+    private static refreshCountInitial;
     private static refreshCount;
     private static _clientUuid;
     private static _clientId;
