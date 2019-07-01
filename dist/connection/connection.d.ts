@@ -55,5 +55,7 @@ export declare class Connection {
     setConnectionOffline(options: ModuleServiceLoginOptionsInterface): void;
     getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface>;
     getDBs(options?: ConnectionFindOptionsInterface): EndpointInterface[];
+    private verifyApiState;
+    private verifyDbState;
     verifyConnectionStates(): Promise<any | ErrorInterface>;
 }

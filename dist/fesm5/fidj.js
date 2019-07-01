@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Injectable, NgModule } from '@angular/core';
+import { __awaiter, __generator } from 'tslib';
 
 /**
  * @fileoverview added by tsickle
@@ -420,7 +421,7 @@ LoggerLevelEnum[LoggerLevelEnum.NONE] = 'NONE';
  * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /** @type {?} */
-var version = '2.1.23';
+var version = '2.1.24';
 
 /**
  * @fileoverview added by tsickle
@@ -1852,6 +1853,96 @@ var Connection = /** @class */ (function () {
         return filteredDBs;
     };
     /**
+     * @param {?} currentTime
+     * @param {?} endpointUrl
+     * @return {?}
+     */
+    Connection.prototype.verifyApiState = /**
+     * @param {?} currentTime
+     * @param {?} endpointUrl
+     * @return {?}
+     */
+    function (currentTime, endpointUrl) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, state, err_1, lastTimeWasOk;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, new Ajax()
+                                .get({
+                                url: endpointUrl + '/status?isok=' + this._sdk.version,
+                                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                            })];
+                    case 1:
+                        data = _a.sent();
+                        state = false;
+                        if (data && data.isok) {
+                            state = true;
+                        }
+                        this.states[endpointUrl] = { state: state, time: currentTime, lastTimeWasOk: currentTime };
+                        // resolve();
+                        // console.log('verifyApiState: state', endpointUrl, state);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _a.sent();
+                        lastTimeWasOk = 0;
+                        if (this.states[endpointUrl]) {
+                            lastTimeWasOk = this.states[endpointUrl].lastTimeWasOk;
+                        }
+                        this.states[endpointUrl] = { state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk };
+                        // resolve();
+                        return [3 /*break*/, 3];
+                    case 3:
+                        // console.log('verifyApiState: ', this.states);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * @param {?} currentTime
+     * @param {?} dbEndpoint
+     * @return {?}
+     */
+    Connection.prototype.verifyDbState = /**
+     * @param {?} currentTime
+     * @param {?} dbEndpoint
+     * @return {?}
+     */
+    function (currentTime, dbEndpoint) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, err_2, lastTimeWasOk;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, new Ajax()
+                                .get({
+                                url: dbEndpoint,
+                                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                            })];
+                    case 1:
+                        data = _a.sent();
+                        this.states[dbEndpoint] = { state: true, time: currentTime, lastTimeWasOk: currentTime };
+                        // resolve();
+                        // console.log('verifyDbState: state', dbEndpoint, true);
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_2 = _a.sent();
+                        lastTimeWasOk = 0;
+                        if (this.states[dbEndpoint]) {
+                            lastTimeWasOk = this.states[dbEndpoint].lastTimeWasOk;
+                        }
+                        this.states[dbEndpoint] = { state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk };
+                        // resolve();
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
      * @return {?}
      */
     Connection.prototype.verifyConnectionStates = /**
@@ -1871,31 +1962,7 @@ var Connection = /** @class */ (function () {
             if (!endpointUrl) {
                 endpointUrl = endpointObj.toString();
             }
-            promises.push(new Promise(function (resolve, reject) {
-                new Ajax()
-                    .get({
-                    url: endpointUrl + '/status?isok=' + _this._sdk.version,
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-                })
-                    .then(function (data) {
-                    /** @type {?} */
-                    var state = false;
-                    if (data && data.isok) {
-                        state = true;
-                    }
-                    _this.states[endpointUrl] = { state: state, time: currentTime, lastTimeWasOk: currentTime };
-                    resolve();
-                })
-                    .catch(function (err) {
-                    /** @type {?} */
-                    var lastTimeWasOk = 0;
-                    if (_this.states[endpointUrl]) {
-                        lastTimeWasOk = _this.states[endpointUrl].lastTimeWasOk;
-                    }
-                    _this.states[endpointUrl] = { state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk };
-                    resolve();
-                });
-            }));
+            promises.push(_this.verifyApiState(currentTime, endpointUrl));
         });
         /** @type {?} */
         var dbs = this.getDBs();
@@ -1905,26 +1972,7 @@ var Connection = /** @class */ (function () {
             if (!dbEndpoint) {
                 dbEndpoint = dbEndpointObj.toString();
             }
-            promises.push(new Promise(function (resolve, reject) {
-                new Ajax()
-                    .get({
-                    url: dbEndpoint,
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-                })
-                    .then(function (data) {
-                    _this.states[dbEndpoint] = { state: true, time: currentTime, lastTimeWasOk: currentTime };
-                    resolve();
-                })
-                    .catch(function (err) {
-                    /** @type {?} */
-                    var lastTimeWasOk = 0;
-                    if (_this.states[dbEndpoint]) {
-                        lastTimeWasOk = _this.states[dbEndpoint].lastTimeWasOk;
-                    }
-                    _this.states[dbEndpoint] = { state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk };
-                    resolve();
-                });
-            }));
+            promises.push(_this.verifyDbState(currentTime, dbEndpoint));
         });
         return Promise.all(promises);
     };
