@@ -45,7 +45,7 @@ describe('fidj.connection', () => {
             jasmine.Ajax.stubRequest(/.*sandbox*/)
                 .andReturn({
                     status: 200,
-                    //contentType: 'application/json',
+                    // contentType: 'application/json',
                     responseText: JSON.stringify(jsonData)
                 });
             new Ajax()
@@ -561,6 +561,15 @@ describe('fidj.connection', () => {
 
             // with states only ok for the last one
             srv.states = {
+                'http://api_1': {state: false, time: 0, lastTimeWasOk: 2},
+                'http://api_2': {state: true, time: 0, lastTimeWasOk: 2}
+            };
+            expect(srv.getApiEndpoints().length).toBe(2);
+            expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(1);
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api_2');
+
+            // with states only ok for the last one
+            srv.states = {
                 'http://api_1': {state: false, time: 0, lastTimeWasOk: 1},
                 'http://api_2': {state: false, time: 0, lastTimeWasOk: 2},
                 'http://api3': {state: true, time: 0, lastTimeWasOk: 0}
@@ -568,8 +577,9 @@ describe('fidj.connection', () => {
             expect(srv.getApiEndpoints().length).toBe(2);
             expect(srv.getApiEndpoints()[0].url).toBe('http://api_1');
             expect(srv.getApiEndpoints()[1].url).toBe('http://api_2');
+            // expect(srv.getApiEndpoints()[2].url).toBe('http://api3');
             expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(0);
-            // expect(srv.getApiEndpoints({filter: 'theBestOne'})[0]).toBe('http://api3');
+            // expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api3');
             expect(srv.getApiEndpoints({filter: 'theBestOldOne'}).length).toBe(1);
             expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://api_2');
 
@@ -732,11 +742,13 @@ describe('fidj.connection', () => {
                     request = jasmine.Ajax.requests.at(2);
                     expect(request.url).toBe('http://mock/db1');
                     expect(Object.keys(srv.states).length).toBe(3);
+                    // console.log('1:', srv.states);
                     expect(srv.states['http://mock/api1']).toBeDefined();
                     expect(srv.states['http://mock/api1'].state).toBeTruthy();
+                    expect(srv.states['http://mock/api2'].state).toBeTruthy();
                     expect(srv.states['http://mock/db1'].state).toBeTruthy();
 
-                    jasmine.Ajax.stubRequest(/.*/).andReturn({
+                    jasmine.Ajax.stubRequest(/.*1/).andReturn({
                         status: 500, responseText: ''
                     });
 
@@ -753,7 +765,9 @@ describe('fidj.connection', () => {
                     request = jasmine.Ajax.requests.at(2);
                     expect(request.url).toBe('http://mock/db1');
                     expect(Object.keys(srv.states).length).toBe(3);
+                    // console.log('2:', srv.states);
                     expect(srv.states['http://mock/api1'].state).toBeFalsy();
+                    expect(srv.states['http://mock/api2'].state).toBeTruthy();
                     expect(srv.states['http://mock/db1'].state).toBeFalsy();
                     done();
                 })

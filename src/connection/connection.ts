@@ -534,6 +534,60 @@ export class Connection {
         return filteredDBs;
     };
 
+    private async verifyApiState(currentTime: number, endpointUrl: string) {
+
+        try {
+
+            // console.log('verifyApiState: ', endpointUrl);
+            const data = await new Ajax()
+                .get({
+                    url: endpointUrl + '/status?isok=' + this._sdk.version,
+                    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+                });
+
+            let state = false;
+            if (data && data.isok) {
+                state = true;
+            }
+            this.states[endpointUrl] = {state: state, time: currentTime, lastTimeWasOk: currentTime};
+            // resolve();
+            // console.log('verifyApiState: state', endpointUrl, state);
+
+        } catch (err) {
+            let lastTimeWasOk = 0;
+            if (this.states[endpointUrl]) {
+                lastTimeWasOk = this.states[endpointUrl].lastTimeWasOk;
+            }
+            this.states[endpointUrl] = {state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk};
+            // resolve();
+        }
+        // console.log('verifyApiState: ', this.states);
+    }
+
+    private async verifyDbState(currentTime: number, dbEndpoint: string) {
+
+        try {
+            // console.log('verifyDbState: ', dbEndpoint);
+            const data = await new Ajax()
+                .get({
+                    url: dbEndpoint,
+                    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+                });
+
+            this.states[dbEndpoint] = {state: true, time: currentTime, lastTimeWasOk: currentTime};
+            // resolve();
+            // console.log('verifyDbState: state', dbEndpoint, true);
+
+        } catch (err) {
+            let lastTimeWasOk = 0;
+            if (this.states[dbEndpoint]) {
+                lastTimeWasOk = this.states[dbEndpoint].lastTimeWasOk;
+            }
+            this.states[dbEndpoint] = {state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk};
+            // resolve();
+        }
+    }
+
     verifyConnectionStates(): Promise<any | ErrorInterface> {
 
         const currentTime = new Date().getTime();
@@ -555,29 +609,7 @@ export class Connection {
             if (!endpointUrl) {
                 endpointUrl = endpointObj.toString();
             }
-            promises.push(new Promise((resolve, reject) => {
-                new Ajax()
-                    .get({
-                        url: endpointUrl + '/status?isok=' + this._sdk.version,
-                        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-                    })
-                    .then(data => {
-                        let state = false;
-                        if (data && data.isok) {
-                            state = true;
-                        }
-                        this.states[endpointUrl] = {state: state, time: currentTime, lastTimeWasOk: currentTime};
-                        resolve();
-                    })
-                    .catch(err => {
-                        let lastTimeWasOk = 0;
-                        if (this.states[endpointUrl]) {
-                            lastTimeWasOk = this.states[endpointUrl].lastTimeWasOk;
-                        }
-                        this.states[endpointUrl] = {state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk};
-                        resolve();
-                    });
-            }));
+            promises.push(this.verifyApiState(currentTime, endpointUrl));
         });
 
         const dbs = this.getDBs();
@@ -586,25 +618,7 @@ export class Connection {
             if (!dbEndpoint) {
                 dbEndpoint = dbEndpointObj.toString();
             }
-            promises.push(new Promise((resolve, reject) => {
-                new Ajax()
-                    .get({
-                        url: dbEndpoint,
-                        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-                    })
-                    .then(data => {
-                        this.states[dbEndpoint] = {state: true, time: currentTime, lastTimeWasOk: currentTime};
-                        resolve();
-                    })
-                    .catch(err => {
-                        let lastTimeWasOk = 0;
-                        if (this.states[dbEndpoint]) {
-                            lastTimeWasOk = this.states[dbEndpoint].lastTimeWasOk;
-                        }
-                        this.states[dbEndpoint] = {state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk};
-                        resolve();
-                    });
-            }));
+            promises.push(this.verifyDbState(currentTime, dbEndpoint));
         });
         return Promise.all(promises);
     };
