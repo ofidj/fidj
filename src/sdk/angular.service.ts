@@ -1,10 +1,12 @@
+/* tslint:disable:max-line-length */
 import {Injectable} from '@angular/core';
 import {
     LoggerInterface, ModuleServiceInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface,
-    ErrorInterface, EndpointInterface, LoggerLevelEnum
+    ErrorInterface, EndpointInterface
 } from './interfaces';
 import {InternalService} from './internal.service';
 import {Error as FidjError} from '../connection';
+import {LoggerService} from './logger.service';
 
 /**
  * Angular2+ FidjService
@@ -173,39 +175,3 @@ export class FidjService implements ModuleServiceInterface {
     };
 
 }
-
-export class LoggerService implements LoggerInterface {
-
-    constructor(private level?: LoggerLevelEnum) {
-        if (!level) {
-            this.level = LoggerLevelEnum.ERROR;
-        }
-
-        if (!window.console) {
-            this.level = LoggerLevelEnum.NONE;
-        }
-    }
-
-    log(message: string, args: [any]) {
-        if (this.level === LoggerLevelEnum.LOG) {
-            console.log(message, args);
-        }
-    }
-
-    warn(message: string, args: [any]) {
-        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN) {
-            console.warn(message, args);
-        }
-    }
-
-    error(message: string, args: [any]) {
-        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
-            console.error(message, args);
-        }
-    }
-
-    setLevel(level: LoggerLevelEnum) {
-        this.level = level;
-    }
-}
-

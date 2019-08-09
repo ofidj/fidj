@@ -15,7 +15,7 @@ import {
 import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
 import {Ajax} from '../connection/ajax';
-import {LoggerService} from './angular.service';
+import {LoggerService} from './logger.service';
 
 // const PouchDB = window['PouchDB'] || require('pouchdb').default;
 

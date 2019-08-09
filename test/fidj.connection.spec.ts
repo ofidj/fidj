@@ -1,7 +1,7 @@
 import {Ajax, Client, Connection} from '../src/connection';
 import {Base64} from '../src/tools';
 import {LoggerInterface, LoggerLevelEnum} from '../src/sdk/interfaces';
-import {LoggerService} from '../src';
+import {LoggerService} from '../src/sdk/logger.service';
 
 describe('fidj.connection', () => {
 

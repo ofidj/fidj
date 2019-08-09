@@ -1,9 +1,9 @@
 import {InternalService} from '../src/sdk/internal.service';
+import {LoggerService} from '../src/sdk/logger.service';
 import {SessionCryptoInterface} from '../src/session';
 import {ConnectionFindOptionsInterface, Error as FidjError} from '../src/connection';
 import {Base64} from '../src/tools';
 import {EndpointFilterInterface, ErrorInterface, LoggerLevelEnum, ModuleServiceInitOptionsInterface} from '../src/sdk/interfaces';
-import {LoggerService} from '../src';
 import createSpy = jasmine.createSpy;
 
 describe('fidj.sdk', () => {
