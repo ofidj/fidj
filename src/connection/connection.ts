@@ -91,7 +91,7 @@ export class Connection {
 
     setUser(user: any): void {
         this.user = user;
-        if (this.user._id) {
+        if (this.client && this.user._id) {
             this.client.setClientId(this.user._id);
 
             // store only clientId
