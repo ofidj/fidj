@@ -235,7 +235,7 @@ var Xor = /** @class */ (function () {
 }());
 
 // bumped version via gulp
-var version = '2.1.25';
+var version = '2.1.26';
 
 var XHRPromise = /** @class */ (function () {
     function XHRPromise() {
@@ -1889,7 +1889,7 @@ var InternalService = /** @class */ (function () {
                 roles: [],
                 message: 'demo',
                 apis: [],
-                endpoints: {},
+                endpoints: [],
                 dbs: [],
                 exp: tomorrow
             }));
@@ -1920,8 +1920,9 @@ var InternalService = /** @class */ (function () {
         if (!filter) {
             filter = { showBlocked: false };
         }
-        var endpoints = JSON.parse(this.connection.getAccessPayload({ endpoints: [] })).endpoints;
-        if (!endpoints) {
+        var ap = this.connection.getAccessPayload({ endpoints: [] });
+        var endpoints = JSON.parse(ap).endpoints;
+        if (!endpoints || !Array.isArray(endpoints)) {
             return [];
         }
         endpoints = endpoints.filter(function (endpoint) {
