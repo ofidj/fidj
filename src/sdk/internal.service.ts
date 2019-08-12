@@ -181,7 +181,7 @@ export class InternalService {
                 roles: [],
                 message: 'demo',
                 apis: [],
-                endpoints: {},
+                endpoints: [],
                 dbs: [],
                 exp: tomorrow
             }));
@@ -215,8 +215,9 @@ export class InternalService {
         if (!filter) {
             filter = {showBlocked: false};
         }
-        let endpoints = JSON.parse(this.connection.getAccessPayload({endpoints: []})).endpoints;
-        if (!endpoints) {
+        const ap = this.connection.getAccessPayload({endpoints: []});
+        let endpoints = JSON.parse(ap).endpoints;
+        if (!endpoints || !Array.isArray( endpoints)) {
             return [];
         }
 

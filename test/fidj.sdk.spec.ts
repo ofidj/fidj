@@ -553,6 +553,11 @@ describe('fidj.sdk', () => {
             const srv = new InternalService(_log, _q);
             const getAccessPayload = spyOn((srv as any).connection, 'getAccessPayload');
 
+            // bad endpoints
+            accessPayload = {endpoints: {}};
+            getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
+            expect(srv.fidjGetEndpoints().length).toBe(0);
+
             // empty endpoints & no filter
             accessPayload = {endpoints: []};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
