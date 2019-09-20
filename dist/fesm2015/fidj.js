@@ -241,7 +241,7 @@ class Xor {
 Xor.header = 'artemis-lotsum';
 
 // bumped version via gulp
-const version = '2.1.26';
+const version = '2.1.27';
 
 class XHRPromise {
     constructor() {
@@ -1334,7 +1334,7 @@ Connection._cryptoSalt = 'v2.cryptoSalt';
 Connection._cryptoSaltNext = 'v2.cryptoSalt.next';
 
 // import PouchDB from 'pouchdb';
-const FidjPouch = window['PouchDB'] ? window['PouchDB'] : require('pouchdb').default; // .default;
+const FidjPouch = (window && window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
 // load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
 const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
 FidjPouch.plugin(PouchAdapterCordovaSqlite);
@@ -1361,7 +1361,7 @@ class Session {
         return new Promise((resolve, reject) => {
             let opts = { location: 'default' };
             try {
-                if (window['cordova']) {
+                if (window && window['cordova']) {
                     opts = { location: 'default', adapter: 'cordova-sqlite' };
                     //    const plugin = require('pouchdb-adapter-cordova-sqlite');
                     //    if (plugin) { Pouch.plugin(plugin); }
@@ -1716,7 +1716,7 @@ class LoggerService {
         if (!level) {
             this.level = LoggerLevelEnum.ERROR;
         }
-        if (!window.console) {
+        if (!window || !window.console) {
             this.level = LoggerLevelEnum.NONE;
         }
     }
@@ -1763,7 +1763,8 @@ class InternalService {
             this.logger = new LoggerService();
         }
         this.logger.log('fidj.sdk.service : constructor');
-        this.storage = new LocalStorage(window.localStorage, 'fidj.');
+        const ls = window ? window.localStorage : {};
+        this.storage = new LocalStorage(ls, 'fidj.');
         this.session = new Session();
         this.connection = new Connection(this.sdk, this.storage, this.logger);
     }
@@ -2246,7 +2247,7 @@ InternalService._srvDataUniqId = 0;
  *      // ... after install :
  *      // $ npm install --save-dev fidj
  *      // then init your app.js & use it in your services
- *
+ * TODO refresh gist :
  * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.inject.js"></script>
  *
  * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.sync.js"></script>
@@ -2433,7 +2434,7 @@ FidjModule = __decorate([
  *      // ... after install :
  *      // $ npm install fidj
  *      // then init your app.js & use it in your services
- *
+ * TODO refresh gist :
  * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
  *
  * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
