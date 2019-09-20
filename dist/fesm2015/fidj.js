@@ -241,7 +241,7 @@ class Xor {
 Xor.header = 'artemis-lotsum';
 
 // bumped version via gulp
-const version = '2.1.28';
+const version = '2.1.29';
 
 class XHRPromise {
     constructor() {
@@ -1719,7 +1719,7 @@ class LoggerService {
         if (!level) {
             this.level = LoggerLevelEnum.ERROR;
         }
-        if (!window || !window.console) {
+        if (typeof console === 'undefined') {
             this.level = LoggerLevelEnum.NONE;
         }
     }
@@ -1744,6 +1744,8 @@ class LoggerService {
 }
 
 // import PouchDB from 'pouchdb';
+// import {LocalStorage} from 'node-localstorage';
+// import 'localstorage-polyfill/localStorage';
 // const PouchDB = window['PouchDB'] || require('pouchdb').default;
 /**
  * please use its angular.js or angular.io wrapper
@@ -1766,7 +1768,14 @@ class InternalService {
             this.logger = new LoggerService();
         }
         this.logger.log('fidj.sdk.service : constructor');
-        const ls = typeof window !== 'undefined' ? window.localStorage : {};
+        let ls;
+        if (typeof window !== 'undefined') {
+            ls = window.localStorage;
+        }
+        else if (typeof global !== 'undefined') {
+            require('localstorage-polyfill');
+            ls = global['localStorage'];
+        }
         this.storage = new LocalStorage(ls, 'fidj.');
         this.session = new Session();
         this.connection = new Connection(this.sdk, this.storage, this.logger);
