@@ -41,7 +41,6 @@ export class Session {
         return !!this.db;
     }
 
-
     public create(uid: string, force?: boolean): Promise<void | ErrorInterface> {
 
         if (!force && this.db) {

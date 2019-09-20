@@ -6,8 +6,10 @@ import {
     EndpointInterface
 } from './interfaces';
 import {InternalService} from './internal.service';
-import {LocalStorage} from '../tools';
+import * as tools from '../tools';
 import {Error as FidjError} from '../connection';
+// import {LocalStorage} from 'node-localstorage';
+// import 'localstorage-polyfill/localStorage';
 
 
 /**
@@ -241,9 +243,14 @@ if (angular && angular.module) {
 
             // var LocalStorage = fidj.LocalStorageFactory(window.localStorage);
             // return new LocalStorage();
-
-            const ls = typeof window !== 'undefined' ? window.localStorage : {};
-            return new LocalStorage(ls, 'fidj.');
+            let ls;
+            if (typeof window !== 'undefined') {
+                ls = window.localStorage;
+            } else if (typeof global !== 'undefined') {
+                require('localstorage-polyfill');
+                ls = global['localStorage'];
+            }
+            return new tools.LocalStorage(ls, 'fidj.');
 
         })
         .directive('fidjLazyLoad', ($animate) => {

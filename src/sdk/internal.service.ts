@@ -16,6 +16,8 @@ import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
 import {Ajax} from '../connection/ajax';
 import {LoggerService} from './logger.service';
+// import {LocalStorage} from 'node-localstorage';
+// import 'localstorage-polyfill/localStorage';
 
 // const PouchDB = window['PouchDB'] || require('pouchdb').default;
 
@@ -48,7 +50,13 @@ export class InternalService {
             this.logger = new LoggerService();
         }
         this.logger.log('fidj.sdk.service : constructor');
-        const ls = typeof window !== 'undefined' ? window.localStorage : {};
+        let ls;
+        if (typeof window !== 'undefined') {
+            ls = window.localStorage;
+        } else if (typeof global !== 'undefined') {
+            require('localstorage-polyfill');
+            ls = global['localStorage'];
+        }
         this.storage = new tools.LocalStorage(ls, 'fidj.');
         this.session = new session.Session();
         this.connection = new connection.Connection(this.sdk, this.storage, this.logger);
@@ -218,7 +226,7 @@ export class InternalService {
         }
         const ap = this.connection.getAccessPayload({endpoints: []});
         let endpoints = JSON.parse(ap).endpoints;
-        if (!endpoints || !Array.isArray( endpoints)) {
+        if (!endpoints || !Array.isArray(endpoints)) {
             return [];
         }
 

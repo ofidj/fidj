@@ -9,7 +9,7 @@ export class LoggerService implements LoggerInterface {
             this.level = LoggerLevelEnum.ERROR;
         }
 
-        if (!window || !window.console) {
+        if (typeof window === 'undefined' || !window.console) {
             this.level = LoggerLevelEnum.NONE;
         }
     }

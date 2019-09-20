@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/ofidj/fidj#readme",
   "dependencies": {
+    "localstorage-polyfill": "^1.0.1",
     "pouchdb": "^7.1.1",
     "pouchdb-adapter-cordova-sqlite": "^2.0.6"
   },
