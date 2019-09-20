@@ -241,7 +241,7 @@ class Xor {
 Xor.header = 'artemis-lotsum';
 
 // bumped version via gulp
-const version = '2.1.27';
+const version = '2.1.28';
 
 class XHRPromise {
     constructor() {
@@ -642,10 +642,10 @@ class Client {
         this.sdk = sdk;
         let uuid = this.storage.get(Client._clientUuid) || 'uuid-' + Math.random();
         let info = '_clientInfo'; // this.storage.get(Client._clientInfo);
-        if (window && window.navigator) {
+        if (typeof window !== 'undefined' && window.navigator) {
             info = window.navigator.appName + '@' + window.navigator.appVersion + '-' + window.navigator.userAgent;
         }
-        if (window && window['device'] && window['device'].uuid) {
+        if (typeof window !== 'undefined' && window['device'] && window['device'].uuid) {
             uuid = window['device'].uuid;
         }
         this.setClientUuid(uuid);
@@ -1334,10 +1334,13 @@ Connection._cryptoSalt = 'v2.cryptoSalt';
 Connection._cryptoSaltNext = 'v2.cryptoSalt.next';
 
 // import PouchDB from 'pouchdb';
-const FidjPouch = (window && window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
-// load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
-const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
-FidjPouch.plugin(PouchAdapterCordovaSqlite);
+let FidjPouch;
+if (typeof window !== 'undefined') {
+    FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
+    // load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
+    const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
+    FidjPouch.plugin(PouchAdapterCordovaSqlite);
+}
 class Session {
     constructor() {
         this.db = null;
@@ -1361,7 +1364,7 @@ class Session {
         return new Promise((resolve, reject) => {
             let opts = { location: 'default' };
             try {
-                if (window && window['cordova']) {
+                if (typeof window !== 'undefined' && window['cordova']) {
                     opts = { location: 'default', adapter: 'cordova-sqlite' };
                     //    const plugin = require('pouchdb-adapter-cordova-sqlite');
                     //    if (plugin) { Pouch.plugin(plugin); }
@@ -1763,7 +1766,7 @@ class InternalService {
             this.logger = new LoggerService();
         }
         this.logger.log('fidj.sdk.service : constructor');
-        const ls = window ? window.localStorage : {};
+        const ls = typeof window !== 'undefined' ? window.localStorage : {};
         this.storage = new LocalStorage(ls, 'fidj.');
         this.session = new Session();
         this.connection = new Connection(this.sdk, this.storage, this.logger);
