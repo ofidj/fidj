@@ -5,11 +5,14 @@ import PouchDB from 'pouchdb/dist/pouchdb.js';
 import {Error} from '../sdk/error';
 import {EndpointInterface, ErrorInterface} from '../sdk/interfaces';
 
-const FidjPouch = (window && window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
+let FidjPouch;
 
-// load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
-const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
-FidjPouch.plugin(PouchAdapterCordovaSqlite);
+if (typeof window !== 'undefined') {
+    FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
+    // load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
+    const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
+    FidjPouch.plugin(PouchAdapterCordovaSqlite);
+}
 
 export interface SessionCryptoInterface {
     obj: Object,
@@ -54,7 +57,7 @@ export class Session {
 
             let opts: any = {location: 'default'};
             try {
-                if (window && window['cordova']) {
+                if (typeof window !== 'undefined' && window['cordova']) {
                     opts = {location: 'default', adapter: 'cordova-sqlite'};
                     //    const plugin = require('pouchdb-adapter-cordova-sqlite');
                     //    if (plugin) { Pouch.plugin(plugin); }
@@ -154,11 +157,11 @@ export class Session {
                                 resolve();
                             })
                             .on('denied', (err) => reject({code: 403, reason: {second: err}}))
-                            .on('error', (err) => reject({code: 401, reason:  {second: err}}));
+                            .on('error', (err) => reject({code: 401, reason: {second: err}}));
 
                     })
-                    .on('denied', (err) => reject({code: 403, reason:  {first: err}}))
-                    .on('error', (err) => reject({code: 401, reason:  {first: err}}));
+                    .on('denied', (err) => reject({code: 403, reason: {first: err}}))
+                    .on('error', (err) => reject({code: 401, reason: {first: err}}));
 
             } catch (err) {
                 reject(new Error(500, err));

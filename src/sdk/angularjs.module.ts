@@ -242,7 +242,7 @@ if (angular && angular.module) {
             // var LocalStorage = fidj.LocalStorageFactory(window.localStorage);
             // return new LocalStorage();
 
-            const ls = window ? window.localStorage : {};
+            const ls = typeof window !== 'undefined' ? window.localStorage : {};
             return new LocalStorage(ls, 'fidj.');
 
         })

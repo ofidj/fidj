@@ -21,10 +21,10 @@ export class Client {
 
         let uuid: string = this.storage.get(Client._clientUuid) || 'uuid-' + Math.random();
         let info = '_clientInfo'; // this.storage.get(Client._clientInfo);
-        if (window && window.navigator) {
+        if (typeof window !== 'undefined' && window.navigator) {
             info = window.navigator.appName + '@' + window.navigator.appVersion + '-' + window.navigator.userAgent;
         }
-        if (window && window['device'] && window['device'].uuid) {
+        if (typeof window !== 'undefined' && window['device'] && window['device'].uuid) {
             uuid = window['device'].uuid;
         }
         this.setClientUuid(uuid);

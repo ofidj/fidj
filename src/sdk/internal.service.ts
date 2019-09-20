@@ -48,7 +48,7 @@ export class InternalService {
             this.logger = new LoggerService();
         }
         this.logger.log('fidj.sdk.service : constructor');
-        const ls = window ? window.localStorage : {};
+        const ls = typeof window !== 'undefined' ? window.localStorage : {};
         this.storage = new tools.LocalStorage(ls, 'fidj.');
         this.session = new session.Session();
         this.connection = new connection.Connection(this.sdk, this.storage, this.logger);
