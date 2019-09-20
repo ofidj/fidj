@@ -5,7 +5,7 @@ import PouchDB from 'pouchdb/dist/pouchdb.js';
 import {Error} from '../sdk/error';
 import {EndpointInterface, ErrorInterface} from '../sdk/interfaces';
 
-const FidjPouch = window['PouchDB'] ? window['PouchDB'] : require('pouchdb').default; // .default;
+const FidjPouch = (window && window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
 
 // load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
 const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
@@ -54,7 +54,7 @@ export class Session {
 
             let opts: any = {location: 'default'};
             try {
-                if (window['cordova']) {
+                if (window && window['cordova']) {
                     opts = {location: 'default', adapter: 'cordova-sqlite'};
                     //    const plugin = require('pouchdb-adapter-cordova-sqlite');
                     //    if (plugin) { Pouch.plugin(plugin); }

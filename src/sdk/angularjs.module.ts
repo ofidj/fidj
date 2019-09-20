@@ -221,7 +221,7 @@ export class FidjAngularjsService implements ModuleServiceInterface {
 }
 
 // noinspection TsLint
-const angular: any = window['angular'];
+const angular: any = window ? window['angular'] : null;
 if (angular && angular.module) {
 
     /**
@@ -242,7 +242,8 @@ if (angular && angular.module) {
             // var LocalStorage = fidj.LocalStorageFactory(window.localStorage);
             // return new LocalStorage();
 
-            return new LocalStorage(window.localStorage, 'fidj.');
+            const ls = window ? window.localStorage : {};
+            return new LocalStorage(ls, 'fidj.');
 
         })
         .directive('fidjLazyLoad', ($animate) => {

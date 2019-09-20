@@ -16,7 +16,7 @@ import {LoggerService} from './logger.service';
  *      // ... after install :
  *      // $ npm install --save-dev fidj
  *      // then init your app.js & use it in your services
- *
+ * TODO refresh gist :
  * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.inject.js"></script>
  *
  * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.sync.js"></script>
