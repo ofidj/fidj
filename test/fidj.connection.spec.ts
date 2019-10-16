@@ -2,6 +2,8 @@ import {Ajax, Client, Connection} from '../src/connection';
 import {Base64} from '../src/tools';
 import {LoggerInterface, LoggerLevelEnum} from '../src/sdk/interfaces';
 import {LoggerService} from '../src/sdk/logger.service';
+//import {superagent} from 'superagent';
+import request from 'superagent'
 
 describe('fidj.connection', () => {
 
@@ -20,6 +22,16 @@ describe('fidj.connection', () => {
         });
 
         it('should POST to a URI', (done) => {
+            // todo https://www.npmjs.com/package/superagent-mock ?
+            spyOn(request, 'post').and.callFake(function (url) {
+                return {
+                    end: function (cb) {
+                        //null for no error, and object to mirror how a response would look.
+                        cb(null, {body: _dogName});
+                    }
+                }
+            });
+
             jasmine.Ajax.stubRequest(/.*sandbox*/).andReturn(
                 {
                     status: 200,
