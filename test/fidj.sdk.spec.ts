@@ -660,7 +660,9 @@ describe('fidj.sdk', () => {
                     expect(result).toBe(MOCKED_RESPONSE);
                     const request = jasmine.Ajax.requests.mostRecent();
                     expect(request.url).toBe('http://test1.com');
-                    expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
+
+                    // expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
+                    expect(JSON.parse(request.params).headers.Authorization).toBe('Bearer aFakeJwt');
                     done();
                 })
                 .catch(err => {
