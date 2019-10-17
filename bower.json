@@ -26,8 +26,7 @@
     "axios": "^0.19.0",
     "btoa": "^1.2.1",
     "localstorage-polyfill": "^1.0.1",
-    "pouchdb": "^7.1.1",
-    "superagent": "^5.1.0"
+    "pouchdb": "^7.1.1"
   },
   "ignore": [
     "**/.*",

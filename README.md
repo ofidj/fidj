@@ -4,7 +4,7 @@
 [![Bower version](https://badge.fury.io/bo/fidj.svg)](https://libraries.io/bower/fidj)
 [![Package Quality](http://npm.packagequality.com/shield/fidj.svg)](http://packagequality.com/#?package=fidj)
 
-> [Install](https://github.com/ofidj/fidj#install) | [APIs](https://ofidj.github.io/fidj) | [Support](https://github.com/ofidj/fidj#develop) | [Thanks!](https://github.com/ofidj/fidj#thanks)
+> [Install](https://github.com/ofidj/fidj#1-youre-an-app-builder) | [APIs](https://ofidj.github.io/fidj) | [Support](https://github.com/ofidj/fidj#develop) | [Thanks!](https://github.com/ofidj/fidj#thanks)
 
 
 # 1) You're an app builder
