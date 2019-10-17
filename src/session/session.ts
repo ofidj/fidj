@@ -41,10 +41,10 @@ export class Session {
         return !!this.db;
     }
 
-    public create(uid: string, force?: boolean): Promise<void | ErrorInterface> {
+    public create(uid: string, force?: boolean): Promise<any | ErrorInterface> {
 
         if (!force && this.db) {
-            return Promise.resolve();
+            return Promise.resolve(this.db);
         }
 
         this.dbRecordCount = 0;
@@ -52,11 +52,15 @@ export class Session {
         this.db = null;
         uid = uid || 'default';
 
+        if (typeof window === 'undefined') {
+            return Promise.resolve(this.db);
+        }
+
         return new Promise((resolve, reject) => {
 
             let opts: any = {location: 'default'};
             try {
-                if (typeof window !== 'undefined' && window['cordova']) {
+                if (window['cordova']) {
                     opts = {location: 'default', adapter: 'cordova-sqlite'};
                     //    const plugin = require('pouchdb-adapter-cordova-sqlite');
                     //    if (plugin) { Pouch.plugin(plugin); }
@@ -87,7 +91,7 @@ export class Session {
                         //     });
 
                     }).catch((err) => {
-                    reject(new Error(400, err))
+                    reject(new Error(400, err));
                 });
             } catch (err) {
                 reject(new Error(500, err));

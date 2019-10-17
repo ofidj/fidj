@@ -207,6 +207,52 @@ describe('fidj.sdk', () => {
                 });
         });
 
+        it('should fidjLogin OK : without using DB', function (done) {
+
+            const srv = new InternalService(_log, _q);
+            spyOn((srv as any).connection, 'verifyConnectionStates').and.returnValue(_q.resolve({}));
+            spyOn((srv as any).connection, 'getApiEndpoints').and.returnValue(['http://endpoint/mock']);
+            spyOn((srv as any).connection, 'setClient').and.returnValue({});
+
+
+            spyOn((srv as any).connection, 'isReady').and.returnValue(true);
+            spyOn((srv as any), '_removeAll').and.returnValue(Promise.resolve());
+            spyOn((srv as any), '_createSession').and.returnValue(Promise.resolve());
+            spyOn((srv as any), '_loginInternal').and.returnValue(Promise.resolve({}));
+            spyOn((srv as any).connection, 'setConnection').and.returnValue(null)
+            spyOn((srv as any).session, 'sync').and.returnValue(Promise.resolve());
+            spyOn((srv as any).connection, 'getClientId').and.returnValue('clientId');
+            spyOn((srv as any).connection, 'getUser').and.returnValue({id: 'getUser'});
+
+            srv
+                .fidjInit('testAppProd', {logLevel: LoggerLevelEnum.NONE, prod: false, crypto: false, useDB: false})
+                .then(function (value) {
+                    expect(value).toBeUndefined();
+                    expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(1);
+                    expect((srv as any).connection.getApiEndpoints).toHaveBeenCalledTimes(2);
+                    expect((srv as any).connection.setClient).toHaveBeenCalledTimes(1);
+                    return srv.fidjLogin(_login, _password);
+                })
+                .then(function (user) {
+                    expect(user.id).toBe('getUser');
+                    expect((srv as any).connection.isReady).toHaveBeenCalledTimes(1);
+                    expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);
+                    expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(2);
+                    expect((srv as any)._createSession).toHaveBeenCalledTimes(1);
+                    expect((srv as any)._loginInternal).toHaveBeenCalledTimes(1);
+                    expect((srv as any).connection.setConnection).toHaveBeenCalledTimes(1);
+                    expect((srv as any).session.sync).toHaveBeenCalledTimes(0);
+                    expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(0);
+                    expect((srv as any).connection.getUser).toHaveBeenCalledTimes(1);
+
+                    done();
+                })
+                .catch(function (err) {
+                    done.fail(err);
+                });
+
+        });
+
         it('should fidjLogin OK', function (done) {
 
             const srv = new InternalService(_log, _q);
@@ -622,7 +668,7 @@ describe('fidj.sdk', () => {
             // no endpoint -> catch error
             accessPayload = {endpoints: []};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            srv.fidjPostOnEndpoint('none', {})
+            srv.fidjPostOnEndpoint('none', '/', {})
                 .then(result => done.fail('should fail'))
                 .catch((err: ErrorInterface) => {
                     expect(err.code).toBe(400);
@@ -655,12 +701,14 @@ describe('fidj.sdk', () => {
                     {key: 'my endpoint3', url: 'http://test3.com', blocked: false}]
             };
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            srv.fidjPostOnEndpoint('my endpoint1', {mock: true})
+            srv.fidjPostOnEndpoint('my endpoint1', '/', {mock: true})
                 .then(result => {
                     expect(result).toBe(MOCKED_RESPONSE);
                     const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe('http://test1.com');
-                    expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
+                    expect(request.url).toBe('http://test1.com/');
+
+                    // expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
+                    expect(JSON.parse(request.params).headers.Authorization).toBe('Bearer aFakeJwt');
                     done();
                 })
                 .catch(err => {

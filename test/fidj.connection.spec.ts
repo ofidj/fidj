@@ -1,4 +1,4 @@
-import {Ajax, Client, Connection} from '../src/connection';
+import {Ajax, XhrErrorReason, Client, Connection} from '../src/connection';
 import {Base64} from '../src/tools';
 import {LoggerInterface, LoggerLevelEnum} from '../src/sdk/interfaces';
 import {LoggerService} from '../src/sdk/logger.service';
@@ -133,7 +133,7 @@ describe('fidj.connection', () => {
                     // console.log('data:', data);
                     // expect(err.status).toBe(0);
                     // console.log(err);
-                    expect(err.reason).toBe('timeout');
+                    expect(err.reason).toBe(XhrErrorReason.TIMEOUT);
                     expect(err.code).toBe(408);
                     done();
                 });
@@ -150,7 +150,7 @@ describe('fidj.connection', () => {
                     done.fail(data);
                 })
                 .catch(err => {
-                    expect(err.reason).toBe('error');
+                    expect(err.reason).toBe(XhrErrorReason.STATUS);
                     expect(err.code).toBe(500);
                     done();
                 });
@@ -169,8 +169,7 @@ describe('fidj.connection', () => {
                     done.fail(data);
                 })
                 .catch(err => {
-                    // console.log('err:', err);
-                    expect(err.reason).toBe('status');
+                    expect(err.reason).toBe(XhrErrorReason.STATUS);
                     expect(err.status).toBe(404);
                     expect(err.code).toBe(404);
                     done();
@@ -189,7 +188,7 @@ describe('fidj.connection', () => {
                     done.fail(data);
                 })
                 .catch(err => {
-                    expect(err.reason).toBe('status');
+                    expect(err.reason).toBe(XhrErrorReason.STATUS);
                     expect(err.status).toBe(404);
                     expect(err.code).toBe(404);
                     done();
@@ -250,7 +249,7 @@ describe('fidj.connection', () => {
                     const request = jasmine.Ajax.requests.mostRecent();
                     expect(request.url).toBe(_uri + '/oauth/token');
                     expect(request.method).toBe('POST');
-                    const data: any = request.data();
+                    const data: any = JSON.parse(JSON.parse(request.params).data);
                     expect(data).toBeDefined();
                     expect(data.grant_type).toEqual('client_credentials');
                     expect(data.client_secret).toEqual('');
@@ -284,7 +283,7 @@ describe('fidj.connection', () => {
                     const request = jasmine.Ajax.requests.mostRecent();
                     expect(request.url).toBe(_uri + '/oauth/token');
                     expect(request.method).toBe('POST');
-                    const data: any = request.data();
+                    const data: any = JSON.parse(JSON.parse(request.params).data);
                     expect(data).toBeDefined();
                     expect(data.grant_type).toEqual('refresh_token');
                     expect(data.audience).toEqual(_appId);
@@ -297,7 +296,7 @@ describe('fidj.connection', () => {
                     const request = jasmine.Ajax.requests.mostRecent();
                     expect(request.url).toBe(_uri + '/oauth/token');
                     expect(request.method).toBe('POST');
-                    const data: any = request.data();
+                    const data: any = JSON.parse(JSON.parse(request.params).data);
                     expect(data.refresh_token).toEqual('refreshToken');
                     expect(data.refresh_extra).toEqual(2);
                     done();
@@ -333,7 +332,7 @@ describe('fidj.connection', () => {
                     const request = jasmine.Ajax.requests.mostRecent();
                     expect(request.url).toBe(_uri + '/oauth/revoke');
                     expect(request.method).toBe('POST');
-                    const data: any = request.data();
+                    const data: any = JSON.parse(JSON.parse(request.params).data);
                     expect(data).toBeDefined();
                     expect(data.token).toEqual('tokenMockAsConnected');
                     expect(data.client_id).toEqual('clientMockAsConnected');

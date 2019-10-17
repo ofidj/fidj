@@ -36,7 +36,7 @@ export interface ModuleServiceInterface {
 
     getEndpoints(): Array<EndpointInterface>;
 
-    postOnEndpoint(key: string, data: any): Promise<any | ErrorInterface>;
+    postOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface>;
 
     getIdToken(): string;
 
@@ -58,6 +58,7 @@ export interface ModuleServiceInterface {
 
 export interface ModuleServiceInitOptionsInterface {
     prod: boolean,
+    useDB?: boolean,
     // forcedEndpoint?: string,
     // forcedDBEndpoint?: string,
     crypto?: boolean,
@@ -73,7 +74,8 @@ export interface ModuleServiceLoginOptionsInterface {
 export interface SdkInterface {
     org: string,
     version: string,
-    prod: boolean
+    prod: boolean,
+    useDB: boolean
 }
 
 export enum LoggerLevelEnum {

@@ -1,4 +1,6 @@
-import {XHRPromise} from './xhrpromise';
+// import {XHRPromise} from './xhrpromise';
+// const superagent = require('superagent');
+// import from 'superagent';
 
 export interface XhrOptionsInterface {
     url: string,
@@ -10,16 +12,111 @@ export interface XhrOptionsInterface {
     withCredentials?: boolean
 }
 
+export enum XhrErrorReason {
+    UNKNOWN,
+    TIMEOUT,
+    STATUS
+}
+
+
+export interface XhrErrorInterface {
+    reason: XhrErrorReason,
+    status: number,
+    code: number,
+    message: string,
+}
+
 export class Ajax {
 
     // private static xhr: XHRPromise = new XHRPromise();
-    private xhr: XHRPromise;
+    private xhr; // : XHRPromise;
 
     constructor() {
-        this.xhr = new XHRPromise();
+
+        // https://www.twilio.com/blog/2017/08/http-requests-in-node-js.html
+        // axios ?
+        //  https://github.com/axios/axios
+        // const axios = require('axios');
+
+        // axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')
+        //     .then(response => {
+        //         console.log(response.data.url);
+        //         console.log(response.data.explanation);
+        //     })
+
+        // superagent.get('https://api.nasa.gov/planetary/apod')
+        //     .query({ api_key: 'DEMO_KEY', date: '2017-08-02' })
+
+        this.xhr = require('axios'); // require('superagent'); // new XHRPromise();
     };
 
-    public post(args: XhrOptionsInterface): Promise<any> {
+    private static formatResponseData(response: any): any {
+        // TODO switch depending on json headers
+        let dataParsed = response;
+
+        while (dataParsed && dataParsed.data) {
+            dataParsed = dataParsed.data;
+        }
+
+        try {
+            dataParsed = JSON.parse(dataParsed + '');
+        } catch (e) {
+        }
+        return dataParsed;
+    };
+
+    private static formatError(error: any): XhrErrorInterface {
+
+        const errorFormatted: XhrErrorInterface = {
+            reason: XhrErrorReason.UNKNOWN,
+            status: -1,
+            code: -1,
+            message: '',
+        };
+
+        if (error.status) {
+            errorFormatted.reason = XhrErrorReason.STATUS;
+            errorFormatted.status = parseInt(error.status, 10);
+            errorFormatted.code = parseInt(error.status, 10);
+        }
+
+        if (error.response) {
+            errorFormatted.message = error.response;
+
+            if (error.response.status) {
+                errorFormatted.reason = XhrErrorReason.STATUS;
+                errorFormatted.status = parseInt(error.response.status, 10);
+                errorFormatted.code = parseInt(error.response.status, 10);
+            } else if (error.response.status === null) { // timeout
+                errorFormatted.reason = XhrErrorReason.TIMEOUT;
+                errorFormatted.status = 408;
+                errorFormatted.code = 408;
+            }
+
+        } else if (error.request) {
+            errorFormatted.message = error.request;
+        } else if (error.message) {
+            errorFormatted.message = error.message;
+        }
+
+        // _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
+        // _this._handleError('url', reject, null, 'URL is a required parameter');
+        // _this._handleError('parse', reject, null, 'invalid JSON response');
+        // return _this._handleError('error', reject);
+        // return _this._handleError('timeout', reject);
+        // return _this._handleError('abort', reject);
+        // return _this._handleError('send', reject, null, e.toString());
+
+        // if (err.reason === 'timeout') {
+        //     err.code = 408;
+        // } else {
+        //     err.code = 404;
+        // }
+
+        return errorFormatted;
+    };
+
+    public post(args: XhrOptionsInterface): Promise<any | XhrErrorInterface> {
 
         const opt: any = {
             method: 'POST',
@@ -31,36 +128,25 @@ export class Ajax {
         }
 
         return this.xhr
-            .send(opt)
+            .post(opt.url, {
+                data: opt.data,
+                headers: opt.headers,
+                timeout: 10000
+            })
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    res.reason = 'status';
-                    res.code = parseInt(res.status, 10);
-                    return Promise.reject(res);
+                    return Promise.reject(Ajax.formatError(res));
                 }
-                return Promise.resolve(res.responseText);
+
+                return Promise.resolve(Ajax.formatResponseData(res));
             })
             .catch(err => {
-
-                // _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
-                // _this._handleError('url', reject, null, 'URL is a required parameter');
-                // _this._handleError('parse', reject, null, 'invalid JSON response');
-                // return _this._handleError('error', reject);
-                // return _this._handleError('timeout', reject);
-                // return _this._handleError('abort', reject);
-                // return _this._handleError('send', reject, null, e.toString());
-
-                // if (err.reason === 'timeout') {
-                //     err.code = 408;
-                // } else {
-                //     err.code = 404;
-                // }
-                return Promise.reject(err);
+                return Promise.reject(Ajax.formatError(err));
             });
     }
 
-    public put(args: XhrOptionsInterface): Promise<any> {
+    public put(args: XhrOptionsInterface): Promise<any | XhrErrorInterface> {
         const opt: any = {
             method: 'PUT',
             url: args.url,
@@ -70,27 +156,25 @@ export class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .send(opt)
+            .put(opt.url, {
+                data: opt.data,
+                headers: opt.headers,
+                timeout: 10000
+            })
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    res.reason = 'status';
-                    res.code = parseInt(res.status, 10);
-                    return Promise.reject(res);
+                    return Promise.reject(Ajax.formatError(res));
                 }
-                return Promise.resolve(res.responseText);
+
+                return Promise.resolve(Ajax.formatResponseData(res));
             })
             .catch(err => {
-                // if (err.reason === 'timeout') {
-                //     err.code = 408;
-                // } else {
-                //     err.code = 404;
-                // }
-                return Promise.reject(err);
+                return Promise.reject(Ajax.formatError(err));
             });
     }
 
-    public delete(args: XhrOptionsInterface): Promise<any> {
+    public delete(args: XhrOptionsInterface): Promise<any | XhrErrorInterface> {
         const opt: any = {
             method: 'DELETE',
             url: args.url,
@@ -100,27 +184,26 @@ export class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .send(opt)
+            .delete(opt.url, {
+                data: opt.data,
+                headers: opt.headers,
+                timeout: 10000
+            })
+            // .delete(opt.url) // .send(opt)
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    res.reason = 'status';
-                    res.code = parseInt(res.status, 10);
-                    return Promise.reject(res);
+                    return Promise.reject(Ajax.formatError(res));
                 }
-                return Promise.resolve(res.responseText);
+
+                return Promise.resolve(Ajax.formatResponseData(res));
             })
             .catch(err => {
-                // if (err.reason === 'timeout') {
-                //     err.code = 408;
-                // } else {
-                //     err.code = 404;
-                // }
-                return Promise.reject(err);
+                return Promise.reject(Ajax.formatError(err));
             });
     }
 
-    public get(args: XhrOptionsInterface): Promise<any> {
+    public get(args: XhrOptionsInterface): Promise<any | XhrErrorInterface> {
         const opt: any = {
             method: 'GET',
             url: args.url
@@ -132,23 +215,22 @@ export class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .send(opt)
+            .get(opt.url, {
+                data: opt.data,
+                headers: opt.headers,
+                timeout: 10000
+            })
+            // .get(opt.url) // .send(opt)
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    res.reason = 'status';
-                    res.code = parseInt(res.status, 10);
-                    return Promise.reject(res);
+                    return Promise.reject(Ajax.formatError(res));
                 }
-                return Promise.resolve(res.responseText);
+
+                return Promise.resolve(Ajax.formatResponseData(res));
             })
             .catch(err => {
-                // if (err.reason === 'timeout') {
-                //     err.code = 408;
-                // } else {
-                //     err.code = 404;
-                // }
-                return Promise.reject(err);
+                return Promise.reject(Ajax.formatError(err));
             });
     }
 }

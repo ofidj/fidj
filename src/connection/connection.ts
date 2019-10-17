@@ -238,6 +238,7 @@ export class Connection {
                 return Base64.decode(payload);
             }
         } catch (e) {
+            this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
         }
         return def ? def : null;
     }
@@ -435,6 +436,8 @@ export class Connection {
             }
         }
 
+        this._logger.log('fidj.sdk.connection.getApiEndpoints : ', ea);
+
         let couldCheckStates = true;
         if (this.states && Object.keys(this.states).length) {
             for (let i = 0; (i < ea.length) && couldCheckStates; i++) {
@@ -538,7 +541,8 @@ export class Connection {
 
         try {
 
-            // console.log('verifyApiState: ', endpointUrl);
+            this._logger.log('fidj.sdk.connection.verifyApiState : ', currentTime, endpointUrl);
+
             const data = await new Ajax()
                 .get({
                     url: endpointUrl + '/status?isok=' + this._sdk.version,
@@ -550,8 +554,8 @@ export class Connection {
                 state = true;
             }
             this.states[endpointUrl] = {state: state, time: currentTime, lastTimeWasOk: currentTime};
-            // resolve();
-            // console.log('verifyApiState: state', endpointUrl, state);
+
+            this._logger.log('fidj.sdk.connection.verifyApiState > states : ', this.states);
 
         } catch (err) {
             let lastTimeWasOk = 0;
@@ -559,9 +563,9 @@ export class Connection {
                 lastTimeWasOk = this.states[endpointUrl].lastTimeWasOk;
             }
             this.states[endpointUrl] = {state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk};
-            // resolve();
+
+            this._logger.log('fidj.sdk.connection.verifyApiState > catch pb  - states : ', err, this.states);
         }
-        // console.log('verifyApiState: ', this.states);
     }
 
     private async verifyDbState(currentTime: number, dbEndpoint: string) {

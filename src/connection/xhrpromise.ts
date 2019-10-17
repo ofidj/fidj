@@ -28,8 +28,8 @@ export class XHRPromise {
             withCredentials: false
         };
         options = Object.assign({}, defaults, options);
-        return new Promise(( (_this: XHRPromise) => {
-            return  (resolve, reject) => {
+        return new Promise(((_this: XHRPromise) => {
+            return (resolve, reject) => {
                 let e, header, ref, value, xhr;
                 if (!XMLHttpRequest) {
                     _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
@@ -40,7 +40,7 @@ export class XHRPromise {
                     return;
                 }
                 _this._xhr = xhr = new XMLHttpRequest;
-                xhr.onload =  ()  => {
+                xhr.onload = () => {
                     let responseText;
                     _this._detachWindowUnload();
                     try {
@@ -58,13 +58,13 @@ export class XHRPromise {
                         xhr: xhr
                     });
                 };
-                xhr.onerror =  () => {
+                xhr.onerror = () => {
                     return _this._handleError('error', reject);
                 };
-                xhr.ontimeout =  () => {
+                xhr.ontimeout = () => {
                     return _this._handleError('timeout', reject);
                 };
-                xhr.onabort =  () => {
+                xhr.onabort = () => {
                     return _this._handleError('abort', reject);
                 };
                 _this._attachWindowUnload();
@@ -92,14 +92,12 @@ export class XHRPromise {
         })(this));
     };
 
-
     /*
      * XHRPromise.getXHR() -> XMLHttpRequest
      */
     getXHR() {
         return this._xhr;
     };
-
 
     /*
      * XHRPromise._attachWindowUnload()
@@ -116,7 +114,6 @@ export class XHRPromise {
         }
     };
 
-
     /*
      * XHRPromise._detachWindowUnload()
      */
@@ -126,14 +123,12 @@ export class XHRPromise {
         }
     };
 
-
     /*
      * XHRPromise._getHeaders() -> Object
      */
     private _getHeaders() {
         return this._parseHeaders(this._xhr.getAllResponseHeaders());
     };
-
 
     /*
      * XHRPromise._getResponseText() -> Mixed
@@ -151,7 +146,6 @@ export class XHRPromise {
         return responseText;
     };
 
-
     /*
      * XHRPromise._getResponseUrl() -> String
      *
@@ -166,7 +160,6 @@ export class XHRPromise {
         }
         return '';
     };
-
 
     /*
      * XHRPromise._handleError(reason, reject, status, statusText)
@@ -202,14 +195,12 @@ export class XHRPromise {
         });
     };
 
-
     /*
      * XHRPromise._handleWindowUnload()
      */
     private _handleWindowUnload() {
         return this._xhr.abort();
     };
-
 
     private trim(str) {
         return str.replace(/^\s*|\s*$/g, '');
@@ -218,7 +209,6 @@ export class XHRPromise {
     private isArray(arg) {
         return Object.prototype.toString.call(arg) === '[object Array]';
     }
-
 
     private forEach(list, iterator) {
         if (toString.call(list) === '[object Array]') {
@@ -267,7 +257,7 @@ export class XHRPromise {
                     , key = this.trim(row.slice(0, index)).toLowerCase()
                     , value = this.trim(row.slice(index + 1));
 
-                if (typeof(result[key]) === 'undefined') {
+                if (typeof (result[key]) === 'undefined') {
                     result[key] = value
                 } else if (this.isArray(result[key])) {
                     result[key].push(value)
