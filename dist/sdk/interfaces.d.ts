@@ -24,7 +24,7 @@ export interface ModuleServiceInterface {
     isLoggedIn(): boolean;
     getRoles(): Array<string>;
     getEndpoints(): Array<EndpointInterface>;
-    postOnEndpoint(key: string, data: any): Promise<any | ErrorInterface>;
+    postOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface>;
     getIdToken(): string;
     getMessage(): string;
     logout(force?: boolean): Promise<void | ErrorInterface>;
@@ -36,6 +36,7 @@ export interface ModuleServiceInterface {
 }
 export interface ModuleServiceInitOptionsInterface {
     prod: boolean;
+    useDB?: boolean;
     crypto?: boolean;
     logLevel?: LoggerLevelEnum;
 }
@@ -48,6 +49,7 @@ export interface SdkInterface {
     org: string;
     version: string;
     prod: boolean;
+    useDB: boolean;
 }
 export declare enum LoggerLevelEnum {
     LOG = 1,

@@ -12,7 +12,7 @@ export declare class Session {
     private dbs;
     constructor();
     isReady(): boolean;
-    create(uid: string, force?: boolean): Promise<void | ErrorInterface>;
+    create(uid: string, force?: boolean): Promise<any | ErrorInterface>;
     destroy(): Promise<void | ErrorInterface>;
     setRemote(dbs: Array<EndpointInterface>): void;
     sync(userId: string): Promise<void | ErrorInterface>;

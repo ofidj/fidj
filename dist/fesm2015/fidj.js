@@ -1,4 +1,4 @@
-import { __awaiter, __decorate, __metadata } from 'tslib';
+import { __awaiter, __decorate } from 'tslib';
 import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -13,7 +13,8 @@ class Base64 {
         if (!input) {
             return null;
         }
-        return btoa(encodeURIComponent(input).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
+        const _btoa = require('btoa');
+        return _btoa(encodeURIComponent(input).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
             return String.fromCharCode(parseInt('0x' + p1, 16));
         }));
     }
@@ -21,7 +22,8 @@ class Base64 {
         if (!input) {
             return null;
         }
-        return decodeURIComponent(atob(input).split('').map((c) => {
+        const _atob = require('atob');
+        return decodeURIComponent(_atob(input).split('').map((c) => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
     }
@@ -240,179 +242,87 @@ class Xor {
 }
 Xor.header = 'artemis-lotsum';
 
-// bumped version via gulp
-const version = '2.1.29';
+var LoggerLevelEnum;
+(function (LoggerLevelEnum) {
+    LoggerLevelEnum[LoggerLevelEnum["LOG"] = 1] = "LOG";
+    LoggerLevelEnum[LoggerLevelEnum["WARN"] = 2] = "WARN";
+    LoggerLevelEnum[LoggerLevelEnum["ERROR"] = 3] = "ERROR";
+    LoggerLevelEnum[LoggerLevelEnum["NONE"] = 4] = "NONE";
+})(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
-class XHRPromise {
+// bumped version via gulp
+const version = '2.1.30';
+
+// import {XHRPromise} from './xhrpromise';
+// const superagent = require('superagent');
+// import from 'superagent';
+var XhrErrorReason;
+(function (XhrErrorReason) {
+    XhrErrorReason[XhrErrorReason["UNKNOWN"] = 0] = "UNKNOWN";
+    XhrErrorReason[XhrErrorReason["TIMEOUT"] = 1] = "TIMEOUT";
+    XhrErrorReason[XhrErrorReason["STATUS"] = 2] = "STATUS";
+})(XhrErrorReason || (XhrErrorReason = {}));
+class Ajax {
     constructor() {
-        this.DEFAULT_CONTENT_TYPE = 'application/x-www-form-urlencoded; charset=UTF-8';
+        // https://www.twilio.com/blog/2017/08/http-requests-in-node-js.html
+        // axios ?
+        //  https://github.com/axios/axios
+        // const axios = require('axios');
+        // axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')
+        //     .then(response => {
+        //         console.log(response.data.url);
+        //         console.log(response.data.explanation);
+        //     })
+        // superagent.get('https://api.nasa.gov/planetary/apod')
+        //     .query({ api_key: 'DEMO_KEY', date: '2017-08-02' })
+        this.xhr = require('axios'); // require('superagent'); // new XHRPromise();
     }
     ;
-    /*
-     * XHRPromise.send(options) -> Promise
-     * - options (Object): URL, method, data, etc.
-     *
-     * Create the XHR object and wire up event handlers to use a promise.
-     */
-    send(options) {
-        let defaults;
-        if (options == null) {
-            options = {};
+    static formatResponseData(response) {
+        // TODO switch depending on json headers
+        let dataParsed = response;
+        while (dataParsed && dataParsed.data) {
+            dataParsed = dataParsed.data;
         }
-        defaults = {
-            method: 'GET',
-            data: null,
-            headers: {},
-            async: true,
-            username: null,
-            password: null,
-            withCredentials: false
+        try {
+            dataParsed = JSON.parse(dataParsed + '');
+        }
+        catch (e) {
+        }
+        return dataParsed;
+    }
+    ;
+    static formatError(error) {
+        const errorFormatted = {
+            reason: XhrErrorReason.UNKNOWN,
+            status: -1,
+            code: -1,
+            message: '',
         };
-        options = Object.assign({}, defaults, options);
-        return new Promise(((_this) => {
-            return (resolve, reject) => {
-                let e, header, ref, value, xhr;
-                if (!XMLHttpRequest) {
-                    _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
-                    return;
-                }
-                if (typeof options.url !== 'string' || options.url.length === 0) {
-                    _this._handleError('url', reject, null, 'URL is a required parameter');
-                    return;
-                }
-                _this._xhr = xhr = new XMLHttpRequest;
-                xhr.onload = () => {
-                    let responseText;
-                    _this._detachWindowUnload();
-                    try {
-                        responseText = _this._getResponseText();
-                    }
-                    catch (_error) {
-                        _this._handleError('parse', reject, null, 'invalid JSON response');
-                        return;
-                    }
-                    return resolve({
-                        url: _this._getResponseUrl(),
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        responseText: responseText,
-                        headers: _this._getHeaders(),
-                        xhr: xhr
-                    });
-                };
-                xhr.onerror = () => {
-                    return _this._handleError('error', reject);
-                };
-                xhr.ontimeout = () => {
-                    return _this._handleError('timeout', reject);
-                };
-                xhr.onabort = () => {
-                    return _this._handleError('abort', reject);
-                };
-                _this._attachWindowUnload();
-                xhr.open(options.method, options.url, options.async, options.username, options.password);
-                if (options.withCredentials) {
-                    xhr.withCredentials = true;
-                }
-                if ((options.data != null) && !options.headers['Content-Type']) {
-                    options.headers['Content-Type'] = _this.DEFAULT_CONTENT_TYPE;
-                }
-                ref = options.headers;
-                for (header in ref) {
-                    if (ref.hasOwnProperty(header)) {
-                        value = ref[header];
-                        xhr.setRequestHeader(header, value);
-                    }
-                }
-                try {
-                    return xhr.send(options.data);
-                }
-                catch (_error) {
-                    e = _error;
-                    return _this._handleError('send', reject, null, e.toString());
-                }
-            };
-        })(this));
-    }
-    ;
-    /*
-     * XHRPromise.getXHR() -> XMLHttpRequest
-     */
-    getXHR() {
-        return this._xhr;
-    }
-    ;
-    /*
-     * XHRPromise._attachWindowUnload()
-     *
-     * Fix for IE 9 and IE 10
-     * Internet Explorer freezes when you close a webpage during an XHR request
-     * https://support.microsoft.com/kb/2856746
-     *
-     */
-    _attachWindowUnload() {
-        this._unloadHandler = this._handleWindowUnload.bind(this);
-        if (window.attachEvent) {
-            return window.attachEvent('onunload', this._unloadHandler);
+        if (error.status) {
+            errorFormatted.reason = XhrErrorReason.STATUS;
+            errorFormatted.status = parseInt(error.status, 10);
+            errorFormatted.code = parseInt(error.status, 10);
         }
-    }
-    ;
-    /*
-     * XHRPromise._detachWindowUnload()
-     */
-    _detachWindowUnload() {
-        if (window.detachEvent) {
-            return window.detachEvent('onunload', this._unloadHandler);
+        if (error.response) {
+            errorFormatted.message = error.response;
+            if (error.response.status) {
+                errorFormatted.reason = XhrErrorReason.STATUS;
+                errorFormatted.status = parseInt(error.response.status, 10);
+                errorFormatted.code = parseInt(error.response.status, 10);
+            }
+            else if (error.response.status === null) { // timeout
+                errorFormatted.reason = XhrErrorReason.TIMEOUT;
+                errorFormatted.status = 408;
+                errorFormatted.code = 408;
+            }
         }
-    }
-    ;
-    /*
-     * XHRPromise._getHeaders() -> Object
-     */
-    _getHeaders() {
-        return this._parseHeaders(this._xhr.getAllResponseHeaders());
-    }
-    ;
-    /*
-     * XHRPromise._getResponseText() -> Mixed
-     *
-     * Parses response text JSON if present.
-     */
-    _getResponseText() {
-        let responseText;
-        responseText = typeof this._xhr.responseText === 'string' ? this._xhr.responseText : '';
-        switch ((this._xhr.getResponseHeader('Content-Type') || '').split(';')[0]) {
-            case 'application/json':
-            case 'text/javascript':
-                responseText = JSON.parse(responseText + '');
+        else if (error.request) {
+            errorFormatted.message = error.request;
         }
-        return responseText;
-    }
-    ;
-    /*
-     * XHRPromise._getResponseUrl() -> String
-     *
-     * Actual response URL after following redirects.
-     */
-    _getResponseUrl() {
-        if (this._xhr.responseURL != null) {
-            return this._xhr.responseURL;
+        else if (error.message) {
+            errorFormatted.message = error.message;
         }
-        if (/^X-Request-URL:/m.test(this._xhr.getAllResponseHeaders())) {
-            return this._xhr.getResponseHeader('X-Request-URL');
-        }
-        return '';
-    }
-    ;
-    /*
-     * XHRPromise._handleError(reason, reject, status, statusText)
-     * - reason (String)
-     * - reject (Function)
-     * - status (String)
-     * - statusText (String)
-     */
-    _handleError(reason, reject, status, statusText) {
-        this._detachWindowUnload();
         // _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
         // _this._handleError('url', reject, null, 'URL is a required parameter');
         // _this._handleError('parse', reject, null, 'invalid JSON response');
@@ -420,91 +330,12 @@ class XHRPromise {
         // return _this._handleError('timeout', reject);
         // return _this._handleError('abort', reject);
         // return _this._handleError('send', reject, null, e.toString());
-        // console.log('_handleError:', reason, this._xhr.status);
-        let code = 404;
-        if (reason === 'timeout') {
-            code = 408;
-        }
-        else if (reason === 'abort') {
-            code = 408;
-        }
-        return reject({
-            reason: reason,
-            status: status || this._xhr.status || code,
-            code: status || this._xhr.status || code,
-            statusText: statusText || this._xhr.statusText,
-            xhr: this._xhr
-        });
-    }
-    ;
-    /*
-     * XHRPromise._handleWindowUnload()
-     */
-    _handleWindowUnload() {
-        return this._xhr.abort();
-    }
-    ;
-    trim(str) {
-        return str.replace(/^\s*|\s*$/g, '');
-    }
-    isArray(arg) {
-        return Object.prototype.toString.call(arg) === '[object Array]';
-    }
-    forEach(list, iterator) {
-        if (toString.call(list) === '[object Array]') {
-            this.forEachArray(list, iterator, this);
-        }
-        else if (typeof list === 'string') {
-            this.forEachString(list, iterator, this);
-        }
-        else {
-            this.forEachObject(list, iterator, this);
-        }
-    }
-    forEachArray(array, iterator, context) {
-        for (let i = 0, len = array.length; i < len; i++) {
-            if (array.hasOwnProperty(i)) {
-                iterator.call(context, array[i], i, array);
-            }
-        }
-    }
-    forEachString(string, iterator, context) {
-        for (let i = 0, len = string.length; i < len; i++) {
-            // no such thing as a sparse string.
-            iterator.call(context, string.charAt(i), i, string);
-        }
-    }
-    forEachObject(object, iterator, context) {
-        for (const k in object) {
-            if (object.hasOwnProperty(k)) {
-                iterator.call(context, object[k], k, object);
-            }
-        }
-    }
-    _parseHeaders(headers) {
-        if (!headers) {
-            return {};
-        }
-        const result = {};
-        this.forEach(this.trim(headers).split('\n'), (row) => {
-            const index = row.indexOf(':'), key = this.trim(row.slice(0, index)).toLowerCase(), value = this.trim(row.slice(index + 1));
-            if (typeof (result[key]) === 'undefined') {
-                result[key] = value;
-            }
-            else if (this.isArray(result[key])) {
-                result[key].push(value);
-            }
-            else {
-                result[key] = [result[key], value];
-            }
-        });
-        return result;
-    }
-}
-
-class Ajax {
-    constructor() {
-        this.xhr = new XHRPromise();
+        // if (err.reason === 'timeout') {
+        //     err.code = 408;
+        // } else {
+        //     err.code = 404;
+        // }
+        return errorFormatted;
     }
     ;
     post(args) {
@@ -517,30 +348,20 @@ class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .send(opt)
+            .post(opt.url, {
+            data: opt.data,
+            headers: opt.headers,
+            timeout: 10000
+        })
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                res.reason = 'status';
-                res.code = parseInt(res.status, 10);
-                return Promise.reject(res);
+                return Promise.reject(Ajax.formatError(res));
             }
-            return Promise.resolve(res.responseText);
+            return Promise.resolve(Ajax.formatResponseData(res));
         })
             .catch(err => {
-            // _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
-            // _this._handleError('url', reject, null, 'URL is a required parameter');
-            // _this._handleError('parse', reject, null, 'invalid JSON response');
-            // return _this._handleError('error', reject);
-            // return _this._handleError('timeout', reject);
-            // return _this._handleError('abort', reject);
-            // return _this._handleError('send', reject, null, e.toString());
-            // if (err.reason === 'timeout') {
-            //     err.code = 408;
-            // } else {
-            //     err.code = 404;
-            // }
-            return Promise.reject(err);
+            return Promise.reject(Ajax.formatError(err));
         });
     }
     put(args) {
@@ -553,23 +374,20 @@ class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .send(opt)
+            .put(opt.url, {
+            data: opt.data,
+            headers: opt.headers,
+            timeout: 10000
+        })
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                res.reason = 'status';
-                res.code = parseInt(res.status, 10);
-                return Promise.reject(res);
+                return Promise.reject(Ajax.formatError(res));
             }
-            return Promise.resolve(res.responseText);
+            return Promise.resolve(Ajax.formatResponseData(res));
         })
             .catch(err => {
-            // if (err.reason === 'timeout') {
-            //     err.code = 408;
-            // } else {
-            //     err.code = 404;
-            // }
-            return Promise.reject(err);
+            return Promise.reject(Ajax.formatError(err));
         });
     }
     delete(args) {
@@ -582,23 +400,21 @@ class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .send(opt)
+            .delete(opt.url, {
+            data: opt.data,
+            headers: opt.headers,
+            timeout: 10000
+        })
+            // .delete(opt.url) // .send(opt)
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                res.reason = 'status';
-                res.code = parseInt(res.status, 10);
-                return Promise.reject(res);
+                return Promise.reject(Ajax.formatError(res));
             }
-            return Promise.resolve(res.responseText);
+            return Promise.resolve(Ajax.formatResponseData(res));
         })
             .catch(err => {
-            // if (err.reason === 'timeout') {
-            //     err.code = 408;
-            // } else {
-            //     err.code = 404;
-            // }
-            return Promise.reject(err);
+            return Promise.reject(Ajax.formatError(err));
         });
     }
     get(args) {
@@ -613,23 +429,21 @@ class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .send(opt)
+            .get(opt.url, {
+            data: opt.data,
+            headers: opt.headers,
+            timeout: 10000
+        })
+            // .get(opt.url) // .send(opt)
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                res.reason = 'status';
-                res.code = parseInt(res.status, 10);
-                return Promise.reject(res);
+                return Promise.reject(Ajax.formatError(res));
             }
-            return Promise.resolve(res.responseText);
+            return Promise.resolve(Ajax.formatResponseData(res));
         })
             .catch(err => {
-            // if (err.reason === 'timeout') {
-            //     err.code = 408;
-            // } else {
-            //     err.code = 404;
-            // }
-            return Promise.reject(err);
+            return Promise.reject(Ajax.formatError(err));
         });
     }
 }
@@ -970,6 +784,7 @@ class Connection {
             }
         }
         catch (e) {
+            this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
         }
         return def ? def : null;
     }
@@ -1144,6 +959,7 @@ class Connection {
                 });
             }
         }
+        this._logger.log('fidj.sdk.connection.getApiEndpoints : ', ea);
         let couldCheckStates = true;
         if (this.states && Object.keys(this.states).length) {
             for (let i = 0; (i < ea.length) && couldCheckStates; i++) {
@@ -1245,7 +1061,7 @@ class Connection {
     verifyApiState(currentTime, endpointUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log('verifyApiState: ', endpointUrl);
+                this._logger.log('fidj.sdk.connection.verifyApiState : ', currentTime, endpointUrl);
                 const data = yield new Ajax()
                     .get({
                     url: endpointUrl + '/status?isok=' + this._sdk.version,
@@ -1256,8 +1072,7 @@ class Connection {
                     state = true;
                 }
                 this.states[endpointUrl] = { state: state, time: currentTime, lastTimeWasOk: currentTime };
-                // resolve();
-                // console.log('verifyApiState: state', endpointUrl, state);
+                this._logger.log('fidj.sdk.connection.verifyApiState > states : ', this.states);
             }
             catch (err) {
                 let lastTimeWasOk = 0;
@@ -1265,9 +1080,8 @@ class Connection {
                     lastTimeWasOk = this.states[endpointUrl].lastTimeWasOk;
                 }
                 this.states[endpointUrl] = { state: false, time: currentTime, lastTimeWasOk: lastTimeWasOk };
-                // resolve();
+                this._logger.log('fidj.sdk.connection.verifyApiState > catch pb  - states : ', err, this.states);
             }
-            // console.log('verifyApiState: ', this.states);
         });
     }
     verifyDbState(currentTime, dbEndpoint) {
@@ -1355,16 +1169,19 @@ class Session {
     }
     create(uid, force) {
         if (!force && this.db) {
-            return Promise.resolve();
+            return Promise.resolve(this.db);
         }
         this.dbRecordCount = 0;
         this.dbLastSync = null; // new Date().getTime();
         this.db = null;
         uid = uid || 'default';
+        if (typeof window === 'undefined') {
+            return Promise.resolve(this.db);
+        }
         return new Promise((resolve, reject) => {
             let opts = { location: 'default' };
             try {
-                if (typeof window !== 'undefined' && window['cordova']) {
+                if (window['cordova']) {
                     opts = { location: 'default', adapter: 'cordova-sqlite' };
                     //    const plugin = require('pouchdb-adapter-cordova-sqlite');
                     //    if (plugin) { Pouch.plugin(plugin); }
@@ -1666,7 +1483,9 @@ class Session {
     }
     static value(item) {
         let result = item;
-        if (typeof (item) !== 'object') ;
+        if (typeof (item) !== 'object') {
+            // return item;
+        }
         else if ('string' in item) {
             result = item.string;
         }
@@ -1705,13 +1524,11 @@ class Session {
     }
 }
 
-var LoggerLevelEnum;
-(function (LoggerLevelEnum) {
-    LoggerLevelEnum[LoggerLevelEnum["LOG"] = 1] = "LOG";
-    LoggerLevelEnum[LoggerLevelEnum["WARN"] = 2] = "WARN";
-    LoggerLevelEnum[LoggerLevelEnum["ERROR"] = 3] = "ERROR";
-    LoggerLevelEnum[LoggerLevelEnum["NONE"] = 4] = "NONE";
-})(LoggerLevelEnum || (LoggerLevelEnum = {}));
+class Error$2 {
+    constructor() {
+    }
+    ;
+}
 
 class LoggerService {
     constructor(level) {
@@ -1752,11 +1569,12 @@ class LoggerService {
  * usefull only for fidj dev team
  */
 class InternalService {
-    constructor(logger, promise) {
+    constructor(logger, promise, options) {
         this.sdk = {
             org: 'fidj',
             version: version,
-            prod: false
+            prod: false,
+            useDB: true
         };
         if (promise) {
             this.promise = promise;
@@ -1766,6 +1584,9 @@ class InternalService {
         }
         else {
             this.logger = new LoggerService();
+        }
+        if (options && options.logLevel) {
+            this.logger.setLevel(options.logLevel);
         }
         this.logger.log('fidj.sdk.service : constructor');
         let ls;
@@ -1810,6 +1631,7 @@ class InternalService {
             return self.promise.reject(new Error$1(400, 'Need a fidjId'));
         }
         self.sdk.prod = !options ? true : options.prod;
+        self.sdk.useDB = !options ? true : options.useDB;
         self.connection.fidjId = fidjId;
         self.connection.fidjVersion = self.sdk.version;
         self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
@@ -1819,6 +1641,7 @@ class InternalService {
                 let theBestUrl = self.connection.getApiEndpoints({ filter: 'theBestOne' })[0];
                 let theBestOldUrl = self.connection.getApiEndpoints({ filter: 'theBestOldOne' })[0];
                 const isLogin = self.fidjIsLogin();
+                self.logger.log('fidj.sdk.service.fidjInit > verifyConnectionStates : ', theBestUrl, theBestOldUrl, isLogin);
                 if (theBestUrl && theBestUrl.url) {
                     theBestUrl = theBestUrl.url;
                 }
@@ -1871,9 +1694,14 @@ class InternalService {
             })
                 .then((user) => {
                 self.connection.setConnection(user);
-                self.session.sync(self.connection.getClientId())
-                    .then(() => resolve(self.connection.getUser()))
-                    .catch((err) => resolve(self.connection.getUser()));
+                if (!self.sdk.useDB) {
+                    resolve(self.connection.getUser());
+                }
+                else {
+                    self.session.sync(self.connection.getClientId())
+                        .then(() => resolve(self.connection.getUser()))
+                        .catch((err) => resolve(self.connection.getUser()));
+                }
             })
                 .catch((err) => {
                 self.logger.error('fidj.sdk.service.fidjLogin: ', err.toString());
@@ -1996,6 +1824,10 @@ class InternalService {
         // if (!self.session.isReady()) {
         //    return self.promise.reject('fidj.sdk.service.fidjSync : DB sync impossible. Did you login ?');
         // }
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjSync: you ar not using DB - no sync available.');
+            return Promise.resolve();
+        }
         const firstSync = (self.session.dbLastSync === null);
         return new self.promise((resolve, reject) => {
             self._createSession(self.connection.fidjId)
@@ -2070,6 +1902,10 @@ class InternalService {
     fidjPutInDb(data) {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjPutInDb: you are not using DB - no put available.');
+            return Promise.resolve('NA');
+        }
         if (!self.connection.getClientId()) {
             return self.promise.reject(new Error$1(401, 'DB put impossible. Need a user logged in.'));
         }
@@ -2096,6 +1932,10 @@ class InternalService {
     fidjRemoveInDb(data_id) {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjRemoveInDb: you are not using DB - no remove available.');
+            return Promise.resolve();
+        }
         if (!self.session.isReady()) {
             return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
         }
@@ -2108,6 +1948,10 @@ class InternalService {
     ;
     fidjFindInDb(data_id) {
         const self = this;
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjFindInDb: you are not using DB - no find available.');
+            return Promise.resolve();
+        }
         if (!self.connection.getClientId()) {
             return self.promise.reject(new Error$1(401, 'Find pb : need a user logged in.'));
         }
@@ -2126,6 +1970,10 @@ class InternalService {
     ;
     fidjFindAllInDb() {
         const self = this;
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjFindAllInDb: you are not using DB - no find available.');
+            return Promise.resolve([]);
+        }
         if (!self.connection.getClientId()) {
             return self.promise.reject(new Error$1(401, 'Need a user logged in.'));
         }
@@ -2146,7 +1994,7 @@ class InternalService {
         });
     }
     ;
-    fidjPostOnEndpoint(key, data) {
+    fidjPostOnEndpoint(key, relativePath, data) {
         const filter = {
             key: key
         };
@@ -2154,7 +2002,7 @@ class InternalService {
         if (!endpoints || endpoints.length !== 1) {
             return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjPostOnEndpoint : endpoint does not exist.'));
         }
-        const endpointUrl = endpoints[0].url;
+        const endpointUrl = endpoints[0].url + relativePath;
         const jwt = this.connection.getIdToken();
         return new Ajax()
             .post({
@@ -2214,7 +2062,7 @@ class InternalService {
     _createSession(uid) {
         const dbs = this.connection.getDBs({ filter: 'theBestOnes' });
         if (!dbs || dbs.length === 0) {
-            this.logger.warn('Seems that you are in demo mode, no remote DB.');
+            this.logger.warn('Seems that you are in Demo mode or using Node (no remote DB).');
         }
         this.session.setRemote(dbs);
         return this.session.create(uid);
@@ -2268,7 +2116,7 @@ InternalService._srvDataUniqId = 0;
  */
 let FidjService = class FidjService {
     constructor() {
-        this.logger = new LoggerService();
+        this.logger = new LoggerService(LoggerLevelEnum.ERROR);
         this.promise = Promise;
         this.fidjService = null;
         // let pouchdbRequired = PouchDB;
@@ -2317,11 +2165,11 @@ let FidjService = class FidjService {
         return this.fidjService.fidjGetEndpoints();
     }
     ;
-    postOnEndpoint(key, data) {
+    postOnEndpoint(key, relativePath, data) {
         if (!this.fidjService) {
             return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
         }
-        return this.fidjService.fidjPostOnEndpoint(key, data);
+        return this.fidjService.fidjPostOnEndpoint(key, relativePath, data);
     }
     ;
     getIdToken() {
@@ -2413,8 +2261,7 @@ let FidjService = class FidjService {
     ;
 };
 FidjService = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [])
+    Injectable()
 ], FidjService);
 
 /**
@@ -2436,8 +2283,7 @@ FidjModule = __decorate([
         declarations: [],
         exports: [],
         providers: [FidjService]
-    }),
-    __metadata("design:paramtypes", [])
+    })
 ], FidjModule);
 /**
  * module FidjModule
@@ -2450,6 +2296,10 @@ FidjModule = __decorate([
  * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
  *
  * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
+ */
+
+/**
+ * Generated bundle index. Do not edit.
  */
 
 export { Base64, FidjModule, FidjService, LocalStorage, Xor };

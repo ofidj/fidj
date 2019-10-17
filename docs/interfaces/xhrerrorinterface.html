@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ErrorInterface | fidj</title>
+	<title>XhrErrorInterface | fidj</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="errorinterface.html">ErrorInterface</a>
+					<a href="xhrerrorinterface.html">XhrErrorInterface</a>
 				</li>
 			</ul>
-			<h1>Interface ErrorInterface</h1>
+			<h1>Interface XhrErrorInterface</h1>
 		</div>
 	</div>
 </header>
@@ -70,14 +70,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ErrorInterface</span>
+						<span class="target">XhrErrorInterface</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implemented by</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../classes/error.html" class="tsd-signature-type">Error</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -87,8 +81,10 @@
 						<section class="tsd-index-section tsd-is-external">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="errorinterface.html#code" class="tsd-kind-icon">code</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="errorinterface.html#reason" class="tsd-kind-icon">reason</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="xhrerrorinterface.html#code" class="tsd-kind-icon">code</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="xhrerrorinterface.html#message" class="tsd-kind-icon">message</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="xhrerrorinterface.html#reason" class="tsd-kind-icon">reason</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="xhrerrorinterface.html#status" class="tsd-kind-icon">status</a></li>
 							</ul>
 						</section>
 					</div>
@@ -102,17 +98,37 @@
 					<div class="tsd-signature tsd-kind-icon">code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/dc0d644/src/sdk/interfaces.ts#L4">sdk/interfaces.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/dc0d644/src/connection/ajax.ts#L25">connection/ajax.ts:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+					<a name="message" class="tsd-anchor"></a>
+					<h3>message</h3>
+					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/dc0d644/src/connection/ajax.ts#L26">connection/ajax.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
 					<a name="reason" class="tsd-anchor"></a>
 					<h3>reason</h3>
-					<div class="tsd-signature tsd-kind-icon">reason<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">reason<span class="tsd-signature-symbol">:</span> <a href="../enums/xhrerrorreason.html" class="tsd-signature-type">XhrErrorReason</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/dc0d644/src/sdk/interfaces.ts#L5">sdk/interfaces.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/dc0d644/src/connection/ajax.ts#L23">connection/ajax.ts:23</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+					<a name="status" class="tsd-anchor"></a>
+					<h3>status</h3>
+					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/dc0d644/src/connection/ajax.ts#L24">connection/ajax.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -179,21 +195,9 @@
 					<li class=" tsd-kind-interface tsd-is-external">
 						<a href="endpointinterface.html" class="tsd-kind-icon">Endpoint<wbr>Interface</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface tsd-is-external">
+					<li class=" tsd-kind-interface tsd-is-external">
 						<a href="errorinterface.html" class="tsd-kind-icon">Error<wbr>Interface</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-								<a href="errorinterface.html#code" class="tsd-kind-icon">code</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-								<a href="errorinterface.html#reason" class="tsd-kind-icon">reason</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-is-external">
 						<a href="loggerinterface.html" class="tsd-kind-icon">Logger<wbr>Interface</a>
 					</li>
@@ -212,9 +216,27 @@
 					<li class=" tsd-kind-interface tsd-is-external">
 						<a href="sessioncryptointerface.html" class="tsd-kind-icon">Session<wbr>Crypto<wbr>Interface</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-is-external">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-is-external">
 						<a href="xhrerrorinterface.html" class="tsd-kind-icon">Xhr<wbr>Error<wbr>Interface</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+								<a href="xhrerrorinterface.html#code" class="tsd-kind-icon">code</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+								<a href="xhrerrorinterface.html#message" class="tsd-kind-icon">message</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+								<a href="xhrerrorinterface.html#reason" class="tsd-kind-icon">reason</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
+								<a href="xhrerrorinterface.html#status" class="tsd-kind-icon">status</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-is-external">
 						<a href="xhroptionsinterface.html" class="tsd-kind-icon">Xhr<wbr>Options<wbr>Interface</a>
 					</li>

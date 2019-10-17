@@ -10,7 +10,7 @@ export declare class InternalService {
     private storage;
     private session;
     private connection;
-    constructor(logger: LoggerInterface, promise: PromiseConstructor);
+    constructor(logger: LoggerInterface, promise: PromiseConstructor, options?: ModuleServiceInitOptionsInterface);
     /**
      * Init connection & session
      * Check uri
@@ -59,7 +59,7 @@ export declare class InternalService {
     fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface>;
     fidjFindInDb(data_id: string): Promise<any | ErrorInterface>;
     fidjFindAllInDb(): Promise<Array<any> | ErrorInterface>;
-    fidjPostOnEndpoint(key: string, data?: any): Promise<any | ErrorInterface>;
+    fidjPostOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface>;
     fidjGetIdToken(): string;
     /**
      * Logout then Login
