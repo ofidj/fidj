@@ -12,7 +12,9 @@ export class Base64 {
             return null;
         }
 
-        return btoa(encodeURIComponent(input).replace(/%([0-9A-F]{2})/g,
+        const _btoa = require('btoa');
+
+        return _btoa(encodeURIComponent(input).replace(/%([0-9A-F]{2})/g,
             function toSolidBytes(match, p1) {
                 return String.fromCharCode(parseInt('0x' + p1, 16));
             }));
@@ -25,7 +27,9 @@ export class Base64 {
             return null;
         }
 
-        return decodeURIComponent(atob(input).split('').map((c) => {
+        const _atob = require('atob');
+
+        return decodeURIComponent(_atob(input).split('').map((c) => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
 

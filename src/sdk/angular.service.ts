@@ -1,8 +1,13 @@
 /* tslint:disable:max-line-length */
 import {Injectable} from '@angular/core';
 import {
-    LoggerInterface, ModuleServiceInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface,
-    ErrorInterface, EndpointInterface
+    EndpointInterface,
+    ErrorInterface,
+    LoggerInterface,
+    LoggerLevelEnum,
+    ModuleServiceInitOptionsInterface,
+    ModuleServiceInterface,
+    ModuleServiceLoginOptionsInterface
 } from './interfaces';
 import {InternalService} from './internal.service';
 import {Error as FidjError} from '../connection';
@@ -31,7 +36,7 @@ export class FidjService implements ModuleServiceInterface {
     private promise: any;
 
     constructor() {
-        this.logger = new LoggerService();
+        this.logger = new LoggerService(LoggerLevelEnum.ERROR);
         this.promise = Promise;
         this.fidjService = null;
         // let pouchdbRequired = PouchDB;
@@ -80,11 +85,11 @@ export class FidjService implements ModuleServiceInterface {
         return this.fidjService.fidjGetEndpoints();
     };
 
-    public postOnEndpoint(key: string, data: any): Promise<any | ErrorInterface> {
+    public postOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface> {
         if (!this.fidjService) {
             return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
         }
-        return this.fidjService.fidjPostOnEndpoint(key, data);
+        return this.fidjService.fidjPostOnEndpoint(key, relativePath, data);
     };
 
     public getIdToken(): string {

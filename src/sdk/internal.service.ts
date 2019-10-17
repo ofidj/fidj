@@ -34,12 +34,13 @@ export class InternalService {
     private session: session.Session;
     private connection: connection.Connection;
 
-    constructor(logger: LoggerInterface, promise: PromiseConstructor) {
+    constructor(logger: LoggerInterface, promise: PromiseConstructor, options?: ModuleServiceInitOptionsInterface) {
 
         this.sdk = {
             org: 'fidj',
             version: version.version,
-            prod: false
+            prod: false,
+            useDB: true
         };
         if (promise) {
             this.promise = promise;
@@ -49,6 +50,10 @@ export class InternalService {
         } else {
             this.logger = new LoggerService();
         }
+        if (options && options.logLevel) {
+            this.logger.setLevel(options.logLevel);
+        }
+
         this.logger.log('fidj.sdk.service : constructor');
         let ls;
         if (typeof window !== 'undefined') {
@@ -95,6 +100,7 @@ export class InternalService {
         }
 
         self.sdk.prod = !options ? true : options.prod;
+        self.sdk.useDB = !options ? true : options.useDB;
         self.connection.fidjId = fidjId;
         self.connection.fidjVersion = self.sdk.version;
         self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
@@ -106,6 +112,7 @@ export class InternalService {
                     let theBestUrl: any = self.connection.getApiEndpoints({filter: 'theBestOne'})[0];
                     let theBestOldUrl: any = self.connection.getApiEndpoints({filter: 'theBestOldOne'})[0];
                     const isLogin = self.fidjIsLogin();
+                    self.logger.log('fidj.sdk.service.fidjInit > verifyConnectionStates : ', theBestUrl, theBestOldUrl, isLogin);
 
                     if (theBestUrl && theBestUrl.url) {
                         theBestUrl = theBestUrl.url;
@@ -160,9 +167,14 @@ export class InternalService {
                 })
                 .then((user) => {
                     self.connection.setConnection(user);
-                    self.session.sync(self.connection.getClientId())
-                        .then(() => resolve(self.connection.getUser()))
-                        .catch((err) => resolve(self.connection.getUser()));
+
+                    if (!self.sdk.useDB) {
+                        resolve(self.connection.getUser());
+                    } else {
+                        self.session.sync(self.connection.getClientId())
+                            .then(() => resolve(self.connection.getUser()))
+                            .catch((err) => resolve(self.connection.getUser()));
+                    }
                 })
                 .catch((err) => {
                     self.logger.error('fidj.sdk.service.fidjLogin: ', err.toString());
@@ -291,6 +303,11 @@ export class InternalService {
         //    return self.promise.reject('fidj.sdk.service.fidjSync : DB sync impossible. Did you login ?');
         // }
 
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjSync: you ar not using DB - no sync available.');
+            return Promise.resolve();
+        }
+
         const firstSync = (self.session.dbLastSync === null);
 
         return new self.promise((resolve, reject) => {
@@ -369,6 +386,10 @@ export class InternalService {
     public fidjPutInDb(data: any): Promise<string | ErrorInterface> {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjPutInDb: you are not using DB - no put available.');
+            return Promise.resolve('NA');
+        }
 
         if (!self.connection.getClientId()) {
             return self.promise.reject(new Error(401, 'DB put impossible. Need a user logged in.'));
@@ -404,6 +425,10 @@ export class InternalService {
     public fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface> {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjRemoveInDb: you are not using DB - no remove available.');
+            return Promise.resolve();
+        }
 
         if (!self.session.isReady()) {
             return self.promise.reject(new Error(400, 'Need to be synchronised.'));
@@ -419,6 +444,12 @@ export class InternalService {
 
     public fidjFindInDb(data_id: string): Promise<any | ErrorInterface> {
         const self = this;
+
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjFindInDb: you are not using DB - no find available.');
+            return Promise.resolve();
+        }
+
         if (!self.connection.getClientId()) {
             return self.promise.reject(new Error(401, 'Find pb : need a user logged in.'));
         }
@@ -439,6 +470,11 @@ export class InternalService {
 
     public fidjFindAllInDb(): Promise<Array<any> | ErrorInterface> {
         const self = this;
+
+        if (!self.sdk.useDB) {
+            self.logger.log('fidj.sdk.service.fidjFindAllInDb: you are not using DB - no find available.');
+            return Promise.resolve([]);
+        }
 
         if (!self.connection.getClientId()) {
             return self.promise.reject(new Error(401, 'Need a user logged in.'));
@@ -462,7 +498,7 @@ export class InternalService {
             });
     };
 
-    public fidjPostOnEndpoint(key: string, data?: any): Promise<any | ErrorInterface> {
+    public fidjPostOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface> {
         const filter: EndpointFilterInterface = {
             key: key
         };
@@ -473,7 +509,7 @@ export class InternalService {
                     'fidj.sdk.service.fidjPostOnEndpoint : endpoint does not exist.'));
         }
 
-        const endpointUrl = endpoints[0].url;
+        const endpointUrl = endpoints[0].url + relativePath;
         const jwt = this.connection.getIdToken();
         return new Ajax()
             .post({
@@ -537,7 +573,7 @@ export class InternalService {
     private _createSession(uid: string): Promise<void | ErrorInterface> {
         const dbs: EndpointInterface[] = this.connection.getDBs({filter: 'theBestOnes'});
         if (!dbs || dbs.length === 0) {
-            this.logger.warn('Seems that you are in demo mode, no remote DB.');
+            this.logger.warn('Seems that you are in Demo mode or using Node (no remote DB).');
         }
         this.session.setRemote(dbs);
         return this.session.create(uid);
