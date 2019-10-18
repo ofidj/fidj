@@ -25,7 +25,7 @@ export declare class FidjService implements ModuleServiceInterface {
     isLoggedIn(): boolean;
     getRoles(): Array<string>;
     getEndpoints(): Array<EndpointInterface>;
-    postOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface>;
+    sendOnEndpoint(key: string, verb: string, relativePath: string, data?: any): Promise<any | ErrorInterface>;
     getIdToken(): string;
     getMessage(): string;
     logout(force?: boolean): Promise<void | ErrorInterface>;

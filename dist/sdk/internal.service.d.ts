@@ -59,7 +59,7 @@ export declare class InternalService {
     fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface>;
     fidjFindInDb(data_id: string): Promise<any | ErrorInterface>;
     fidjFindAllInDb(): Promise<Array<any> | ErrorInterface>;
-    fidjPostOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface>;
+    fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any): Promise<any | ErrorInterface>;
     fidjGetIdToken(): string;
     /**
      * Logout then Login

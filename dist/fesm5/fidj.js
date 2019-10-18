@@ -254,7 +254,7 @@ var LoggerLevelEnum;
 })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
 // bumped version via gulp
-var version = '2.1.30';
+var version = '2.1.31';
 
 // import {XHRPromise} from './xhrpromise';
 // const superagent = require('superagent');
@@ -2034,27 +2034,66 @@ var InternalService = /** @class */ (function () {
         });
     };
     ;
-    InternalService.prototype.fidjPostOnEndpoint = function (key, relativePath, data) {
+    InternalService.prototype.fidjSendOnEndpoint = function (key, verb, relativePath, data) {
         var filter = {
             key: key
         };
         var endpoints = this.fidjGetEndpoints(filter);
         if (!endpoints || endpoints.length !== 1) {
-            return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjPostOnEndpoint : endpoint does not exist.'));
+            return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
         }
         var endpointUrl = endpoints[0].url + relativePath;
         var jwt = this.connection.getIdToken();
-        return new Ajax()
-            .post({
-            url: endpointUrl,
-            // not used : withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + jwt
-            },
-            data: data
-        });
+        var answer;
+        var query = new Ajax();
+        switch (verb) {
+            case 'POST':
+                answer = query.post({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    data: data
+                });
+                break;
+            case 'PUT':
+                answer = query.put({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    data: data
+                });
+                break;
+            case 'DELETE':
+                answer = query.delete({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                });
+                break;
+            default:
+                answer = query.get({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                });
+        }
+        return answer;
     };
     ;
     InternalService.prototype.fidjGetIdToken = function () {
@@ -2206,11 +2245,11 @@ var FidjService = /** @class */ (function () {
         return this.fidjService.fidjGetEndpoints();
     };
     ;
-    FidjService.prototype.postOnEndpoint = function (key, relativePath, data) {
+    FidjService.prototype.sendOnEndpoint = function (key, verb, relativePath, data) {
         if (!this.fidjService) {
             return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
         }
-        return this.fidjService.fidjPostOnEndpoint(key, relativePath, data);
+        return this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data);
     };
     ;
     FidjService.prototype.getIdToken = function () {

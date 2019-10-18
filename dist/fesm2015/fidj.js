@@ -251,7 +251,7 @@ var LoggerLevelEnum;
 })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
 // bumped version via gulp
-const version = '2.1.30';
+const version = '2.1.31';
 
 // import {XHRPromise} from './xhrpromise';
 // const superagent = require('superagent');
@@ -1994,27 +1994,66 @@ class InternalService {
         });
     }
     ;
-    fidjPostOnEndpoint(key, relativePath, data) {
+    fidjSendOnEndpoint(key, verb, relativePath, data) {
         const filter = {
             key: key
         };
         const endpoints = this.fidjGetEndpoints(filter);
         if (!endpoints || endpoints.length !== 1) {
-            return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjPostOnEndpoint : endpoint does not exist.'));
+            return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
         }
         const endpointUrl = endpoints[0].url + relativePath;
         const jwt = this.connection.getIdToken();
-        return new Ajax()
-            .post({
-            url: endpointUrl,
-            // not used : withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + jwt
-            },
-            data: data
-        });
+        let answer;
+        const query = new Ajax();
+        switch (verb) {
+            case 'POST':
+                answer = query.post({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    data: data
+                });
+                break;
+            case 'PUT':
+                answer = query.put({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    data: data
+                });
+                break;
+            case 'DELETE':
+                answer = query.delete({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                });
+                break;
+            default:
+                answer = query.get({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                });
+        }
+        return answer;
     }
     ;
     fidjGetIdToken() {
@@ -2165,11 +2204,11 @@ let FidjService = class FidjService {
         return this.fidjService.fidjGetEndpoints();
     }
     ;
-    postOnEndpoint(key, relativePath, data) {
+    sendOnEndpoint(key, verb, relativePath, data) {
         if (!this.fidjService) {
             return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
         }
-        return this.fidjService.fidjPostOnEndpoint(key, relativePath, data);
+        return this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data);
     }
     ;
     getIdToken() {
