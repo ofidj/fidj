@@ -659,7 +659,7 @@ describe('fidj.sdk', () => {
 
         });
 
-        it('should fidjPostOnEndpoint KO : 400 without valid endpoint', function (done) {
+        it('should fidjSendOnEndpoint KO : 400 without valid endpoint', function (done) {
 
             let accessPayload;
             const srv = new InternalService(_log, _q);
@@ -668,16 +668,16 @@ describe('fidj.sdk', () => {
             // no endpoint -> catch error
             accessPayload = {endpoints: []};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            srv.fidjPostOnEndpoint('none', '/', {})
+            srv.fidjSendOnEndpoint('none', 'POST', '/', {})
                 .then(result => done.fail('should fail'))
                 .catch((err: ErrorInterface) => {
                     expect(err.code).toBe(400);
-                    expect(err.reason).toBe('fidj.sdk.service.fidjPostOnEndpoint : endpoint does not exist.');
+                    expect(err.reason).toBe('fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.');
                     done();
                 })
         });
 
-        it('should fidjPostOnEndpoint OK', function (done) {
+        it('should fidjSendOnEndpoint OK', function (done) {
 
             const MOCKED_RESPONSE = 'mocked response';
             jasmine.Ajax.stubRequest(/.*test*/).andReturn(
@@ -701,7 +701,7 @@ describe('fidj.sdk', () => {
                     {key: 'my endpoint3', url: 'http://test3.com', blocked: false}]
             };
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            srv.fidjPostOnEndpoint('my endpoint1', '/', {mock: true})
+            srv.fidjSendOnEndpoint('my endpoint1', 'POST', '/', {mock: true})
                 .then(result => {
                     expect(result).toBe(MOCKED_RESPONSE);
                     const request = jasmine.Ajax.requests.mostRecent();

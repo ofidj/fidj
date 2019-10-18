@@ -498,7 +498,7 @@ export class InternalService {
             });
     };
 
-    public fidjPostOnEndpoint(key: string, relativePath: string, data: any): Promise<any | ErrorInterface> {
+    public fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any): Promise<any | ErrorInterface> {
         const filter: EndpointFilterInterface = {
             key: key
         };
@@ -506,22 +506,63 @@ export class InternalService {
         if (!endpoints || endpoints.length !== 1) {
             return this.promise.reject(
                 new Error(400,
-                    'fidj.sdk.service.fidjPostOnEndpoint : endpoint does not exist.'));
+                    'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
         }
 
         const endpointUrl = endpoints[0].url + relativePath;
         const jwt = this.connection.getIdToken();
-        return new Ajax()
-            .post({
-                url: endpointUrl,
-                // not used : withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': 'Bearer ' + jwt
-                },
-                data: data
-            });
+        let answer;
+        const query = new Ajax();
+        switch (verb) {
+            case 'POST' :
+                answer = query.post({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    data: data
+                });
+                break;
+            case 'PUT' :
+                answer = query.put({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    data: data
+                });
+                break;
+            case 'DELETE' :
+                answer = query.delete({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    // not used: data: data
+                });
+                break;
+            default:
+                answer = query.get({
+                    url: endpointUrl,
+                    // not used : withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + jwt
+                    },
+                    // not used: data: data
+                });
+        }
+        return answer;
     };
 
     public fidjGetIdToken(): string {
