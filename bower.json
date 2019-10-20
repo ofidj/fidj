@@ -1,6 +1,6 @@
 {
   "name": "fidj",
-  "version": "2.1.32",
+  "version": "2.1.33",
   "description": "fidj.ovh js framework",
   "repository": {
     "type": "git",
@@ -26,7 +26,8 @@
     "axios": "^0.19.0",
     "btoa": "^1.2.1",
     "localstorage-polyfill": "^1.0.1",
-    "pouchdb": "^7.1.1"
+    "pouchdb": "^7.1.1",
+    "url-join": "^4.0.1"
   },
   "ignore": [
     "**/.*",

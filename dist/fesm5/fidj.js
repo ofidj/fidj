@@ -254,7 +254,7 @@ var LoggerLevelEnum;
 })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
 // bumped version via gulp
-var version = '2.1.31';
+var version = '2.1.32';
 
 // import {XHRPromise} from './xhrpromise';
 // const superagent = require('superagent');
@@ -1599,6 +1599,7 @@ var LoggerService = /** @class */ (function () {
 }());
 
 // import PouchDB from 'pouchdb';
+var urljoin = require('url-join');
 // import {LocalStorage} from 'node-localstorage';
 // import 'localstorage-polyfill/localStorage';
 // const PouchDB = window['PouchDB'] || require('pouchdb').default;
@@ -2042,7 +2043,10 @@ var InternalService = /** @class */ (function () {
         if (!endpoints || endpoints.length !== 1) {
             return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
         }
-        var endpointUrl = endpoints[0].url + relativePath;
+        var endpointUrl = endpoints[0].url;
+        if (relativePath) {
+            endpointUrl = urljoin(endpointUrl, relativePath);
+        }
         var jwt = this.connection.getIdToken();
         var answer;
         var query = new Ajax();
