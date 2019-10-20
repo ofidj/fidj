@@ -36,7 +36,7 @@ export interface ModuleServiceInterface {
 
     getEndpoints(): Array<EndpointInterface>;
 
-    sendOnEndpoint(key: string, verb: string, relativePath: string, data?: any): Promise<any | ErrorInterface>;
+    sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface>;
 
     getIdToken(): string;
 

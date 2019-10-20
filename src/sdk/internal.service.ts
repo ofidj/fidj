@@ -16,6 +16,8 @@ import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
 import {Ajax} from '../connection/ajax';
 import {LoggerService} from './logger.service';
+
+const urljoin = require('url-join');
 // import {LocalStorage} from 'node-localstorage';
 // import 'localstorage-polyfill/localStorage';
 
@@ -509,7 +511,10 @@ export class InternalService {
                     'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
         }
 
-        const endpointUrl = endpoints[0].url + relativePath;
+        let endpointUrl = endpoints[0].url;
+        if (relativePath) {
+            endpointUrl = urljoin(endpointUrl, relativePath);
+        }
         const jwt = this.connection.getIdToken();
         let answer;
         const query = new Ajax();
