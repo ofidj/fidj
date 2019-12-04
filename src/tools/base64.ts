@@ -12,7 +12,7 @@ export class Base64 {
             return null;
         }
 
-        const _btoa = require('btoa');
+        const _btoa = typeof window !== 'undefined' ? window.btoa : require('btoa');
 
         return _btoa(encodeURIComponent(input).replace(/%([0-9A-F]{2})/g,
             function toSolidBytes(match, p1) {
@@ -27,7 +27,7 @@ export class Base64 {
             return null;
         }
 
-        const _atob = require('atob');
+        const _atob = typeof window !== 'undefined' ? window.atob : require('atob');
 
         return decodeURIComponent(_atob(input).split('').map((c) => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);

@@ -4,7 +4,7 @@
 [![Bower version](https://badge.fury.io/bo/fidj.svg)](https://libraries.io/bower/fidj)
 [![Package Quality](http://npm.packagequality.com/shield/fidj.svg)](http://packagequality.com/#?package=fidj)
 
-> [Install](https://github.com/ofidj/fidj#1-youre-an-app-builder) | [APIs](https://ofidj.github.io/fidj) | [Support](https://github.com/ofidj/fidj#develop) | [Thanks!](https://github.com/ofidj/fidj#thanks)
+> [Install](https://github.com/ofidj/fidj#1-youre-an-app-builder) | [APIs](https://ofidj.github.io/fidj) | [Support](https://github.com/ofidj/fidj#develop)  | [In progress](https://github.com/ofidj/fidj#in-progress) | [Thanks!](https://github.com/ofidj/fidj#thanks)
 
 
 # 1) You're an app builder
@@ -80,8 +80,14 @@ With npm :
 $ npm test
 ```
 
-With a swagger UI :  
+With a OpenAPI (TODO) :  
 https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/
+
+# In progress
+
+- [ ] 2.1.x OpenAPI
+- [ ] 2.2.x (UC to define) Domain management (linked to roles)
+- [ ] 2.1.x Refresh issue
 
 
 # Thanks
