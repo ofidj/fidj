@@ -13,7 +13,7 @@ class Base64 {
         if (!input) {
             return null;
         }
-        const _btoa = require('btoa');
+        const _btoa = typeof window !== 'undefined' ? window.btoa : require('btoa');
         return _btoa(encodeURIComponent(input).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
             return String.fromCharCode(parseInt('0x' + p1, 16));
         }));
@@ -22,7 +22,7 @@ class Base64 {
         if (!input) {
             return null;
         }
-        const _atob = require('atob');
+        const _atob = typeof window !== 'undefined' ? window.atob : require('atob');
         return decodeURIComponent(_atob(input).split('').map((c) => {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
@@ -251,7 +251,7 @@ var LoggerLevelEnum;
 })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
 // bumped version via gulp
-const version = '2.1.32';
+const version = '2.1.33';
 
 // import {XHRPromise} from './xhrpromise';
 // const superagent = require('superagent');
