@@ -453,7 +453,7 @@
     })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
     // bumped version via gulp
-    var version = '2.1.35';
+    var version = '2.1.36';
 
     // import {XHRPromise} from './xhrpromise';
     // const superagent = require('superagent');
