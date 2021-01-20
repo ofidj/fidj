@@ -1,10 +1,3 @@
-let path = require('path');
-let argv = require('yargs').argv;
-
-
-let LOW_PORT = 50001;
-let HIGH_PORT = 60000;
-
 module.exports = function (config) {
     config.set({
 
@@ -81,7 +74,7 @@ module.exports = function (config) {
             }
         },
 
-        browsers : ['MyHeadlessChrome'],
+        browsers: ['MyHeadlessChrome'],
 
         specReporter: {
             maxLogLines: 5,
@@ -96,10 +89,4 @@ module.exports = function (config) {
 
         concurrency: Infinity
     });
-
-    if (argv['test-port'] === 'random') {
-        config.port = Math.floor(Math.random() * (HIGH_PORT - LOW_PORT + 1) + LOW_PORT);
-    } else if (argv['test-port']) {
-        config.port = argv['test-port'];
-    }
 };

@@ -251,7 +251,7 @@ var LoggerLevelEnum;
 })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
 // bumped version via gulp
-const version = '2.1.43';
+const version = '2.1.44';
 
 // import {XHRPromise} from './xhrpromise';
 // const superagent = require('superagent');
@@ -926,15 +926,15 @@ class Connection {
         });
     }
     getApiEndpoints(options) {
-        // todo : let ea = ['https://fidj/api', 'https://fidj-proxy.herokuapp.com/api'];
+        // todo : let ea = ['https://fidj/v1', 'https://fidj-proxy.herokuapp.com/v1'];
         let ea = [
-            { key: 'fidj.default', url: 'https://fidj.ovh/api', blocked: false }
+            { key: 'fidj.default', url: 'https://api.fidj.ovh/v1', blocked: false }
         ];
         let filteredEa = [];
         if (!this._sdk.prod) {
             ea = [
-                { key: 'fidj.default', url: 'http://localhost:3201/api', blocked: false },
-                { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/api', blocked: false }
+                { key: 'fidj.default', url: 'http://localhost:3201/v1', blocked: false },
+                { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v1', blocked: false }
             ];
         }
         if (this.accessToken) {
@@ -2143,18 +2143,8 @@ class InternalService {
 InternalService._srvDataUniqId = 0;
 
 /**
- * Angular2+ FidjService
+ * Angular FidjService
  * @see ModuleServiceInterface
- *
- * @exemple
- *      // ... after install :
- *      // $ npm install --save-dev fidj
- *      // then init your app.js & use it in your services
- * TODO refresh gist :
- * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.inject.js"></script>
- *
- * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.sync.js"></script>
- *
  *
  */
 let FidjService = class FidjService {

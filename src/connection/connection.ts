@@ -400,15 +400,15 @@ export class Connection {
 
     getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface> {
 
-        // todo : let ea = ['https://fidj/api', 'https://fidj-proxy.herokuapp.com/api'];
+        // todo : let ea = ['https://fidj/v1', 'https://fidj-proxy.herokuapp.com/v1'];
         let ea: EndpointInterface[] = [
-            {key: 'fidj.default', url: 'https://fidj.ovh/api', blocked: false}];
+            {key: 'fidj.default', url: 'https://api.fidj.ovh/v1', blocked: false}];
         let filteredEa = [];
 
         if (!this._sdk.prod) {
             ea = [
-                {key: 'fidj.default', url: 'http://localhost:3201/api', blocked: false},
-                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/api', blocked: false}
+                {key: 'fidj.default', url: 'http://localhost:3201/v1', blocked: false},
+                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v1', blocked: false}
             ];
         }
 
