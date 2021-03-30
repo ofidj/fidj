@@ -1,2 +1,2 @@
 // bumped version via gulp
-export const version = '2.1.46';
+export const version = '2.1.47';
