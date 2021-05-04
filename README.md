@@ -76,13 +76,9 @@ $ npm test
 With a OpenAPI (TODO) :  
 https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/
 
-# In progress
+## Release notes
 
-- [ ] 2.1.x OpenAPI
-- [ ] 2.2.x (UC to define) Domain management (linked to roles)
-- [ ] 2.1.x Refresh issue
-
-TODO release.md
+In [Release notes](./RELEASE.md).
 
 # Thanks
 
