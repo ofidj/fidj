@@ -15,19 +15,19 @@ export class LoggerService implements LoggerInterface {
     }
 
     log(message: string, args: [any]) {
-        if (this.level === LoggerLevelEnum.LOG) {
+        if (this.level === LoggerLevelEnum.INFO) {
             console.log(message, args);
         }
     }
 
     warn(message: string, args: [any]) {
-        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN) {
+        if (this.level === LoggerLevelEnum.INFO || this.level === LoggerLevelEnum.WARN) {
             console.warn(message, args);
         }
     }
 
     error(message: string, args: [any]) {
-        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
+        if (this.level === LoggerLevelEnum.INFO || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
             console.error(message, args);
         }
     }

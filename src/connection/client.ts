@@ -1,6 +1,7 @@
 import {Ajax} from './ajax';
 import {LocalStorage} from '../tools';
 import {SdkInterface, ErrorInterface} from '../sdk/interfaces';
+import * as tools from '../tools';
 
 export class Client {
 
@@ -72,7 +73,7 @@ export class Client {
             .then(createdUser => {
 
                 this.setClientId(createdUser._id);
-                const urlToken = this.URI + '/oauth/token';
+                const urlToken = this.URI + '/me/tokens';
                 const dataToken = {
                     grant_type: 'client_credentials',
                     client_id: this.clientId,
@@ -86,7 +87,10 @@ export class Client {
                     .post({
                         url: urlToken,
                         data: dataToken,
-                        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+                        headers: {
+                            'Content-Type': 'application/json', 'Accept': 'application/json',
+                            'Authorization': 'Basic ' + tools.Base64.encode('' + login + ':'+password)
+                        }
                     });
             });
     }
@@ -98,7 +102,7 @@ export class Client {
             return Promise.reject({code: 408, reason: 'no-api-uri'});
         }
 
-        const url = this.URI + '/oauth/token';
+        const url = this.URI + '/me/tokens';
         const data = {
             grant_type: 'refresh_token',
             client_id: this.clientId,
@@ -114,7 +118,10 @@ export class Client {
             .post({
                 url: url,
                 data: data,
-                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
             })
             .then((obj: any) => {
                 Client.refreshCount++;
@@ -141,7 +148,7 @@ export class Client {
             return Promise.resolve();
         }
 
-        const url = this.URI + '/oauth/revoke';
+        const url = this.URI + '/me/tokens/' + this.clientId;
         const data = {
             token: refreshToken,
             client_id: this.clientId,
@@ -152,10 +159,13 @@ export class Client {
         };
 
         return new Ajax()
-            .post({
+            .delete({
                 url: url,
                 data: data,
-                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
             });
     }
 

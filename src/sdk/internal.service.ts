@@ -10,7 +10,7 @@ import {
     ModuleServiceInitOptionsInterface,
     ModuleServiceLoginOptionsInterface,
     SdkInterface,
-    ErrorInterface, EndpointInterface, EndpointFilterInterface
+    ErrorInterface, EndpointInterface, EndpointFilterInterface, LoggerLevelEnum
 } from './interfaces';
 import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
@@ -93,6 +93,8 @@ export class InternalService {
         }*/
         if (options && options.logLevel) {
             self.logger.setLevel(options.logLevel);
+        } else {
+            self.logger.setLevel(LoggerLevelEnum.NONE);
         }
 
         self.logger.log('fidj.sdk.service.fidjInit : ', options);
@@ -102,10 +104,10 @@ export class InternalService {
         }
 
         self.sdk.prod = !options ? true : options.prod;
-        self.sdk.useDB = !options ? true : options.useDB;
+        self.sdk.useDB = !options ? false : options.useDB;
         self.connection.fidjId = fidjId;
         self.connection.fidjVersion = self.sdk.version;
-        self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
+        self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? false : options.crypto;
 
         return new self.promise((resolve, reject) => {
             self.connection.verifyConnectionStates()

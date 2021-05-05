@@ -55,7 +55,12 @@ export interface ModuleServiceInterface {
     findAll(): Promise<any | ErrorInterface>;
 }
 
-
+/**
+ * prod : true by default
+ * useDB : false by default
+ * crypto : false by default
+ * logLevel : NONE by default
+ */
 export interface ModuleServiceInitOptionsInterface {
     prod: boolean,
     useDB?: boolean,
@@ -79,7 +84,7 @@ export interface SdkInterface {
 }
 
 export enum LoggerLevelEnum {
-    LOG = 1,
+    INFO = 1,
     WARN = 2,
     ERROR = 3,
     NONE = 4

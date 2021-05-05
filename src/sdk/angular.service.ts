@@ -18,7 +18,9 @@ import {LoggerService} from './logger.service';
  * @see ModuleServiceInterface
  *
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class FidjService implements ModuleServiceInterface {
 
     private logger: LoggerInterface;
@@ -42,21 +44,21 @@ export class FidjService implements ModuleServiceInterface {
 
     public login(login: string, password: string): Promise<any | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.login : not initialized.'));
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.login : not initialized.'));
         }
         return this.fidjService.fidjLogin(login, password);
     };
 
     public loginAsDemo(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
         }
         return this.fidjService.fidjLoginInDemoMode(options);
     };
 
     public isLoggedIn(): boolean {
         if (!this.fidjService) {
-            return false; // this.promise.reject('fidj.sdk.angular2.isLoggedIn : not initialized.');
+            return false; // this.promise.reject('fidj.sdk.angular.isLoggedIn : not initialized.');
         }
         return this.fidjService.fidjIsLogin();
     };
@@ -77,7 +79,7 @@ export class FidjService implements ModuleServiceInterface {
 
     public sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
         }
         return this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data);
     };
@@ -98,7 +100,7 @@ export class FidjService implements ModuleServiceInterface {
 
     public logout(force?: boolean): Promise<void | ErrorInterface> {
         if (force || !this.fidjService) {
-            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular2.logout : not initialized.'));
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.logout : not initialized.'));
         }
         return this.fidjService.fidjLogout(force);
     };
@@ -121,7 +123,7 @@ export class FidjService implements ModuleServiceInterface {
      */
     public sync(fnInitFirstData?): Promise<void | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.sync : not initialized.'));
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.sync : not initialized.'));
         }
         return this.fidjService.fidjSync(fnInitFirstData, this);
     };
@@ -134,7 +136,7 @@ export class FidjService implements ModuleServiceInterface {
      */
     public put(data: any): Promise<string | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.put : not initialized.'));
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.put : not initialized.'));
         }
         return this.fidjService.fidjPutInDb(data);
     };
@@ -147,7 +149,7 @@ export class FidjService implements ModuleServiceInterface {
      */
     public remove(id: string): Promise<void | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.remove : not initialized.'));
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.remove : not initialized.'));
         }
         return this.fidjService.fidjRemoveInDb(id);
     };
@@ -157,14 +159,14 @@ export class FidjService implements ModuleServiceInterface {
      */
     public find(id: string): Promise<any | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.find : not initialized.'));
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.find : not initialized.'));
         }
         return this.fidjService.fidjFindInDb(id);
     };
 
     public findAll(): Promise<any[] | ErrorInterface> {
         if (!this.fidjService) {
-            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular2.findAll : not initialized.'));
+            return this.promise.reject(new FidjError(401, 'fidj.sdk.angular.findAll : not initialized.'));
         }
         return this.fidjService.fidjFindAllInDb();
     };

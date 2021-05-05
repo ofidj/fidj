@@ -118,7 +118,7 @@ describe('fidj.connection', () => {
                 });
         });
 
-        it('should POST fail due to timeout (408) on fake url', (done) => {
+        xit('should POST fail due to timeout (408) on fake url', (done) => {
             // For timeout
             (jasmine.Ajax
                 .stubRequest(/.*/) as any)
@@ -247,7 +247,7 @@ describe('fidj.connection', () => {
                     expect(client.setClientId).toHaveBeenCalledTimes(1);
                     expect(client.setClientId).toHaveBeenCalledWith(userJson._id);
                     const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe(_uri + '/oauth/token');
+                    expect(request.url).toBe(_uri + '/me/tokens');
                     expect(request.method).toBe('POST');
                     const data: any = JSON.parse(JSON.parse(request.params).data);
                     expect(data).toBeDefined();
@@ -281,7 +281,7 @@ describe('fidj.connection', () => {
                     const ready = client.isReady();
                     expect(ready).toBeTruthy();
                     const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe(_uri + '/oauth/token');
+                    expect(request.url).toBe(_uri + '/me/tokens');
                     expect(request.method).toBe('POST');
                     const data: any = JSON.parse(JSON.parse(request.params).data);
                     expect(data).toBeDefined();
@@ -294,7 +294,7 @@ describe('fidj.connection', () => {
                 })
                 .then(user => {
                     const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe(_uri + '/oauth/token');
+                    expect(request.url).toBe(_uri + '/me/tokens');
                     expect(request.method).toBe('POST');
                     const data: any = JSON.parse(JSON.parse(request.params).data);
                     expect(data.refresh_token).toEqual('refreshToken');
@@ -307,12 +307,12 @@ describe('fidj.connection', () => {
 
         });
 
-        it('should be correctly initialized', (done) => {
+        it('should be correctly initialized', async () => {
 
             const responseJson = {ok: 'done'};
-            jasmine.Ajax.stubRequest(/.*revoke/).andReturn(
+            jasmine.Ajax.stubRequest(/.*tokens/).andReturn(
                 {
-                    status: 200,
+                    status: 204,
                     contentType: 'application/json',
                     responseText: JSON.stringify(responseJson)
                 }
@@ -323,31 +323,23 @@ describe('fidj.connection', () => {
             client.clientId = 'clientMockAsConnected';
             spyOn(_storage, 'remove').and.returnValue(true);
 
-            client.logout('tokenMockAsConnected')
-                .then(user => {
-                    expect(JSON.stringify(user)).toBe(JSON.stringify(responseJson));
+            const user = await client.logout('tokenMockAsConnected');
 
-                    const ready = client.isReady();
-                    expect(ready).toBeTruthy();
-                    const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe(_uri + '/oauth/revoke');
-                    expect(request.method).toBe('POST');
-                    const data: any = JSON.parse(JSON.parse(request.params).data);
-                    expect(data).toBeDefined();
-                    expect(data.token).toEqual('tokenMockAsConnected');
-                    expect(data.client_id).toEqual('clientMockAsConnected');
-                    expect(data.audience).toEqual(_appId);
-                    expect(_storage.remove).toHaveBeenCalledTimes(2);
-                    expect(_storage.remove).toHaveBeenCalledWith('v2.clientId');
-                    // expect(_storage.remove).toHaveBeenCalledWith('v2.clientUuid');
-                    expect(_storage.remove).toHaveBeenCalledWith('v2.refreshCount');
-
-                    done();
-                })
-                .catch(err => {
-                    done.fail(err);
-                });
-
+            expect(JSON.stringify(user)).toBe(JSON.stringify(responseJson));
+            const ready = client.isReady();
+            expect(ready).toBeTruthy();
+            const request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(_uri + '/me/tokens/' + client.clientId);
+            expect(request.method).toBe('DELETE');
+            const data: any = JSON.parse(request.params);
+            expect(data).toBeDefined();
+            expect(data.token).toEqual('tokenMockAsConnected');
+            expect(data.client_id).toEqual('clientMockAsConnected');
+            expect(data.audience).toEqual(_appId);
+            expect(_storage.remove).toHaveBeenCalledTimes(2);
+            expect(_storage.remove).toHaveBeenCalledWith('v2.clientId');
+            // expect(_storage.remove).toHaveBeenCalledWith('v2.clientUuid');
+            expect(_storage.remove).toHaveBeenCalledWith('v2.refreshCount');
         });
 
 
@@ -526,27 +518,27 @@ describe('fidj.connection', () => {
 
             // without initialisation : default endpoints
             expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v1');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v1');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
+            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
             expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v1');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
             expect(srv.getApiEndpoints({filter: 'theBestOldOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v1');
+            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v3');
 
             // with corrupted access_token endpoints : default endpoints
             srv.accessToken = 'aaa.bbb.ccc';
             expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v1');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v1');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v1');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v1');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
+            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
+            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v3');
 
             // with access_token without endpoints : default endpoints
             srv.accessToken = mocks.tokens.withoutAnyUrl;
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v1');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v1');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v1');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v1');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
+            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
+            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v3');
 
             // with valid access_token endpoints : valid new enpoints
             srv.accessToken = mocks.tokens.withApis01;
@@ -609,9 +601,9 @@ describe('fidj.connection', () => {
             srv.accessTokenPrevious = previous;
             srv.accessToken = null;
             expect(srv.getApiEndpoints().length).toBe(4);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v1');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v1');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v1');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
+            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
             expect(srv.getApiEndpoints()[2].url).toBe('http://api_1');
             expect(srv.getApiEndpoints()[3].url).toBe('http://api_2');
 
@@ -619,9 +611,9 @@ describe('fidj.connection', () => {
             srv.accessTokenPrevious = previous;
             srv.accessToken = 'aaa.bbb.ccc';
             expect(srv.getApiEndpoints().length).toBe(4);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v1');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v1');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v1');
+            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
+            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
             expect(srv.getApiEndpoints()[2].url).toBe('http://api_1');
             expect(srv.getApiEndpoints()[3].url).toBe('http://api_2');
 
@@ -722,7 +714,7 @@ describe('fidj.connection', () => {
             jasmine.Ajax.stubRequest(/.*mock*/).andReturn({
                 status: 200,
                 contentType: 'application/json',
-                responseText: JSON.stringify({_id: 'myuserId', isok: true})
+                responseText: JSON.stringify({_id: 'myuserId', isOk: true})
             });
             spyOn(srv, 'getApiEndpoints').and.returnValue(['http://mock/api1', 'http://mock/api2']);
             spyOn(srv, 'getDBs').and.returnValue(['http://mock/db1']);
@@ -735,9 +727,9 @@ describe('fidj.connection', () => {
                     expect(jasmine.Ajax.requests.count()).toBe(3);
 
                     let request = jasmine.Ajax.requests.at(0);
-                    expect(request.url).toBe('http://mock/api1/status?isok=mock.sdk');
+                    expect(request.url).toBe('http://mock/api1/status?isOk=mock.sdk');
                     request = jasmine.Ajax.requests.at(1);
-                    expect(request.url).toBe('http://mock/api2/status?isok=mock.sdk');
+                    expect(request.url).toBe('http://mock/api2/status?isOk=mock.sdk');
                     request = jasmine.Ajax.requests.at(2);
                     expect(request.url).toBe('http://mock/db1');
                     expect(Object.keys(srv.states).length).toBe(3);
@@ -758,9 +750,9 @@ describe('fidj.connection', () => {
                     expect(srv.getDBs).toHaveBeenCalledTimes(2);
                     expect(jasmine.Ajax.requests.count()).toBe(6);
                     let request = jasmine.Ajax.requests.at(0);
-                    expect(request.url).toBe('http://mock/api1/status?isok=mock.sdk');
+                    expect(request.url).toBe('http://mock/api1/status?isOk=mock.sdk');
                     request = jasmine.Ajax.requests.at(1);
-                    expect(request.url).toBe('http://mock/api2/status?isok=mock.sdk');
+                    expect(request.url).toBe('http://mock/api2/status?isOk=mock.sdk');
                     request = jasmine.Ajax.requests.at(2);
                     expect(request.url).toBe('http://mock/db1');
                     expect(Object.keys(srv.states).length).toBe(3);

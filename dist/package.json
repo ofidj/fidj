@@ -1,6 +1,6 @@
 {
   "name": "fidj",
-  "version": "3.1.0",
+  "version": "3.3.0",
   "description": "api.fidj.ovh js framework",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/ofidj/fidj#readme",
   "dependencies": {
     "atob": "^2.1.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "localstorage-polyfill": "^1.0.1",
     "pouchdb": "^7.2.2",
@@ -45,11 +45,9 @@
     "tslint.json"
   ],
   "main": "bundles/fidj.umd.js",
-  "module": "fesm5/fidj.js",
+  "module": "fesm2015/fidj.js",
   "es2015": "fesm2015/fidj.js",
-  "esm5": "esm5/fidj.js",
   "esm2015": "esm2015/fidj.js",
-  "fesm5": "fesm5/fidj.js",
   "fesm2015": "fesm2015/fidj.js",
   "typings": "fidj.d.ts",
   "metadata": "fidj.metadata.json",

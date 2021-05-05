@@ -1,227 +1,30 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common')) :
     typeof define === 'function' && define.amd ? define('fidj', ['exports', '@angular/core', '@angular/common'], factory) :
-    (global = global || self, factory(global.fidj = {}, global.ng.core, global.ng.common));
-}(this, (function (exports, core, common) { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.fidj = {}, global.ng.core, global.ng.common));
+}(this, (function (exports, i0, common) { 'use strict';
 
-    /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation.
-
-    Permission to use, copy, modify, and/or distribute this software for any
-    purpose with or without fee is hereby granted.
-
-    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-    PERFORMANCE OF THIS SOFTWARE.
-    ***************************************************************************** */
-    /* global Reflect, Promise */
-
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-
-    function __extends(d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
-
-    var __assign = function() {
-        __assign = Object.assign || function __assign(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-            return t;
-        };
-        return __assign.apply(this, arguments);
-    };
-
-    function __rest(s, e) {
-        var t = {};
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-            t[p] = s[p];
-        if (s != null && typeof Object.getOwnPropertySymbols === "function")
-            for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-                if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                    t[p[i]] = s[p[i]];
-            }
-        return t;
-    }
-
-    function __decorate(decorators, target, key, desc) {
-        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
-    }
-
-    function __param(paramIndex, decorator) {
-        return function (target, key) { decorator(target, key, paramIndex); }
-    }
-
-    function __metadata(metadataKey, metadataValue) {
-        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
-    }
-
-    function __awaiter(thisArg, _arguments, P, generator) {
-        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-            step((generator = generator.apply(thisArg, _arguments || [])).next());
-        });
-    }
-
-    function __generator(thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-        function verb(n) { return function (v) { return step([n, v]); }; }
-        function step(op) {
-            if (f) throw new TypeError("Generator is already executing.");
-            while (_) try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0: case 1: t = op; break;
-                    case 4: _.label++; return { value: op[1], done: false };
-                    case 5: _.label++; y = op[1]; op = [0]; continue;
-                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop(); continue;
+    function _interopNamespace(e) {
+        if (e && e.__esModule) return e;
+        var n = Object.create(null);
+        if (e) {
+            Object.keys(e).forEach(function (k) {
+                if (k !== 'default') {
+                    var d = Object.getOwnPropertyDescriptor(e, k);
+                    Object.defineProperty(n, k, d.get ? d : {
+                        enumerable: true,
+                        get: function () {
+                            return e[k];
+                        }
+                    });
                 }
-                op = body.call(thisArg, _);
-            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+            });
         }
+        n['default'] = e;
+        return Object.freeze(n);
     }
 
-    function __createBinding(o, m, k, k2) {
-        if (k2 === undefined) k2 = k;
-        o[k2] = m[k];
-    }
-
-    function __exportStar(m, exports) {
-        for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
-
-    function __values(o) {
-        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-        if (m) return m.call(o);
-        if (o && typeof o.length === "number") return {
-            next: function () {
-                if (o && i >= o.length) o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
-        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-    }
-
-    function __read(o, n) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator];
-        if (!m) return o;
-        var i = m.call(o), r, ar = [], e;
-        try {
-            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-        }
-        catch (error) { e = { error: error }; }
-        finally {
-            try {
-                if (r && !r.done && (m = i["return"])) m.call(i);
-            }
-            finally { if (e) throw e.error; }
-        }
-        return ar;
-    }
-
-    function __spread() {
-        for (var ar = [], i = 0; i < arguments.length; i++)
-            ar = ar.concat(__read(arguments[i]));
-        return ar;
-    }
-
-    function __spreadArrays() {
-        for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-        for (var r = Array(s), k = 0, i = 0; i < il; i++)
-            for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-                r[k] = a[j];
-        return r;
-    };
-
-    function __await(v) {
-        return this instanceof __await ? (this.v = v, this) : new __await(v);
-    }
-
-    function __asyncGenerator(thisArg, _arguments, generator) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-        var g = generator.apply(thisArg, _arguments || []), i, q = [];
-        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-        function fulfill(value) { resume("next", value); }
-        function reject(value) { resume("throw", value); }
-        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-    }
-
-    function __asyncDelegator(o) {
-        var i, p;
-        return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
-        function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
-    }
-
-    function __asyncValues(o) {
-        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-        var m = o[Symbol.asyncIterator], i;
-        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-    }
-
-    function __makeTemplateObject(cooked, raw) {
-        if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-        return cooked;
-    };
-
-    function __importStar(mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-        result.default = mod;
-        return result;
-    }
-
-    function __importDefault(mod) {
-        return (mod && mod.__esModule) ? mod : { default: mod };
-    }
-
-    function __classPrivateFieldGet(receiver, privateMap) {
-        if (!privateMap.has(receiver)) {
-            throw new TypeError("attempted to get private field on non-instance");
-        }
-        return privateMap.get(receiver);
-    }
-
-    function __classPrivateFieldSet(receiver, privateMap, value) {
-        if (!privateMap.has(receiver)) {
-            throw new TypeError("attempted to set private field on non-instance");
-        }
-        privateMap.set(receiver, value);
-        return value;
-    }
+    var i0__namespace = /*#__PURE__*/_interopNamespace(i0);
 
     var Base64 = /** @class */ (function () {
         function Base64() {
@@ -462,20 +265,71 @@
         Xor.keyCharAt = function (key, i) {
             return key[Math.floor(i % key.length)].charCodeAt(0).toString(10);
         };
-        Xor.header = 'artemis-lotsum';
         return Xor;
     }());
+    Xor.header = 'artemis-lotsum';
 
-    var LoggerLevelEnum;
+    exports.LoggerLevelEnum = void 0;
     (function (LoggerLevelEnum) {
-        LoggerLevelEnum[LoggerLevelEnum["LOG"] = 1] = "LOG";
+        LoggerLevelEnum[LoggerLevelEnum["INFO"] = 1] = "INFO";
         LoggerLevelEnum[LoggerLevelEnum["WARN"] = 2] = "WARN";
         LoggerLevelEnum[LoggerLevelEnum["ERROR"] = 3] = "ERROR";
         LoggerLevelEnum[LoggerLevelEnum["NONE"] = 4] = "NONE";
-    })(LoggerLevelEnum || (LoggerLevelEnum = {}));
+    })(exports.LoggerLevelEnum || (exports.LoggerLevelEnum = {}));
+
+    var Error$2 = /** @class */ (function () {
+        function Error(code, reason) {
+            this.code = code;
+            this.reason = reason;
+        }
+        ;
+        Error.prototype.equals = function (err) {
+            return this.code === err.code && this.reason === err.reason;
+        };
+        Error.prototype.toString = function () {
+            var msg = (typeof this.reason === 'string') ? this.reason : JSON.stringify(this.reason);
+            return '' + this.code + ' - ' + msg;
+        };
+        return Error;
+    }());
+
+    /**
+     * `NgModule` which provides associated services.
+     *
+     * ...
+     *
+     * @stable
+     */
+    var FidjModule = /** @class */ (function () {
+        function FidjModule() {
+        }
+        return FidjModule;
+    }());
+    FidjModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        common.CommonModule
+                    ],
+                    declarations: [],
+                    exports: [],
+                },] }
+    ];
+    FidjModule.ctorParameters = function () { return []; };
+    /**
+     * module FidjModule
+     *
+     * exemple
+     *      // ... after install :
+     *      // $ npm install fidj
+     *      // then init your app.js & use it in your services
+     * TODO refresh gist :
+     * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
+     *
+     * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
+     */
 
     // bumped version via gulp
-    var version = '2.1.44';
+    var version = '3.3.0';
 
     // import {XHRPromise} from './xhrpromise';
     // const superagent = require('superagent');
@@ -726,7 +580,7 @@
             })
                 .then(function (createdUser) {
                 _this.setClientId(createdUser._id);
-                var urlToken = _this.URI + '/oauth/token';
+                var urlToken = _this.URI + '/me/tokens';
                 var dataToken = {
                     grant_type: 'client_credentials',
                     client_id: _this.clientId,
@@ -740,7 +594,10 @@
                     .post({
                     url: urlToken,
                     data: dataToken,
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                    headers: {
+                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                        'Authorization': 'Basic ' + Base64.encode('' + login + ':' + password)
+                    }
                 });
             });
         };
@@ -750,7 +607,7 @@
                 console.error('no api uri');
                 return Promise.reject({ code: 408, reason: 'no-api-uri' });
             }
-            var url = this.URI + '/oauth/token';
+            var url = this.URI + '/me/tokens';
             var data = {
                 grant_type: 'refresh_token',
                 client_id: this.clientId,
@@ -765,7 +622,10 @@
                 .post({
                 url: url,
                 data: data,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
             })
                 .then(function (obj) {
                 Client.refreshCount++;
@@ -787,7 +647,7 @@
             if (!refreshToken || !this.clientId) {
                 return Promise.resolve();
             }
-            var url = this.URI + '/oauth/revoke';
+            var url = this.URI + '/me/tokens/' + this.clientId;
             var data = {
                 token: refreshToken,
                 client_id: this.clientId,
@@ -797,39 +657,338 @@
                 scope: JSON.stringify(this.sdk)
             };
             return new Ajax()
-                .post({
+                .delete({
                 url: url,
                 data: data,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
             });
         };
         Client.prototype.isReady = function () {
             return !!this.URI;
         };
-        // private refreshToken: string;
-        Client.refreshCountInitial = 1;
-        Client.refreshCount = Client.refreshCountInitial;
-        Client._clientUuid = 'v2.clientUuid';
-        Client._clientId = 'v2.clientId';
-        Client._refreshCount = 'v2.refreshCount';
         return Client;
     }());
+    // private refreshToken: string;
+    Client.refreshCountInitial = 1;
+    Client.refreshCount = Client.refreshCountInitial;
+    Client._clientUuid = 'v2.clientUuid';
+    Client._clientId = 'v2.clientId';
+    Client._refreshCount = 'v2.refreshCount';
 
-    var Error$1 = /** @class */ (function () {
-        function Error(code, reason) {
-            this.code = code;
-            this.reason = reason;
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+    ***************************************************************************** */
+    /* global Reflect, Promise */
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b)
+                if (Object.prototype.hasOwnProperty.call(b, p))
+                    d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    function __extends(d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
+    var __assign = function () {
+        __assign = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s)
+                    if (Object.prototype.hasOwnProperty.call(s, p))
+                        t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign.apply(this, arguments);
+    };
+    function __rest(s, e) {
+        var t = {};
+        for (var p in s)
+            if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+                t[p] = s[p];
+        if (s != null && typeof Object.getOwnPropertySymbols === "function")
+            for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+                if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                    t[p[i]] = s[p[i]];
+            }
+        return t;
+    }
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+            r = Reflect.decorate(decorators, target, key, desc);
+        else
+            for (var i = decorators.length - 1; i >= 0; i--)
+                if (d = decorators[i])
+                    r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    }
+    function __param(paramIndex, decorator) {
+        return function (target, key) { decorator(target, key, paramIndex); };
+    }
+    function __metadata(metadataKey, metadataValue) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+            return Reflect.metadata(metadataKey, metadataValue);
+    }
+    function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try {
+                step(generator.next(value));
+            }
+            catch (e) {
+                reject(e);
+            } }
+            function rejected(value) { try {
+                step(generator["throw"](value));
+            }
+            catch (e) {
+                reject(e);
+            } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    }
+    function __generator(thisArg, body) {
+        var _ = { label: 0, sent: function () { if (t[0] & 1)
+                throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f)
+                throw new TypeError("Generator is already executing.");
+            while (_)
+                try {
+                    if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done)
+                        return t;
+                    if (y = 0, t)
+                        op = [op[0] & 2, t.value];
+                    switch (op[0]) {
+                        case 0:
+                        case 1:
+                            t = op;
+                            break;
+                        case 4:
+                            _.label++;
+                            return { value: op[1], done: false };
+                        case 5:
+                            _.label++;
+                            y = op[1];
+                            op = [0];
+                            continue;
+                        case 7:
+                            op = _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                        default:
+                            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                                _ = 0;
+                                continue;
+                            }
+                            if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) {
+                                _.label = op[1];
+                                break;
+                            }
+                            if (op[0] === 6 && _.label < t[1]) {
+                                _.label = t[1];
+                                t = op;
+                                break;
+                            }
+                            if (t && _.label < t[2]) {
+                                _.label = t[2];
+                                _.ops.push(op);
+                                break;
+                            }
+                            if (t[2])
+                                _.ops.pop();
+                            _.trys.pop();
+                            continue;
+                    }
+                    op = body.call(thisArg, _);
+                }
+                catch (e) {
+                    op = [6, e];
+                    y = 0;
+                }
+                finally {
+                    f = t = 0;
+                }
+            if (op[0] & 5)
+                throw op[1];
+            return { value: op[0] ? op[1] : void 0, done: true };
         }
-        ;
-        Error.prototype.equals = function (err) {
-            return this.code === err.code && this.reason === err.reason;
-        };
-        Error.prototype.toString = function () {
-            var msg = (typeof this.reason === 'string') ? this.reason : JSON.stringify(this.reason);
-            return '' + this.code + ' - ' + msg;
-        };
-        return Error;
-    }());
+    }
+    var __createBinding = Object.create ? (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
+        Object.defineProperty(o, k2, { enumerable: true, get: function () { return m[k]; } });
+    }) : (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
+        o[k2] = m[k];
+    });
+    function __exportStar(m, o) {
+        for (var p in m)
+            if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p))
+                __createBinding(o, m, p);
+    }
+    function __values(o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m)
+            return m.call(o);
+        if (o && typeof o.length === "number")
+            return {
+                next: function () {
+                    if (o && i >= o.length)
+                        o = void 0;
+                    return { value: o && o[i++], done: !o };
+                }
+            };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    }
+    function __read(o, n) {
+        var m = typeof Symbol === "function" && o[Symbol.iterator];
+        if (!m)
+            return o;
+        var i = m.call(o), r, ar = [], e;
+        try {
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
+                ar.push(r.value);
+        }
+        catch (error) {
+            e = { error: error };
+        }
+        finally {
+            try {
+                if (r && !r.done && (m = i["return"]))
+                    m.call(i);
+            }
+            finally {
+                if (e)
+                    throw e.error;
+            }
+        }
+        return ar;
+    }
+    /** @deprecated */
+    function __spread() {
+        for (var ar = [], i = 0; i < arguments.length; i++)
+            ar = ar.concat(__read(arguments[i]));
+        return ar;
+    }
+    /** @deprecated */
+    function __spreadArrays() {
+        for (var s = 0, i = 0, il = arguments.length; i < il; i++)
+            s += arguments[i].length;
+        for (var r = Array(s), k = 0, i = 0; i < il; i++)
+            for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+                r[k] = a[j];
+        return r;
+    }
+    function __spreadArray(to, from) {
+        for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+            to[j] = from[i];
+        return to;
+    }
+    function __await(v) {
+        return this instanceof __await ? (this.v = v, this) : new __await(v);
+    }
+    function __asyncGenerator(thisArg, _arguments, generator) {
+        if (!Symbol.asyncIterator)
+            throw new TypeError("Symbol.asyncIterator is not defined.");
+        var g = generator.apply(thisArg, _arguments || []), i, q = [];
+        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+        function verb(n) { if (g[n])
+            i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+        function resume(n, v) { try {
+            step(g[n](v));
+        }
+        catch (e) {
+            settle(q[0][3], e);
+        } }
+        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+        function fulfill(value) { resume("next", value); }
+        function reject(value) { resume("throw", value); }
+        function settle(f, v) { if (f(v), q.shift(), q.length)
+            resume(q[0][0], q[0][1]); }
+    }
+    function __asyncDelegator(o) {
+        var i, p;
+        return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+        function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+    }
+    function __asyncValues(o) {
+        if (!Symbol.asyncIterator)
+            throw new TypeError("Symbol.asyncIterator is not defined.");
+        var m = o[Symbol.asyncIterator], i;
+        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function (v) { resolve({ value: v, done: d }); }, reject); }
+    }
+    function __makeTemplateObject(cooked, raw) {
+        if (Object.defineProperty) {
+            Object.defineProperty(cooked, "raw", { value: raw });
+        }
+        else {
+            cooked.raw = raw;
+        }
+        return cooked;
+    }
+    ;
+    var __setModuleDefault = Object.create ? (function (o, v) {
+        Object.defineProperty(o, "default", { enumerable: true, value: v });
+    }) : function (o, v) {
+        o["default"] = v;
+    };
+    function __importStar(mod) {
+        if (mod && mod.__esModule)
+            return mod;
+        var result = {};
+        if (mod != null)
+            for (var k in mod)
+                if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+                    __createBinding(result, mod, k);
+        __setModuleDefault(result, mod);
+        return result;
+    }
+    function __importDefault(mod) {
+        return (mod && mod.__esModule) ? mod : { default: mod };
+    }
+    function __classPrivateFieldGet(receiver, state, kind, f) {
+        if (kind === "a" && !f)
+            throw new TypeError("Private accessor was defined without a getter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+            throw new TypeError("Cannot read private member from an object whose class did not declare it");
+        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+    }
+    function __classPrivateFieldSet(receiver, state, value, kind, f) {
+        if (kind === "m")
+            throw new TypeError("Private method is not writable");
+        if (kind === "a" && !f)
+            throw new TypeError("Private accessor was defined without a setter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+            throw new TypeError("Cannot write private member to an object whose class did not declare it");
+        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+    }
 
     var Connection = /** @class */ (function () {
         function Connection(_sdk, _storage, _logger) {
@@ -1003,11 +1162,12 @@
             return this.idToken;
         };
         Connection.prototype.getIdPayload = function (def) {
-            if (def && typeof def !== 'string') {
-                def = JSON.stringify(def);
-            }
+            var idToken = this.getIdToken();
             try {
-                var payload = this.getIdToken().split('.')[1];
+                var payload = void 0;
+                if (idToken) {
+                    payload = idToken.split('.')[1];
+                }
                 if (payload) {
                     return Base64.decode(payload);
                 }
@@ -1015,7 +1175,13 @@
             catch (e) {
                 this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
             }
-            return def ? def : null;
+            if (def) {
+                if (typeof def !== 'string') {
+                    def = JSON.stringify(def);
+                }
+                return def;
+            }
+            return null;
         };
         Connection.prototype.getAccessPayload = function (def) {
             if (def && typeof def !== 'string') {
@@ -1082,7 +1248,7 @@
             return new Promise(function (resolve, reject) {
                 var client = _this.getClient();
                 if (!client) {
-                    return reject(new Error$1(400, 'Need an initialized client.'));
+                    return reject(new Error$2(400, 'Need an initialized client.'));
                 }
                 _this.getClient().reAuthenticate(_this.refreshToken)
                     .then(function (user) {
@@ -1156,15 +1322,15 @@
             });
         };
         Connection.prototype.getApiEndpoints = function (options) {
-            // todo : let ea = ['https://fidj/v1', 'https://fidj-proxy.herokuapp.com/v1'];
+            // todo : let ea = ['https://fidj/v3', 'https://fidj-proxy.herokuapp.com/v3'];
             var ea = [
-                { key: 'fidj.default', url: 'https://api.fidj.ovh/v1', blocked: false }
+                { key: 'fidj.default', url: 'https://api.fidj.ovh/v3', blocked: false }
             ];
             var filteredEa = [];
             if (!this._sdk.prod) {
                 ea = [
-                    { key: 'fidj.default', url: 'http://localhost:3201/v1', blocked: false },
-                    { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v1', blocked: false }
+                    { key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false },
+                    { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v3', blocked: false }
                 ];
             }
             if (this.accessToken) {
@@ -1298,13 +1464,13 @@
                             this._logger.log('fidj.sdk.connection.verifyApiState : ', currentTime, endpointUrl);
                             return [4 /*yield*/, new Ajax()
                                     .get({
-                                    url: endpointUrl + '/status?isok=' + this._sdk.version,
+                                    url: endpointUrl + '/status?isOk=' + this._sdk.version,
                                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                                 })];
                         case 1:
                             data = _a.sent();
                             state = false;
-                            if (data && data.isok) {
+                            if (data && data.isOk) {
                                 state = true;
                             }
                             this.states[endpointUrl] = { state: state, time: currentTime, lastTimeWasOk: currentTime };
@@ -1385,15 +1551,15 @@
             return Promise.all(promises);
         };
         ;
-        Connection._accessToken = 'v2.accessToken';
-        Connection._accessTokenPrevious = 'v2.accessTokenPrevious';
-        Connection._idToken = 'v2.idToken';
-        Connection._refreshToken = 'v2.refreshToken';
-        Connection._states = 'v2.states';
-        Connection._cryptoSalt = 'v2.cryptoSalt';
-        Connection._cryptoSaltNext = 'v2.cryptoSalt.next';
         return Connection;
     }());
+    Connection._accessToken = 'v2.accessToken';
+    Connection._accessTokenPrevious = 'v2.accessTokenPrevious';
+    Connection._idToken = 'v2.idToken';
+    Connection._refreshToken = 'v2.refreshToken';
+    Connection._states = 'v2.states';
+    Connection._cryptoSalt = 'v2.cryptoSalt';
+    Connection._cryptoSaltNext = 'v2.cryptoSalt.next';
 
     // import PouchDB from 'pouchdb';
     var FidjPouch;
@@ -1457,11 +1623,11 @@
                         //         reject(new Error(400, err.toString()))
                         //     });
                     }).catch(function (err) {
-                        reject(new Error$1(400, err));
+                        reject(new Error$2(400, err));
                     });
                 }
                 catch (err) {
-                    reject(new Error$1(500, err));
+                    reject(new Error$2(500, err));
                 }
             });
         };
@@ -1473,12 +1639,12 @@
                 return Promise.resolve();
             }
             if (this.db && !this.db.destroy) {
-                return Promise.reject(new Error$1(408, 'Need a valid db'));
+                return Promise.reject(new Error$2(408, 'Need a valid db'));
             }
             return new Promise(function (resolve, reject) {
                 _this.db.destroy(function (err, info) {
                     if (err) {
-                        reject(new Error$1(500, err));
+                        reject(new Error$2(500, err));
                     }
                     else {
                         _this.dbRecordCount = 0;
@@ -1496,10 +1662,10 @@
         Session.prototype.sync = function (userId) {
             var _this = this;
             if (!this.db) {
-                return Promise.reject(new Error$1(408, 'need db'));
+                return Promise.reject(new Error$2(408, 'need db'));
             }
             if (!this.dbs || !this.dbs.length) {
-                return Promise.reject(new Error$1(408, 'need a remote db'));
+                return Promise.reject(new Error$2(408, 'need a remote db'));
             }
             return new Promise(function (resolve, reject) {
                 try {
@@ -1526,17 +1692,17 @@
                         .on('error', function (err) { return reject({ code: 401, reason: { first: err } }); });
                 }
                 catch (err) {
-                    reject(new Error$1(500, err));
+                    reject(new Error$2(500, err));
                 }
             });
         };
         Session.prototype.put = function (data, _id, uid, oid, ave, crypto) {
             var _this = this;
             if (!this.db) {
-                return Promise.reject(new Error$1(408, 'need db'));
+                return Promise.reject(new Error$2(408, 'need db'));
             }
             if (!data || !_id || !uid || !oid || !ave) {
-                return Promise.reject(new Error$1(400, 'need formated data'));
+                return Promise.reject(new Error$2(400, 'need formated data'));
             }
             var dataWithoutIds = JSON.parse(JSON.stringify(data));
             var toStore = {
@@ -1577,7 +1743,7 @@
                         }
                     }
                     else {
-                        reject(new Error$1(500, err));
+                        reject(new Error$2(500, err));
                     }
                 });
             });
@@ -1585,7 +1751,7 @@
         Session.prototype.remove = function (data_id) {
             var _this = this;
             if (!this.db) {
-                return Promise.reject(new Error$1(408, 'need db'));
+                return Promise.reject(new Error$2(408, 'need db'));
             }
             return new Promise(function (resolve, reject) {
                 _this.db.get(data_id)
@@ -1604,7 +1770,7 @@
         Session.prototype.get = function (data_id, crypto) {
             var _this = this;
             if (!this.db) {
-                return Promise.reject(new Error$1(408, 'Need db'));
+                return Promise.reject(new Error$2(408, 'Need db'));
             }
             return new Promise(function (resolve, reject) {
                 _this.db.get(data_id)
@@ -1626,20 +1792,20 @@
                         else {
                             // row._deleted = true;
                             _this.remove(row._id);
-                            reject(new Error$1(400, 'Bad encoding'));
+                            reject(new Error$2(400, 'Bad encoding'));
                         }
                     }
                     else {
-                        reject(new Error$1(400, 'No data found'));
+                        reject(new Error$2(400, 'No data found'));
                     }
                 })
-                    .catch(function (err) { return reject(new Error$1(500, err)); });
+                    .catch(function (err) { return reject(new Error$2(500, err)); });
             });
         };
         Session.prototype.getAll = function (crypto) {
             var _this = this;
             if (!this.db || !this.db.allDocs) {
-                return Promise.reject(new Error$1(408, 'Need a valid db'));
+                return Promise.reject(new Error$2(408, 'Need a valid db'));
             }
             return new Promise(function (resolve, reject) {
                 _this.db.allDocs({ include_docs: true, descending: true })
@@ -1676,13 +1842,13 @@
                     });
                     resolve(all);
                 })
-                    .catch(function (err) { return reject(new Error$1(400, err)); });
+                    .catch(function (err) { return reject(new Error$2(400, err)); });
             });
         };
         Session.prototype.isEmpty = function () {
             var _this = this;
             if (!this.db || !this.db.allDocs) {
-                return Promise.reject(new Error$1(408, 'No db'));
+                return Promise.reject(new Error$2(408, 'No db'));
             }
             return new Promise(function (resolve, reject) {
                 _this.db.allDocs({
@@ -1693,7 +1859,7 @@
                 })
                     .then(function (response) {
                     if (!response) {
-                        reject(new Error$1(400, 'No response'));
+                        reject(new Error$2(400, 'No response'));
                     }
                     else {
                         _this.dbRecordCount = response.total_rows;
@@ -1705,12 +1871,12 @@
                         }
                     }
                 })
-                    .catch(function (err) { return reject(new Error$1(400, err)); });
+                    .catch(function (err) { return reject(new Error$2(400, err)); });
             });
         };
         Session.prototype.info = function () {
             if (!this.db) {
-                return Promise.reject(new Error$1(408, 'No db'));
+                return Promise.reject(new Error$2(408, 'No db'));
             }
             return this.db.info();
         };
@@ -1781,7 +1947,7 @@
         return Session;
     }());
 
-    var Error$2 = /** @class */ (function () {
+    var Error$1 = /** @class */ (function () {
         function Error() {
         }
         ;
@@ -1792,24 +1958,24 @@
         function LoggerService(level) {
             this.level = level;
             if (!level) {
-                this.level = LoggerLevelEnum.ERROR;
+                this.level = exports.LoggerLevelEnum.ERROR;
             }
             if (typeof console === 'undefined') {
-                this.level = LoggerLevelEnum.NONE;
+                this.level = exports.LoggerLevelEnum.NONE;
             }
         }
         LoggerService.prototype.log = function (message, args) {
-            if (this.level === LoggerLevelEnum.LOG) {
+            if (this.level === exports.LoggerLevelEnum.INFO) {
                 console.log(message, args);
             }
         };
         LoggerService.prototype.warn = function (message, args) {
-            if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN) {
+            if (this.level === exports.LoggerLevelEnum.INFO || this.level === exports.LoggerLevelEnum.WARN) {
                 console.warn(message, args);
             }
         };
         LoggerService.prototype.error = function (message, args) {
-            if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
+            if (this.level === exports.LoggerLevelEnum.INFO || this.level === exports.LoggerLevelEnum.WARN || this.level === exports.LoggerLevelEnum.ERROR) {
                 console.error(message, args);
             }
         };
@@ -1885,16 +2051,19 @@
             if (options && options.logLevel) {
                 self.logger.setLevel(options.logLevel);
             }
+            else {
+                self.logger.setLevel(exports.LoggerLevelEnum.NONE);
+            }
             self.logger.log('fidj.sdk.service.fidjInit : ', options);
             if (!fidjId) {
                 self.logger.error('fidj.sdk.service.fidjInit : bad init');
-                return self.promise.reject(new Error$1(400, 'Need a fidjId'));
+                return self.promise.reject(new Error$2(400, 'Need a fidjId'));
             }
             self.sdk.prod = !options ? true : options.prod;
-            self.sdk.useDB = !options ? true : options.useDB;
+            self.sdk.useDB = !options ? false : options.useDB;
             self.connection.fidjId = fidjId;
             self.connection.fidjVersion = self.sdk.version;
-            self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
+            self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? false : options.crypto;
             return new self.promise(function (resolve, reject) {
                 self.connection.verifyConnectionStates()
                     .then(function () {
@@ -1917,12 +2086,12 @@
                         resolve();
                     }
                     else {
-                        reject(new Error$1(404, 'Need one connection - or too old SDK version (check update)'));
+                        reject(new Error$2(404, 'Need one connection - or too old SDK version (check update)'));
                     }
                 })
                     .catch(function (err) {
                     self.logger.error('fidj.sdk.service.fidjInit: ', err);
-                    reject(new Error$1(500, err.toString()));
+                    reject(new Error$2(500, err.toString()));
                 });
             });
         };
@@ -1939,7 +2108,7 @@
             var self = this;
             self.logger.log('fidj.sdk.service.fidjLogin');
             if (!self.connection.isReady()) {
-                return self.promise.reject(new Error$1(404, 'Need an intialized FidjService'));
+                return self.promise.reject(new Error$2(404, 'Need an intialized FidjService'));
             }
             return new self.promise(function (resolve, reject) {
                 self._removeAll()
@@ -2169,10 +2338,10 @@
                 return Promise.resolve('NA');
             }
             if (!self.connection.getClientId()) {
-                return self.promise.reject(new Error$1(401, 'DB put impossible. Need a user logged in.'));
+                return self.promise.reject(new Error$2(401, 'DB put impossible. Need a user logged in.'));
             }
             if (!self.session.isReady()) {
-                return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
+                return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
             }
             var _id;
             if (data && typeof data === 'object' && Object.keys(data).indexOf('_id')) {
@@ -2199,10 +2368,10 @@
                 return Promise.resolve();
             }
             if (!self.session.isReady()) {
-                return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
+                return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
             }
             if (!data_id || typeof data_id !== 'string') {
-                return self.promise.reject(new Error$1(400, 'DB remove impossible. ' +
+                return self.promise.reject(new Error$2(400, 'DB remove impossible. ' +
                     'Need the data._id.'));
             }
             return self.session.remove(data_id);
@@ -2215,10 +2384,10 @@
                 return Promise.resolve();
             }
             if (!self.connection.getClientId()) {
-                return self.promise.reject(new Error$1(401, 'Find pb : need a user logged in.'));
+                return self.promise.reject(new Error$2(401, 'Find pb : need a user logged in.'));
             }
             if (!self.session.isReady()) {
-                return self.promise.reject(new Error$1(400, ' Need to be synchronised.'));
+                return self.promise.reject(new Error$2(400, ' Need to be synchronised.'));
             }
             var crypto;
             if (self.connection.fidjCrypto) {
@@ -2237,10 +2406,10 @@
                 return Promise.resolve([]);
             }
             if (!self.connection.getClientId()) {
-                return self.promise.reject(new Error$1(401, 'Need a user logged in.'));
+                return self.promise.reject(new Error$2(401, 'Need a user logged in.'));
             }
             if (!self.session.isReady()) {
-                return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
+                return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
             }
             var crypto;
             if (self.connection.fidjCrypto) {
@@ -2262,7 +2431,7 @@
             };
             var endpoints = this.fidjGetEndpoints(filter);
             if (!endpoints || endpoints.length !== 1) {
-                return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
+                return this.promise.reject(new Error$2(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
             }
             var endpointUrl = endpoints[0].url;
             if (relativePath) {
@@ -2337,7 +2506,7 @@
             var self = this;
             self.logger.log('fidj.sdk.service._loginInternal');
             if (!self.connection.isReady()) {
-                return self.promise.reject(new Error$1(403, 'Need an intialized FidjService'));
+                return self.promise.reject(new Error$2(403, 'Need an intialized FidjService'));
             }
             return new self.promise(function (resolve, reject) {
                 self.connection.logout()
@@ -2400,10 +2569,11 @@
             UId += simpleDate + '' + sequId;
             return UId;
         };
-        InternalService._srvDataUniqId = 0;
         return InternalService;
     }());
+    InternalService._srvDataUniqId = 0;
 
+    /* tslint:disable:max-line-length */
     /**
      * Angular FidjService
      * @see ModuleServiceInterface
@@ -2411,7 +2581,7 @@
      */
     var FidjService = /** @class */ (function () {
         function FidjService() {
-            this.logger = new LoggerService(LoggerLevelEnum.ERROR);
+            this.logger = new LoggerService(exports.LoggerLevelEnum.ERROR);
             this.promise = Promise;
             this.fidjService = null;
             // let pouchdbRequired = PouchDB;
@@ -2427,21 +2597,21 @@
         ;
         FidjService.prototype.login = function (login, password) {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.login : not initialized.'));
+                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.login : not initialized.'));
             }
             return this.fidjService.fidjLogin(login, password);
         };
         ;
         FidjService.prototype.loginAsDemo = function (options) {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
+                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
             }
             return this.fidjService.fidjLoginInDemoMode(options);
         };
         ;
         FidjService.prototype.isLoggedIn = function () {
             if (!this.fidjService) {
-                return false; // this.promise.reject('fidj.sdk.angular2.isLoggedIn : not initialized.');
+                return false; // this.promise.reject('fidj.sdk.angular.isLoggedIn : not initialized.');
             }
             return this.fidjService.fidjIsLogin();
         };
@@ -2462,7 +2632,7 @@
         ;
         FidjService.prototype.sendOnEndpoint = function (key, verb, relativePath, data) {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
+                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
             }
             return this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data);
         };
@@ -2483,7 +2653,7 @@
         ;
         FidjService.prototype.logout = function (force) {
             if (force || !this.fidjService) {
-                return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.logout : not initialized.'));
+                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.logout : not initialized.'));
             }
             return this.fidjService.fidjLogout(force);
         };
@@ -2506,7 +2676,7 @@
          */
         FidjService.prototype.sync = function (fnInitFirstData) {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.sync : not initialized.'));
+                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.sync : not initialized.'));
             }
             return this.fidjService.fidjSync(fnInitFirstData, this);
         };
@@ -2519,7 +2689,7 @@
          */
         FidjService.prototype.put = function (data) {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.put : not initialized.'));
+                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.put : not initialized.'));
             }
             return this.fidjService.fidjPutInDb(data);
         };
@@ -2532,7 +2702,7 @@
          */
         FidjService.prototype.remove = function (id) {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.remove : not initialized.'));
+                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.remove : not initialized.'));
             }
             return this.fidjService.fidjRemoveInDb(id);
         };
@@ -2542,48 +2712,34 @@
          */
         FidjService.prototype.find = function (id) {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.find : not initialized.'));
+                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.find : not initialized.'));
             }
             return this.fidjService.fidjFindInDb(id);
         };
         ;
         FidjService.prototype.findAll = function () {
             if (!this.fidjService) {
-                return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.findAll : not initialized.'));
+                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.findAll : not initialized.'));
             }
             return this.fidjService.fidjFindAllInDb();
         };
         ;
-        FidjService = __decorate([
-            core.Injectable()
-        ], FidjService);
         return FidjService;
     }());
+    FidjService.ɵprov = i0__namespace.ɵɵdefineInjectable({ factory: function FidjService_Factory() { return new FidjService(); }, token: FidjService, providedIn: "root" });
+    FidjService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    FidjService.ctorParameters = function () { return []; };
 
     /**
-     * `NgModule` which provides associated services.
-     *
-     * ...
-     *
-     * @stable
+     * Generated bundle index. Do not edit.
      */
-    var FidjModule = /** @class */ (function () {
-        function FidjModule() {
-        }
-        FidjModule = __decorate([
-            core.NgModule({
-                imports: [
-                    common.CommonModule
-                ],
-                declarations: [],
-                exports: [],
-                providers: [FidjService]
-            })
-        ], FidjModule);
-        return FidjModule;
-    }());
 
     exports.Base64 = Base64;
+    exports.Error = Error$2;
     exports.FidjModule = FidjModule;
     exports.FidjService = FidjService;
     exports.LocalStorage = LocalStorage;

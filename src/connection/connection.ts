@@ -228,19 +228,29 @@ export class Connection {
     }
 
     getIdPayload(def?: any): string {
-        if (def && typeof def !== 'string') {
-            def = JSON.stringify(def);
-        }
+
+        const idToken = this.getIdToken();
 
         try {
-            const payload = this.getIdToken().split('.')[1];
+            let payload;
+            if (idToken) {
+                payload = idToken.split('.')[1];
+            }
             if (payload) {
                 return Base64.decode(payload);
             }
         } catch (e) {
             this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
         }
-        return def ? def : null;
+
+        if (def) {
+            if (typeof def !== 'string') {
+                def = JSON.stringify(def);
+            }
+            return def;
+        }
+
+        return null;
     }
 
     getAccessPayload(def?: any): string {
@@ -400,15 +410,15 @@ export class Connection {
 
     getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface> {
 
-        // todo : let ea = ['https://fidj/v1', 'https://fidj-proxy.herokuapp.com/v1'];
+        // todo : let ea = ['https://fidj/v3', 'https://fidj-proxy.herokuapp.com/v3'];
         let ea: EndpointInterface[] = [
-            {key: 'fidj.default', url: 'https://api.fidj.ovh/v1', blocked: false}];
+            {key: 'fidj.default', url: 'https://api.fidj.ovh/v3', blocked: false}];
         let filteredEa = [];
 
         if (!this._sdk.prod) {
             ea = [
-                {key: 'fidj.default', url: 'http://localhost:3201/v1', blocked: false},
-                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v1', blocked: false}
+                {key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false},
+                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v3', blocked: false}
             ];
         }
 
@@ -545,12 +555,12 @@ export class Connection {
 
             const data = await new Ajax()
                 .get({
-                    url: endpointUrl + '/status?isok=' + this._sdk.version,
+                    url: endpointUrl + '/status?isOk=' + this._sdk.version,
                     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
                 });
 
             let state = false;
-            if (data && data.isok) {
+            if (data && data.isOk) {
                 state = true;
             }
             this.states[endpointUrl] = {state: state, time: currentTime, lastTimeWasOk: currentTime};

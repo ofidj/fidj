@@ -1,6 +1,7 @@
-import { __awaiter, __decorate } from 'tslib';
-import { Injectable, NgModule } from '@angular/core';
+import * as i0 from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { __awaiter } from 'tslib';
 
 class Base64 {
     constructor() {
@@ -244,14 +245,63 @@ Xor.header = 'artemis-lotsum';
 
 var LoggerLevelEnum;
 (function (LoggerLevelEnum) {
-    LoggerLevelEnum[LoggerLevelEnum["LOG"] = 1] = "LOG";
+    LoggerLevelEnum[LoggerLevelEnum["INFO"] = 1] = "INFO";
     LoggerLevelEnum[LoggerLevelEnum["WARN"] = 2] = "WARN";
     LoggerLevelEnum[LoggerLevelEnum["ERROR"] = 3] = "ERROR";
     LoggerLevelEnum[LoggerLevelEnum["NONE"] = 4] = "NONE";
 })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
+class Error$2 {
+    constructor(code, reason) {
+        this.code = code;
+        this.reason = reason;
+    }
+    ;
+    equals(err) {
+        return this.code === err.code && this.reason === err.reason;
+    }
+    toString() {
+        const msg = (typeof this.reason === 'string') ? this.reason : JSON.stringify(this.reason);
+        return '' + this.code + ' - ' + msg;
+    }
+}
+
+/**
+ * `NgModule` which provides associated services.
+ *
+ * ...
+ *
+ * @stable
+ */
+class FidjModule {
+    constructor() {
+    }
+}
+FidjModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule
+                ],
+                declarations: [],
+                exports: [],
+            },] }
+];
+FidjModule.ctorParameters = () => [];
+/**
+ * module FidjModule
+ *
+ * exemple
+ *      // ... after install :
+ *      // $ npm install fidj
+ *      // then init your app.js & use it in your services
+ * TODO refresh gist :
+ * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
+ *
+ * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
+ */
+
 // bumped version via gulp
-const version = '2.1.44';
+const version = '3.3.0';
 
 // import {XHRPromise} from './xhrpromise';
 // const superagent = require('superagent');
@@ -500,7 +550,7 @@ class Client {
         })
             .then(createdUser => {
             this.setClientId(createdUser._id);
-            const urlToken = this.URI + '/oauth/token';
+            const urlToken = this.URI + '/me/tokens';
             const dataToken = {
                 grant_type: 'client_credentials',
                 client_id: this.clientId,
@@ -514,7 +564,10 @@ class Client {
                 .post({
                 url: urlToken,
                 data: dataToken,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Basic ' + Base64.encode('' + login + ':' + password)
+                }
             });
         });
     }
@@ -523,7 +576,7 @@ class Client {
             console.error('no api uri');
             return Promise.reject({ code: 408, reason: 'no-api-uri' });
         }
-        const url = this.URI + '/oauth/token';
+        const url = this.URI + '/me/tokens';
         const data = {
             grant_type: 'refresh_token',
             client_id: this.clientId,
@@ -538,7 +591,10 @@ class Client {
             .post({
             url: url,
             data: data,
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + refreshToken
+            }
         })
             .then((obj) => {
             Client.refreshCount++;
@@ -560,7 +616,7 @@ class Client {
         if (!refreshToken || !this.clientId) {
             return Promise.resolve();
         }
-        const url = this.URI + '/oauth/revoke';
+        const url = this.URI + '/me/tokens/' + this.clientId;
         const data = {
             token: refreshToken,
             client_id: this.clientId,
@@ -570,10 +626,13 @@ class Client {
             scope: JSON.stringify(this.sdk)
         };
         return new Ajax()
-            .post({
+            .delete({
             url: url,
             data: data,
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + refreshToken
+            }
         });
     }
     isReady() {
@@ -586,21 +645,6 @@ Client.refreshCount = Client.refreshCountInitial;
 Client._clientUuid = 'v2.clientUuid';
 Client._clientId = 'v2.clientId';
 Client._refreshCount = 'v2.refreshCount';
-
-class Error$1 {
-    constructor(code, reason) {
-        this.code = code;
-        this.reason = reason;
-    }
-    ;
-    equals(err) {
-        return this.code === err.code && this.reason === err.reason;
-    }
-    toString() {
-        const msg = (typeof this.reason === 'string') ? this.reason : JSON.stringify(this.reason);
-        return '' + this.code + ' - ' + msg;
-    }
-}
 
 class Connection {
     constructor(_sdk, _storage, _logger) {
@@ -774,11 +818,12 @@ class Connection {
         return this.idToken;
     }
     getIdPayload(def) {
-        if (def && typeof def !== 'string') {
-            def = JSON.stringify(def);
-        }
+        const idToken = this.getIdToken();
         try {
-            const payload = this.getIdToken().split('.')[1];
+            let payload;
+            if (idToken) {
+                payload = idToken.split('.')[1];
+            }
             if (payload) {
                 return Base64.decode(payload);
             }
@@ -786,7 +831,13 @@ class Connection {
         catch (e) {
             this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
         }
-        return def ? def : null;
+        if (def) {
+            if (typeof def !== 'string') {
+                def = JSON.stringify(def);
+            }
+            return def;
+        }
+        return null;
     }
     getAccessPayload(def) {
         if (def && typeof def !== 'string') {
@@ -852,7 +903,7 @@ class Connection {
         return new Promise((resolve, reject) => {
             const client = this.getClient();
             if (!client) {
-                return reject(new Error$1(400, 'Need an initialized client.'));
+                return reject(new Error$2(400, 'Need an initialized client.'));
             }
             this.getClient().reAuthenticate(this.refreshToken)
                 .then(user => {
@@ -926,15 +977,15 @@ class Connection {
         });
     }
     getApiEndpoints(options) {
-        // todo : let ea = ['https://fidj/v1', 'https://fidj-proxy.herokuapp.com/v1'];
+        // todo : let ea = ['https://fidj/v3', 'https://fidj-proxy.herokuapp.com/v3'];
         let ea = [
-            { key: 'fidj.default', url: 'https://api.fidj.ovh/v1', blocked: false }
+            { key: 'fidj.default', url: 'https://api.fidj.ovh/v3', blocked: false }
         ];
         let filteredEa = [];
         if (!this._sdk.prod) {
             ea = [
-                { key: 'fidj.default', url: 'http://localhost:3201/v1', blocked: false },
-                { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v1', blocked: false }
+                { key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false },
+                { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v3', blocked: false }
             ];
         }
         if (this.accessToken) {
@@ -1064,11 +1115,11 @@ class Connection {
                 this._logger.log('fidj.sdk.connection.verifyApiState : ', currentTime, endpointUrl);
                 const data = yield new Ajax()
                     .get({
-                    url: endpointUrl + '/status?isok=' + this._sdk.version,
+                    url: endpointUrl + '/status?isOk=' + this._sdk.version,
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                 });
                 let state = false;
-                if (data && data.isok) {
+                if (data && data.isOk) {
                     state = true;
                 }
                 this.states[endpointUrl] = { state: state, time: currentTime, lastTimeWasOk: currentTime };
@@ -1208,11 +1259,11 @@ class Session {
                     //         reject(new Error(400, err.toString()))
                     //     });
                 }).catch((err) => {
-                    reject(new Error$1(400, err));
+                    reject(new Error$2(400, err));
                 });
             }
             catch (err) {
-                reject(new Error$1(500, err));
+                reject(new Error$2(500, err));
             }
         });
     }
@@ -1223,12 +1274,12 @@ class Session {
             return Promise.resolve();
         }
         if (this.db && !this.db.destroy) {
-            return Promise.reject(new Error$1(408, 'Need a valid db'));
+            return Promise.reject(new Error$2(408, 'Need a valid db'));
         }
         return new Promise((resolve, reject) => {
             this.db.destroy((err, info) => {
                 if (err) {
-                    reject(new Error$1(500, err));
+                    reject(new Error$2(500, err));
                 }
                 else {
                     this.dbRecordCount = 0;
@@ -1245,10 +1296,10 @@ class Session {
     }
     sync(userId) {
         if (!this.db) {
-            return Promise.reject(new Error$1(408, 'need db'));
+            return Promise.reject(new Error$2(408, 'need db'));
         }
         if (!this.dbs || !this.dbs.length) {
-            return Promise.reject(new Error$1(408, 'need a remote db'));
+            return Promise.reject(new Error$2(408, 'need a remote db'));
         }
         return new Promise((resolve, reject) => {
             try {
@@ -1275,16 +1326,16 @@ class Session {
                     .on('error', (err) => reject({ code: 401, reason: { first: err } }));
             }
             catch (err) {
-                reject(new Error$1(500, err));
+                reject(new Error$2(500, err));
             }
         });
     }
     put(data, _id, uid, oid, ave, crypto) {
         if (!this.db) {
-            return Promise.reject(new Error$1(408, 'need db'));
+            return Promise.reject(new Error$2(408, 'need db'));
         }
         if (!data || !_id || !uid || !oid || !ave) {
-            return Promise.reject(new Error$1(400, 'need formated data'));
+            return Promise.reject(new Error$2(400, 'need formated data'));
         }
         const dataWithoutIds = JSON.parse(JSON.stringify(data));
         const toStore = {
@@ -1325,14 +1376,14 @@ class Session {
                     }
                 }
                 else {
-                    reject(new Error$1(500, err));
+                    reject(new Error$2(500, err));
                 }
             });
         });
     }
     remove(data_id) {
         if (!this.db) {
-            return Promise.reject(new Error$1(408, 'need db'));
+            return Promise.reject(new Error$2(408, 'need db'));
         }
         return new Promise((resolve, reject) => {
             this.db.get(data_id)
@@ -1350,7 +1401,7 @@ class Session {
     }
     get(data_id, crypto) {
         if (!this.db) {
-            return Promise.reject(new Error$1(408, 'Need db'));
+            return Promise.reject(new Error$2(408, 'Need db'));
         }
         return new Promise((resolve, reject) => {
             this.db.get(data_id)
@@ -1372,19 +1423,19 @@ class Session {
                     else {
                         // row._deleted = true;
                         this.remove(row._id);
-                        reject(new Error$1(400, 'Bad encoding'));
+                        reject(new Error$2(400, 'Bad encoding'));
                     }
                 }
                 else {
-                    reject(new Error$1(400, 'No data found'));
+                    reject(new Error$2(400, 'No data found'));
                 }
             })
-                .catch(err => reject(new Error$1(500, err)));
+                .catch(err => reject(new Error$2(500, err)));
         });
     }
     getAll(crypto) {
         if (!this.db || !this.db.allDocs) {
-            return Promise.reject(new Error$1(408, 'Need a valid db'));
+            return Promise.reject(new Error$2(408, 'Need a valid db'));
         }
         return new Promise((resolve, reject) => {
             this.db.allDocs({ include_docs: true, descending: true })
@@ -1421,12 +1472,12 @@ class Session {
                 });
                 resolve(all);
             })
-                .catch(err => reject(new Error$1(400, err)));
+                .catch(err => reject(new Error$2(400, err)));
         });
     }
     isEmpty() {
         if (!this.db || !this.db.allDocs) {
-            return Promise.reject(new Error$1(408, 'No db'));
+            return Promise.reject(new Error$2(408, 'No db'));
         }
         return new Promise((resolve, reject) => {
             this.db.allDocs({
@@ -1437,7 +1488,7 @@ class Session {
             })
                 .then((response) => {
                 if (!response) {
-                    reject(new Error$1(400, 'No response'));
+                    reject(new Error$2(400, 'No response'));
                 }
                 else {
                     this.dbRecordCount = response.total_rows;
@@ -1449,12 +1500,12 @@ class Session {
                     }
                 }
             })
-                .catch((err) => reject(new Error$1(400, err)));
+                .catch((err) => reject(new Error$2(400, err)));
         });
     }
     info() {
         if (!this.db) {
-            return Promise.reject(new Error$1(408, 'No db'));
+            return Promise.reject(new Error$2(408, 'No db'));
         }
         return this.db.info();
     }
@@ -1524,7 +1575,7 @@ class Session {
     }
 }
 
-class Error$2 {
+class Error$1 {
     constructor() {
     }
     ;
@@ -1541,17 +1592,17 @@ class LoggerService {
         }
     }
     log(message, args) {
-        if (this.level === LoggerLevelEnum.LOG) {
+        if (this.level === LoggerLevelEnum.INFO) {
             console.log(message, args);
         }
     }
     warn(message, args) {
-        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN) {
+        if (this.level === LoggerLevelEnum.INFO || this.level === LoggerLevelEnum.WARN) {
             console.warn(message, args);
         }
     }
     error(message, args) {
-        if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
+        if (this.level === LoggerLevelEnum.INFO || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
             console.error(message, args);
         }
     }
@@ -1626,16 +1677,19 @@ class InternalService {
         if (options && options.logLevel) {
             self.logger.setLevel(options.logLevel);
         }
+        else {
+            self.logger.setLevel(LoggerLevelEnum.NONE);
+        }
         self.logger.log('fidj.sdk.service.fidjInit : ', options);
         if (!fidjId) {
             self.logger.error('fidj.sdk.service.fidjInit : bad init');
-            return self.promise.reject(new Error$1(400, 'Need a fidjId'));
+            return self.promise.reject(new Error$2(400, 'Need a fidjId'));
         }
         self.sdk.prod = !options ? true : options.prod;
-        self.sdk.useDB = !options ? true : options.useDB;
+        self.sdk.useDB = !options ? false : options.useDB;
         self.connection.fidjId = fidjId;
         self.connection.fidjVersion = self.sdk.version;
-        self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
+        self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? false : options.crypto;
         return new self.promise((resolve, reject) => {
             self.connection.verifyConnectionStates()
                 .then(() => {
@@ -1658,12 +1712,12 @@ class InternalService {
                     resolve();
                 }
                 else {
-                    reject(new Error$1(404, 'Need one connection - or too old SDK version (check update)'));
+                    reject(new Error$2(404, 'Need one connection - or too old SDK version (check update)'));
                 }
             })
                 .catch((err) => {
                 self.logger.error('fidj.sdk.service.fidjInit: ', err);
-                reject(new Error$1(500, err.toString()));
+                reject(new Error$2(500, err.toString()));
             });
         });
     }
@@ -1680,7 +1734,7 @@ class InternalService {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjLogin');
         if (!self.connection.isReady()) {
-            return self.promise.reject(new Error$1(404, 'Need an intialized FidjService'));
+            return self.promise.reject(new Error$2(404, 'Need an intialized FidjService'));
         }
         return new self.promise((resolve, reject) => {
             self._removeAll()
@@ -1908,10 +1962,10 @@ class InternalService {
             return Promise.resolve('NA');
         }
         if (!self.connection.getClientId()) {
-            return self.promise.reject(new Error$1(401, 'DB put impossible. Need a user logged in.'));
+            return self.promise.reject(new Error$2(401, 'DB put impossible. Need a user logged in.'));
         }
         if (!self.session.isReady()) {
-            return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
+            return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
         }
         let _id;
         if (data && typeof data === 'object' && Object.keys(data).indexOf('_id')) {
@@ -1938,10 +1992,10 @@ class InternalService {
             return Promise.resolve();
         }
         if (!self.session.isReady()) {
-            return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
+            return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
         }
         if (!data_id || typeof data_id !== 'string') {
-            return self.promise.reject(new Error$1(400, 'DB remove impossible. ' +
+            return self.promise.reject(new Error$2(400, 'DB remove impossible. ' +
                 'Need the data._id.'));
         }
         return self.session.remove(data_id);
@@ -1954,10 +2008,10 @@ class InternalService {
             return Promise.resolve();
         }
         if (!self.connection.getClientId()) {
-            return self.promise.reject(new Error$1(401, 'Find pb : need a user logged in.'));
+            return self.promise.reject(new Error$2(401, 'Find pb : need a user logged in.'));
         }
         if (!self.session.isReady()) {
-            return self.promise.reject(new Error$1(400, ' Need to be synchronised.'));
+            return self.promise.reject(new Error$2(400, ' Need to be synchronised.'));
         }
         let crypto;
         if (self.connection.fidjCrypto) {
@@ -1976,10 +2030,10 @@ class InternalService {
             return Promise.resolve([]);
         }
         if (!self.connection.getClientId()) {
-            return self.promise.reject(new Error$1(401, 'Need a user logged in.'));
+            return self.promise.reject(new Error$2(401, 'Need a user logged in.'));
         }
         if (!self.session.isReady()) {
-            return self.promise.reject(new Error$1(400, 'Need to be synchronised.'));
+            return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
         }
         let crypto;
         if (self.connection.fidjCrypto) {
@@ -2001,7 +2055,7 @@ class InternalService {
         };
         const endpoints = this.fidjGetEndpoints(filter);
         if (!endpoints || endpoints.length !== 1) {
-            return this.promise.reject(new Error$1(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
+            return this.promise.reject(new Error$2(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
         }
         let endpointUrl = endpoints[0].url;
         if (relativePath) {
@@ -2076,7 +2130,7 @@ class InternalService {
         const self = this;
         self.logger.log('fidj.sdk.service._loginInternal');
         if (!self.connection.isReady()) {
-            return self.promise.reject(new Error$1(403, 'Need an intialized FidjService'));
+            return self.promise.reject(new Error$2(403, 'Need an intialized FidjService'));
         }
         return new self.promise((resolve, reject) => {
             self.connection.logout()
@@ -2142,12 +2196,13 @@ class InternalService {
 }
 InternalService._srvDataUniqId = 0;
 
+/* tslint:disable:max-line-length */
 /**
  * Angular FidjService
  * @see ModuleServiceInterface
  *
  */
-let FidjService = class FidjService {
+class FidjService {
     constructor() {
         this.logger = new LoggerService(LoggerLevelEnum.ERROR);
         this.promise = Promise;
@@ -2165,21 +2220,21 @@ let FidjService = class FidjService {
     ;
     login(login, password) {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.login : not initialized.'));
+            return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.login : not initialized.'));
         }
         return this.fidjService.fidjLogin(login, password);
     }
     ;
     loginAsDemo(options) {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
+            return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
         }
         return this.fidjService.fidjLoginInDemoMode(options);
     }
     ;
     isLoggedIn() {
         if (!this.fidjService) {
-            return false; // this.promise.reject('fidj.sdk.angular2.isLoggedIn : not initialized.');
+            return false; // this.promise.reject('fidj.sdk.angular.isLoggedIn : not initialized.');
         }
         return this.fidjService.fidjIsLogin();
     }
@@ -2200,7 +2255,7 @@ let FidjService = class FidjService {
     ;
     sendOnEndpoint(key, verb, relativePath, data) {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
+            return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
         }
         return this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data);
     }
@@ -2221,7 +2276,7 @@ let FidjService = class FidjService {
     ;
     logout(force) {
         if (force || !this.fidjService) {
-            return this.promise.reject(new Error$1(303, 'fidj.sdk.angular2.logout : not initialized.'));
+            return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.logout : not initialized.'));
         }
         return this.fidjService.fidjLogout(force);
     }
@@ -2244,7 +2299,7 @@ let FidjService = class FidjService {
      */
     sync(fnInitFirstData) {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.sync : not initialized.'));
+            return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.sync : not initialized.'));
         }
         return this.fidjService.fidjSync(fnInitFirstData, this);
     }
@@ -2257,7 +2312,7 @@ let FidjService = class FidjService {
      */
     put(data) {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.put : not initialized.'));
+            return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.put : not initialized.'));
         }
         return this.fidjService.fidjPutInDb(data);
     }
@@ -2270,7 +2325,7 @@ let FidjService = class FidjService {
      */
     remove(id) {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.remove : not initialized.'));
+            return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.remove : not initialized.'));
         }
         return this.fidjService.fidjRemoveInDb(id);
     }
@@ -2280,60 +2335,30 @@ let FidjService = class FidjService {
      */
     find(id) {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.find : not initialized.'));
+            return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.find : not initialized.'));
         }
         return this.fidjService.fidjFindInDb(id);
     }
     ;
     findAll() {
         if (!this.fidjService) {
-            return this.promise.reject(new Error$1(401, 'fidj.sdk.angular2.findAll : not initialized.'));
+            return this.promise.reject(new Error$2(401, 'fidj.sdk.angular.findAll : not initialized.'));
         }
         return this.fidjService.fidjFindAllInDb();
     }
     ;
-};
-FidjService = __decorate([
-    Injectable()
-], FidjService);
-
-/**
- * `NgModule` which provides associated services.
- *
- * ...
- *
- * @stable
- */
-let FidjModule = class FidjModule {
-    constructor() {
-    }
-};
-FidjModule = __decorate([
-    NgModule({
-        imports: [
-            CommonModule
-        ],
-        declarations: [],
-        exports: [],
-        providers: [FidjService]
-    })
-], FidjModule);
-/**
- * module FidjModule
- *
- * exemple
- *      // ... after install :
- *      // $ npm install fidj
- *      // then init your app.js & use it in your services
- * TODO refresh gist :
- * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
- *
- * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
- */
+}
+FidjService.ɵprov = i0.ɵɵdefineInjectable({ factory: function FidjService_Factory() { return new FidjService(); }, token: FidjService, providedIn: "root" });
+FidjService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+FidjService.ctorParameters = () => [];
 
 /**
  * Generated bundle index. Do not edit.
  */
 
-export { Base64, FidjModule, FidjService, LocalStorage, Xor };
+export { Base64, Error$2 as Error, FidjModule, FidjService, LocalStorage, LoggerLevelEnum, Xor };
 //# sourceMappingURL=fidj.js.map

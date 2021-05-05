@@ -24,7 +24,6 @@ Install with NPM :
 npm install fidj --save
 ```
 
-
 Look at APIs and integration patterns described in [https://ofidj.github.io/fidj/](https://ofidj.github.io/fidj/)
 - with [Angular](https://ofidj.github.io/fidj/classes/fidjservice.html)
 - with pure js
