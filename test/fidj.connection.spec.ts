@@ -118,7 +118,7 @@ describe('fidj.connection', () => {
                 });
         });
 
-        xit('should POST fail due to timeout (408) on fake url', (done) => {
+        it('should POST fail due to timeout (408) on fake url', (done) => {
             // For timeout
             (jasmine.Ajax
                 .stubRequest(/.*/) as any)
@@ -283,7 +283,7 @@ describe('fidj.connection', () => {
                     const request = jasmine.Ajax.requests.mostRecent();
                     expect(request.url).toBe(_uri + '/me/tokens');
                     expect(request.method).toBe('POST');
-                    const data: any = JSON.parse(JSON.parse(request.params).data);
+                    const data: any = JSON.parse(request.params);
                     expect(data).toBeDefined();
                     expect(data.grant_type).toEqual('refresh_token');
                     expect(data.audience).toEqual(_appId);
