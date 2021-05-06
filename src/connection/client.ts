@@ -148,7 +148,7 @@ export class Client {
             return Promise.resolve();
         }
 
-        const url = this.URI + '/me/tokens/' + this.clientId;
+        const url = this.URI + '/me/tokens';
         const data = {
             token: refreshToken,
             client_id: this.clientId,

@@ -182,10 +182,11 @@ export class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .delete(opt.url, {
-                headers: opt.headers,
-                timeout: 10000
-            })
+            .delete(opt.url, // no data
+                {
+                    headers: opt.headers,
+                    timeout: 10000
+                })
             // .delete(opt.url) // .send(opt)
             .then(res => {
                 if (res.status &&

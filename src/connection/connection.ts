@@ -10,6 +10,7 @@ export class Connection {
     public fidjId: string;
     public fidjVersion: string;
     public fidjCrypto: boolean;
+    public tokenId : string;
     public accessToken: string;
     public accessTokenPrevious: string;
     public idToken: string;
@@ -22,6 +23,7 @@ export class Connection {
     private client: Client;
     private user: any;
 
+    private static _tokenId = 'v2.tokenId';
     private static _accessToken = 'v2.accessToken';
     private static _accessTokenPrevious = 'v2.accessTokenPrevious';
     private static _idToken = 'v2.idToken';
@@ -354,6 +356,10 @@ export class Connection {
     setConnection(clientUser: any): void {
 
         // only in private storage
+        if (clientUser.id) {
+            this.tokenId = clientUser.id;
+            this._storage.set(Connection._tokenId, this.tokenId);
+        }
         if (clientUser.access_token) {
             this.accessToken = clientUser.access_token;
             this._storage.set(Connection._accessToken, this.accessToken);
