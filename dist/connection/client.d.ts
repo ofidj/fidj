@@ -1,5 +1,6 @@
 import { LocalStorage } from '../tools';
 import { SdkInterface, ErrorInterface } from '../sdk/interfaces';
+import { ClientTokens } from './interfaces';
 export declare class Client {
     private appId;
     private URI;
@@ -17,7 +18,7 @@ export declare class Client {
     setClientId(value: string): void;
     setClientUuid(value: string): void;
     setClientInfo(value: string): void;
-    login(login: string, password: string, updateProperties?: any): Promise<any | ErrorInterface>;
+    login(login: string, password: string, updateProperties?: any): Promise<ClientTokens | ErrorInterface>;
     reAuthenticate(refreshToken: string): Promise<any | ErrorInterface>;
     logout(refreshToken?: string): Promise<void | ErrorInterface>;
     isReady(): boolean;

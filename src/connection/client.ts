@@ -65,14 +65,14 @@ export class Client {
             password: password
         };
 
-        const createdUser: ClientUser = await new Ajax().post({
+        const createdUser: ClientUser = (await new Ajax().post({
             url: urlLogin,
             data: dataLogin,
             headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-        });
+        }) as any).user;
 
         this.setClientId(login); // login or createdUser.id or createdUser._id
-        const urlToken = this.URI + '/me/tokens';
+        const urlToken = this.URI + '/apps/' + this.appId + '/tokens';
         const dataToken = {
             grant_type: 'access_token',
             // grant_type: 'client_credentials',
@@ -80,37 +80,37 @@ export class Client {
             // client_secret: password,
             client_udid: this.clientUuid,
             client_info: this.clientInfo,
-            audience: this.appId,
+            // audience: this.appId,
             scope: JSON.stringify(this.sdk)
         };
-        const createdAccessToken: ClientToken = await new Ajax().post({
+        const createdAccessToken: ClientToken = (await new Ajax().post({
             url: urlToken,
             data: dataToken,
             headers: {
                 'Content-Type': 'application/json', 'Accept': 'application/json',
                 'Authorization': 'Basic ' + tools.Base64.encode('' + login + ':' + password)
             }
-        });
+        }) as any).token;
 
         dataToken.grant_type = 'id_token';
-        const createdIdToken: ClientToken = await new Ajax().post({
+        const createdIdToken: ClientToken = (await new Ajax().post({
             url: urlToken,
             data: dataToken,
             headers: {
                 'Content-Type': 'application/json', 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + createdAccessToken.data
             }
-        });
+        }) as any).token;
 
         dataToken.grant_type = 'refresh_token';
-        const createdRefreshToken: ClientToken = await new Ajax().post({
+        const createdRefreshToken: ClientToken = (await new Ajax().post({
             url: urlToken,
             data: dataToken,
             headers: {
                 'Content-Type': 'application/json', 'Accept': 'application/json',
                 'Authorization': 'Bearer ' + createdAccessToken.data
             }
-        });
+        }) as any).token;
 
         return new ClientTokens(login, createdAccessToken, createdIdToken, createdRefreshToken);
     }

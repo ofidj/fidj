@@ -3,6 +3,7 @@ import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { __awaiter } from 'tslib';
 
+import * as ɵngcc0 from '@angular/core';
 class Base64 {
     constructor() {
     }
@@ -277,16 +278,22 @@ class FidjModule {
     constructor() {
     }
 }
-FidjModule.decorators = [
-    { type: NgModule, args: [{
+FidjModule.ɵmod = ɵngcc0.ɵɵdefineNgModule({ type: FidjModule });
+FidjModule.ɵinj = ɵngcc0.ɵɵdefineInjector({ factory: function FidjModule_Factory(t) { return new (t || FidjModule)(); }, imports: [[
+            CommonModule
+        ]] });
+FidjModule.ctorParameters = () => [];
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && ɵngcc0.ɵɵsetNgModuleScope(FidjModule, { imports: function () { return [CommonModule]; } }); })();
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(FidjModule, [{
+        type: NgModule,
+        args: [{
                 imports: [
                     CommonModule
                 ],
                 declarations: [],
-                exports: [],
-            },] }
-];
-FidjModule.ctorParameters = () => [];
+                exports: []
+            }]
+    }], function () { return []; }, null); })();
 /**
  * module FidjModule
  *
@@ -2365,17 +2372,20 @@ class FidjService {
     }
     ;
 }
+FidjService.ɵfac = function FidjService_Factory(t) { return new (t || FidjService)(); };
 FidjService.ɵprov = i0.ɵɵdefineInjectable({ factory: function FidjService_Factory() { return new FidjService(); }, token: FidjService, providedIn: "root" });
-FidjService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
 FidjService.ctorParameters = () => [];
+/*@__PURE__*/ (function () { ɵngcc0.ɵsetClassMetadata(FidjService, [{
+        type: Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return []; }, null); })();
 
 /**
  * Generated bundle index. Do not edit.
  */
 
 export { Base64, Error$2 as Error, FidjModule, FidjService, LocalStorage, LoggerLevelEnum, Xor };
+
 //# sourceMappingURL=fidj.js.map

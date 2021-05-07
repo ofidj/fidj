@@ -1,7 +1,7 @@
 import { Client } from './client';
 import { ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface, LoggerInterface } from '../sdk/interfaces';
 import { LocalStorage } from '../tools';
-import { ConnectionFindOptionsInterface } from './interfaces';
+import { ClientTokens, ClientUser, ConnectionFindOptionsInterface } from './interfaces';
 export declare class Connection {
     private _sdk;
     private _storage;
@@ -36,8 +36,8 @@ export declare class Connection {
     isReady(): boolean;
     destroy(force?: boolean): void;
     setClient(client: Client): void;
-    setUser(user: any): void;
-    getUser(): any;
+    setUser(user: ClientUser): void;
+    getUser(): ClientUser;
     getClient(): Client;
     setCryptoSalt(value: string): void;
     setCryptoSaltAsVerified(): void;
@@ -50,8 +50,8 @@ export declare class Connection {
     getIdPayload(def?: any): string;
     getAccessPayload(def?: any): string;
     getPreviousAccessPayload(def?: any): string;
-    refreshConnection(): Promise<any | ErrorInterface>;
-    setConnection(clientUser: any): void;
+    refreshConnection(): Promise<ClientUser | ErrorInterface>;
+    setConnection(clientTokens: ClientTokens): void;
     setConnectionOffline(options: ModuleServiceLoginOptionsInterface): void;
     getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface>;
     getDBs(options?: ConnectionFindOptionsInterface): EndpointInterface[];

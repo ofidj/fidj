@@ -328,353 +328,6 @@
      * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
      */
 
-    // bumped version via gulp
-    var version = '3.3.0';
-
-    // import {XHRPromise} from './xhrpromise';
-    // const superagent = require('superagent');
-    // import from 'superagent';
-    var XhrErrorReason;
-    (function (XhrErrorReason) {
-        XhrErrorReason[XhrErrorReason["UNKNOWN"] = 0] = "UNKNOWN";
-        XhrErrorReason[XhrErrorReason["TIMEOUT"] = 1] = "TIMEOUT";
-        XhrErrorReason[XhrErrorReason["STATUS"] = 2] = "STATUS";
-    })(XhrErrorReason || (XhrErrorReason = {}));
-    var Ajax = /** @class */ (function () {
-        function Ajax() {
-            // https://www.twilio.com/blog/2017/08/http-requests-in-node-js.html
-            // axios ?
-            //  https://github.com/axios/axios
-            // const axios = require('axios');
-            // axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')
-            //     .then(response => {
-            //         console.log(response.data.url);
-            //         console.log(response.data.explanation);
-            //     })
-            // superagent.get('https://api.nasa.gov/planetary/apod')
-            //     .query({ api_key: 'DEMO_KEY', date: '2017-08-02' })
-            this.xhr = require('axios'); // require('superagent'); // new XHRPromise();
-        }
-        ;
-        Ajax.formatResponseData = function (response) {
-            // TODO switch depending on json headers
-            var dataParsed = response;
-            while (dataParsed && dataParsed.data) {
-                dataParsed = dataParsed.data;
-            }
-            try {
-                dataParsed = JSON.parse(dataParsed + '');
-            }
-            catch (e) {
-            }
-            return dataParsed;
-        };
-        ;
-        Ajax.formatError = function (error) {
-            var errorFormatted = {
-                reason: XhrErrorReason.UNKNOWN,
-                status: -1,
-                code: -1,
-                message: '',
-            };
-            if (error.status) {
-                errorFormatted.reason = XhrErrorReason.STATUS;
-                errorFormatted.status = parseInt(error.status, 10);
-                errorFormatted.code = parseInt(error.status, 10);
-            }
-            if (error.response) {
-                errorFormatted.message = error.response;
-                if (error.response.status) {
-                    errorFormatted.reason = XhrErrorReason.STATUS;
-                    errorFormatted.status = parseInt(error.response.status, 10);
-                    errorFormatted.code = parseInt(error.response.status, 10);
-                }
-                else if (error.response.status === null) { // timeout
-                    errorFormatted.reason = XhrErrorReason.TIMEOUT;
-                    errorFormatted.status = 408;
-                    errorFormatted.code = 408;
-                }
-            }
-            else if (error.request) {
-                errorFormatted.message = error.request;
-            }
-            else if (error.message) {
-                errorFormatted.message = error.message;
-            }
-            // _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
-            // _this._handleError('url', reject, null, 'URL is a required parameter');
-            // _this._handleError('parse', reject, null, 'invalid JSON response');
-            // return _this._handleError('error', reject);
-            // return _this._handleError('timeout', reject);
-            // return _this._handleError('abort', reject);
-            // return _this._handleError('send', reject, null, e.toString());
-            // if (err.reason === 'timeout') {
-            //     err.code = 408;
-            // } else {
-            //     err.code = 404;
-            // }
-            return errorFormatted;
-        };
-        ;
-        Ajax.prototype.post = function (args) {
-            var opt = {
-                method: 'POST',
-                url: args.url,
-                data: JSON.stringify(args.data)
-            };
-            if (args.headers) {
-                opt.headers = args.headers;
-            }
-            return this.xhr
-                .post(opt.url, opt.data, {
-                headers: opt.headers,
-                timeout: 10000
-            })
-                .then(function (res) {
-                if (res.status &&
-                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    return Promise.reject(Ajax.formatError(res));
-                }
-                return Promise.resolve(Ajax.formatResponseData(res));
-            })
-                .catch(function (err) {
-                return Promise.reject(Ajax.formatError(err));
-            });
-        };
-        Ajax.prototype.put = function (args) {
-            var opt = {
-                method: 'PUT',
-                url: args.url,
-                data: JSON.stringify(args.data)
-            };
-            if (args.headers) {
-                opt.headers = args.headers;
-            }
-            return this.xhr
-                .put(opt.url, opt.data, {
-                headers: opt.headers,
-                timeout: 10000
-            })
-                .then(function (res) {
-                if (res.status &&
-                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    return Promise.reject(Ajax.formatError(res));
-                }
-                return Promise.resolve(Ajax.formatResponseData(res));
-            })
-                .catch(function (err) {
-                return Promise.reject(Ajax.formatError(err));
-            });
-        };
-        Ajax.prototype.delete = function (args) {
-            var opt = {
-                method: 'DELETE',
-                url: args.url,
-                data: JSON.stringify(args.data)
-            };
-            if (args.headers) {
-                opt.headers = args.headers;
-            }
-            return this.xhr
-                .delete(opt.url, {
-                headers: opt.headers,
-                timeout: 10000
-            })
-                // .delete(opt.url) // .send(opt)
-                .then(function (res) {
-                if (res.status &&
-                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    return Promise.reject(Ajax.formatError(res));
-                }
-                return Promise.resolve(Ajax.formatResponseData(res));
-            })
-                .catch(function (err) {
-                return Promise.reject(Ajax.formatError(err));
-            });
-        };
-        Ajax.prototype.get = function (args) {
-            var opt = {
-                method: 'GET',
-                url: args.url
-            };
-            if (args.data) {
-                opt.data = args.data;
-            }
-            if (args.headers) {
-                opt.headers = args.headers;
-            }
-            return this.xhr
-                .get(opt.url, {
-                // opt.data,
-                headers: opt.headers,
-                timeout: 10000
-            })
-                // .get(opt.url) // .send(opt)
-                .then(function (res) {
-                if (res.status &&
-                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
-                    return Promise.reject(Ajax.formatError(res));
-                }
-                return Promise.resolve(Ajax.formatResponseData(res));
-            })
-                .catch(function (err) {
-                return Promise.reject(Ajax.formatError(err));
-            });
-        };
-        return Ajax;
-    }());
-
-    var Client = /** @class */ (function () {
-        function Client(appId, URI, storage, sdk) {
-            this.appId = appId;
-            this.URI = URI;
-            this.storage = storage;
-            this.sdk = sdk;
-            var uuid = this.storage.get(Client._clientUuid) || 'uuid-' + Math.random();
-            var info = '_clientInfo'; // this.storage.get(Client._clientInfo);
-            if (typeof window !== 'undefined' && window.navigator) {
-                info = window.navigator.appName + '@' + window.navigator.appVersion + '-' + window.navigator.userAgent;
-            }
-            if (typeof window !== 'undefined' && window['device'] && window['device'].uuid) {
-                uuid = window['device'].uuid;
-            }
-            this.setClientUuid(uuid);
-            this.setClientInfo(info);
-            this.clientId = this.storage.get(Client._clientId);
-            Client.refreshCount = this.storage.get(Client._refreshCount) || Client.refreshCountInitial;
-        }
-        ;
-        Client.prototype.setClientId = function (value) {
-            this.clientId = '' + value;
-            this.storage.set(Client._clientId, this.clientId);
-        };
-        Client.prototype.setClientUuid = function (value) {
-            this.clientUuid = '' + value;
-            this.storage.set(Client._clientUuid, this.clientUuid);
-        };
-        Client.prototype.setClientInfo = function (value) {
-            this.clientInfo = '' + value;
-            // this.storage.set('clientInfo', this.clientInfo);
-        };
-        Client.prototype.login = function (login, password, updateProperties) {
-            var _this = this;
-            if (!this.URI) {
-                console.error('no api uri');
-                return Promise.reject({ code: 408, reason: 'no-api-uri' });
-            }
-            var urlLogin = this.URI + '/users';
-            var dataLogin = {
-                name: login,
-                username: login,
-                email: login,
-                password: password
-            };
-            return new Ajax()
-                .post({
-                url: urlLogin,
-                data: dataLogin,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-            })
-                .then(function (createdUser) {
-                _this.setClientId(createdUser._id);
-                var urlToken = _this.URI + '/me/tokens';
-                var dataToken = {
-                    grant_type: 'client_credentials',
-                    client_id: _this.clientId,
-                    client_secret: password,
-                    client_udid: _this.clientUuid,
-                    client_info: _this.clientInfo,
-                    audience: _this.appId,
-                    scope: JSON.stringify(_this.sdk)
-                };
-                return new Ajax()
-                    .post({
-                    url: urlToken,
-                    data: dataToken,
-                    headers: {
-                        'Content-Type': 'application/json', 'Accept': 'application/json',
-                        'Authorization': 'Basic ' + Base64.encode('' + login + ':' + password)
-                    }
-                });
-            });
-        };
-        Client.prototype.reAuthenticate = function (refreshToken) {
-            var _this = this;
-            if (!this.URI) {
-                console.error('no api uri');
-                return Promise.reject({ code: 408, reason: 'no-api-uri' });
-            }
-            var url = this.URI + '/me/tokens';
-            var data = {
-                grant_type: 'refresh_token',
-                client_id: this.clientId,
-                client_udid: this.clientUuid,
-                client_info: this.clientInfo,
-                audience: this.appId,
-                scope: JSON.stringify(this.sdk),
-                refresh_token: refreshToken,
-                refresh_extra: Client.refreshCount,
-            };
-            return new Ajax()
-                .post({
-                url: url,
-                data: data,
-                headers: {
-                    'Content-Type': 'application/json', 'Accept': 'application/json',
-                    'Authorization': 'Bearer ' + refreshToken
-                }
-            })
-                .then(function (obj) {
-                Client.refreshCount++;
-                _this.storage.set(Client._refreshCount, Client.refreshCount);
-                return Promise.resolve(obj);
-            });
-        };
-        Client.prototype.logout = function (refreshToken) {
-            if (!this.URI) {
-                console.error('no api uri');
-                return Promise.reject({ code: 408, reason: 'no-api-uri' });
-            }
-            // delete this.clientUuid;
-            // delete this.clientId;
-            // this.storage.remove(Client._clientUuid);
-            this.storage.remove(Client._clientId);
-            this.storage.remove(Client._refreshCount);
-            Client.refreshCount = Client.refreshCountInitial;
-            if (!refreshToken || !this.clientId) {
-                return Promise.resolve();
-            }
-            var url = this.URI + '/me/tokens/' + this.clientId;
-            var data = {
-                token: refreshToken,
-                client_id: this.clientId,
-                client_udid: this.clientUuid,
-                client_info: this.clientInfo,
-                audience: this.appId,
-                scope: JSON.stringify(this.sdk)
-            };
-            return new Ajax()
-                .delete({
-                url: url,
-                data: data,
-                headers: {
-                    'Content-Type': 'application/json', 'Accept': 'application/json',
-                    'Authorization': 'Bearer ' + refreshToken
-                }
-            });
-        };
-        Client.prototype.isReady = function () {
-            return !!this.URI;
-        };
-        return Client;
-    }());
-    // private refreshToken: string;
-    Client.refreshCountInitial = 1;
-    Client.refreshCount = Client.refreshCountInitial;
-    Client._clientUuid = 'v2.clientUuid';
-    Client._clientId = 'v2.clientId';
-    Client._refreshCount = 'v2.refreshCount';
-
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
 
@@ -987,6 +640,409 @@
         return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
     }
 
+    // bumped version via gulp
+    var version = '3.3.0';
+
+    var ClientToken = /** @class */ (function () {
+        function ClientToken(id, type, data) {
+            this.id = id;
+            this.type = type;
+            this.data = data;
+        }
+        return ClientToken;
+    }());
+    var ClientTokens = /** @class */ (function () {
+        function ClientTokens(username, accessToken, idToken, refreshToken) {
+            this.username = username;
+            this.accessToken = accessToken;
+            this.idToken = idToken;
+            this.refreshToken = refreshToken;
+        }
+        return ClientTokens;
+    }());
+    var ClientUser = /** @class */ (function () {
+        function ClientUser(id, username, roles, message) {
+            this.id = id;
+            this.username = username;
+            this.roles = roles;
+        }
+        return ClientUser;
+    }());
+
+    // import {XHRPromise} from './xhrpromise';
+    // const superagent = require('superagent');
+    // import from 'superagent';
+    var XhrErrorReason;
+    (function (XhrErrorReason) {
+        XhrErrorReason[XhrErrorReason["UNKNOWN"] = 0] = "UNKNOWN";
+        XhrErrorReason[XhrErrorReason["TIMEOUT"] = 1] = "TIMEOUT";
+        XhrErrorReason[XhrErrorReason["STATUS"] = 2] = "STATUS";
+    })(XhrErrorReason || (XhrErrorReason = {}));
+    var Ajax = /** @class */ (function () {
+        function Ajax() {
+            // https://www.twilio.com/blog/2017/08/http-requests-in-node-js.html
+            // axios ?
+            //  https://github.com/axios/axios
+            // const axios = require('axios');
+            // axios.get('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')
+            //     .then(response => {
+            //         console.log(response.data.url);
+            //         console.log(response.data.explanation);
+            //     })
+            // superagent.get('https://api.nasa.gov/planetary/apod')
+            //     .query({ api_key: 'DEMO_KEY', date: '2017-08-02' })
+            this.xhr = require('axios'); // require('superagent'); // new XHRPromise();
+        }
+        ;
+        Ajax.formatResponseData = function (response) {
+            // TODO switch depending on json headers
+            var dataParsed = response;
+            while (dataParsed && dataParsed.data) {
+                dataParsed = dataParsed.data;
+            }
+            try {
+                dataParsed = JSON.parse(dataParsed + '');
+            }
+            catch (e) {
+            }
+            return dataParsed;
+        };
+        ;
+        Ajax.formatError = function (error) {
+            var errorFormatted = {
+                reason: XhrErrorReason.UNKNOWN,
+                status: -1,
+                code: -1,
+                message: '',
+            };
+            if (error.status) {
+                errorFormatted.reason = XhrErrorReason.STATUS;
+                errorFormatted.status = parseInt(error.status, 10);
+                errorFormatted.code = parseInt(error.status, 10);
+            }
+            if (error.response) {
+                errorFormatted.message = error.response;
+                if (error.response.status) {
+                    errorFormatted.reason = XhrErrorReason.STATUS;
+                    errorFormatted.status = parseInt(error.response.status, 10);
+                    errorFormatted.code = parseInt(error.response.status, 10);
+                }
+                else if (error.response.status === null) { // timeout
+                    errorFormatted.reason = XhrErrorReason.TIMEOUT;
+                    errorFormatted.status = 408;
+                    errorFormatted.code = 408;
+                }
+            }
+            else if (error.request) {
+                errorFormatted.message = error.request;
+            }
+            else if (error.message) {
+                errorFormatted.message = error.message;
+            }
+            // _this._handleError('browser', reject, null, 'browser doesn\'t support XMLHttpRequest');
+            // _this._handleError('url', reject, null, 'URL is a required parameter');
+            // _this._handleError('parse', reject, null, 'invalid JSON response');
+            // return _this._handleError('error', reject);
+            // return _this._handleError('timeout', reject);
+            // return _this._handleError('abort', reject);
+            // return _this._handleError('send', reject, null, e.toString());
+            // if (err.reason === 'timeout') {
+            //     err.code = 408;
+            // } else {
+            //     err.code = 404;
+            // }
+            return errorFormatted;
+        };
+        ;
+        Ajax.prototype.post = function (args) {
+            var opt = {
+                method: 'POST',
+                url: args.url,
+                data: JSON.stringify(args.data)
+            };
+            if (args.headers) {
+                opt.headers = args.headers;
+            }
+            return this.xhr.post(opt.url, opt.data, {
+                headers: opt.headers,
+            })
+                .then(function (res) {
+                if (res.status &&
+                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
+                    return Promise.reject(Ajax.formatError(res));
+                }
+                return Promise.resolve(Ajax.formatResponseData(res));
+            })
+                .catch(function (err) {
+                return Promise.reject(Ajax.formatError(err));
+            });
+        };
+        Ajax.prototype.put = function (args) {
+            var opt = {
+                method: 'PUT',
+                url: args.url,
+                data: JSON.stringify(args.data)
+            };
+            if (args.headers) {
+                opt.headers = args.headers;
+            }
+            return this.xhr
+                .put(opt.url, opt.data, {
+                headers: opt.headers,
+                timeout: 10000
+            })
+                .then(function (res) {
+                if (res.status &&
+                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
+                    return Promise.reject(Ajax.formatError(res));
+                }
+                return Promise.resolve(Ajax.formatResponseData(res));
+            })
+                .catch(function (err) {
+                return Promise.reject(Ajax.formatError(err));
+            });
+        };
+        Ajax.prototype.delete = function (args) {
+            var opt = {
+                method: 'DELETE',
+                url: args.url,
+                data: JSON.stringify(args.data)
+            };
+            if (args.headers) {
+                opt.headers = args.headers;
+            }
+            return this.xhr
+                .delete(opt.url, // no data
+            {
+                headers: opt.headers,
+                timeout: 10000
+            })
+                // .delete(opt.url) // .send(opt)
+                .then(function (res) {
+                if (res.status &&
+                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
+                    return Promise.reject(Ajax.formatError(res));
+                }
+                return Promise.resolve(Ajax.formatResponseData(res));
+            })
+                .catch(function (err) {
+                return Promise.reject(Ajax.formatError(err));
+            });
+        };
+        Ajax.prototype.get = function (args) {
+            var opt = {
+                method: 'GET',
+                url: args.url
+            };
+            if (args.data) {
+                opt.data = args.data;
+            }
+            if (args.headers) {
+                opt.headers = args.headers;
+            }
+            return this.xhr
+                .get(opt.url, {
+                // opt.data,
+                headers: opt.headers,
+                timeout: 10000
+            })
+                // .get(opt.url) // .send(opt)
+                .then(function (res) {
+                if (res.status &&
+                    (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
+                    return Promise.reject(Ajax.formatError(res));
+                }
+                return Promise.resolve(Ajax.formatResponseData(res));
+            })
+                .catch(function (err) {
+                return Promise.reject(Ajax.formatError(err));
+            });
+        };
+        return Ajax;
+    }());
+
+    var Client = /** @class */ (function () {
+        function Client(appId, URI, storage, sdk) {
+            this.appId = appId;
+            this.URI = URI;
+            this.storage = storage;
+            this.sdk = sdk;
+            var uuid = this.storage.get(Client._clientUuid) || 'uuid-' + Math.random();
+            var info = '_clientInfo'; // this.storage.get(Client._clientInfo);
+            if (typeof window !== 'undefined' && window.navigator) {
+                info = window.navigator.appName + '@' + window.navigator.appVersion + '-' + window.navigator.userAgent;
+            }
+            if (typeof window !== 'undefined' && window['device'] && window['device'].uuid) {
+                uuid = window['device'].uuid;
+            }
+            this.setClientUuid(uuid);
+            this.setClientInfo(info);
+            this.clientId = this.storage.get(Client._clientId);
+            Client.refreshCount = this.storage.get(Client._refreshCount) || Client.refreshCountInitial;
+        }
+        ;
+        Client.prototype.setClientId = function (value) {
+            this.clientId = '' + value;
+            this.storage.set(Client._clientId, this.clientId);
+        };
+        Client.prototype.setClientUuid = function (value) {
+            this.clientUuid = '' + value;
+            this.storage.set(Client._clientUuid, this.clientUuid);
+        };
+        Client.prototype.setClientInfo = function (value) {
+            this.clientInfo = '' + value;
+            // this.storage.set('clientInfo', this.clientInfo);
+        };
+        Client.prototype.login = function (login, password, updateProperties) {
+            return __awaiter(this, void 0, void 0, function () {
+                var urlLogin, dataLogin, createdUser, urlToken, dataToken, createdAccessToken, createdIdToken, createdRefreshToken;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!this.URI) {
+                                console.error('no api uri');
+                                return [2 /*return*/, Promise.reject({ code: 408, reason: 'no-api-uri' })];
+                            }
+                            urlLogin = this.URI + '/users';
+                            dataLogin = {
+                                name: login,
+                                username: login,
+                                email: login,
+                                password: password
+                            };
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlLogin,
+                                    data: dataLogin,
+                                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                                })];
+                        case 1:
+                            createdUser = (_a.sent()).user;
+                            this.setClientId(login); // login or createdUser.id or createdUser._id
+                            urlToken = this.URI + '/apps/' + this.appId + '/tokens';
+                            dataToken = {
+                                grant_type: 'access_token',
+                                // grant_type: 'client_credentials',
+                                // client_id: this.clientId,
+                                // client_secret: password,
+                                client_udid: this.clientUuid,
+                                client_info: this.clientInfo,
+                                // audience: this.appId,
+                                scope: JSON.stringify(this.sdk)
+                            };
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlToken,
+                                    data: dataToken,
+                                    headers: {
+                                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                                        'Authorization': 'Basic ' + Base64.encode('' + login + ':' + password)
+                                    }
+                                })];
+                        case 2:
+                            createdAccessToken = (_a.sent()).token;
+                            dataToken.grant_type = 'id_token';
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlToken,
+                                    data: dataToken,
+                                    headers: {
+                                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                                        'Authorization': 'Bearer ' + createdAccessToken.data
+                                    }
+                                })];
+                        case 3:
+                            createdIdToken = (_a.sent()).token;
+                            dataToken.grant_type = 'refresh_token';
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlToken,
+                                    data: dataToken,
+                                    headers: {
+                                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                                        'Authorization': 'Bearer ' + createdAccessToken.data
+                                    }
+                                })];
+                        case 4:
+                            createdRefreshToken = (_a.sent()).token;
+                            return [2 /*return*/, new ClientTokens(login, createdAccessToken, createdIdToken, createdRefreshToken)];
+                    }
+                });
+            });
+        };
+        Client.prototype.reAuthenticate = function (refreshToken) {
+            var _this = this;
+            if (!this.URI) {
+                console.error('no api uri');
+                return Promise.reject({ code: 408, reason: 'no-api-uri' });
+            }
+            var url = this.URI + '/me/tokens';
+            var data = {
+                grant_type: 'refresh_token',
+                // client_id: this.clientId,
+                client_udid: this.clientUuid,
+                client_info: this.clientInfo,
+                // audience: this.appId,
+                scope: JSON.stringify(this.sdk),
+                // refresh_token: refreshToken,
+                refreshCount: Client.refreshCount,
+            };
+            return new Ajax()
+                .post({
+                url: url,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
+            })
+                .then(function (obj) {
+                Client.refreshCount++;
+                _this.storage.set(Client._refreshCount, Client.refreshCount);
+                return Promise.resolve(obj);
+            });
+        };
+        Client.prototype.logout = function (refreshToken) {
+            if (!this.URI) {
+                console.error('no api uri');
+                return Promise.reject({ code: 408, reason: 'no-api-uri' });
+            }
+            // delete this.clientUuid;
+            // delete this.clientId;
+            // this.storage.remove(Client._clientUuid);
+            this.storage.remove(Client._clientId);
+            this.storage.remove(Client._refreshCount);
+            Client.refreshCount = Client.refreshCountInitial;
+            if (!refreshToken || !this.clientId) {
+                return Promise.resolve();
+            }
+            var url = this.URI + '/me/tokens';
+            var data = {
+                token: refreshToken,
+                // client_id: this.clientId,
+                client_udid: this.clientUuid,
+                client_info: this.clientInfo,
+                // audience: this.appId,
+                scope: JSON.stringify(this.sdk)
+            };
+            return new Ajax()
+                .delete({
+                url: url,
+                data: data,
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
+            });
+        };
+        Client.prototype.isReady = function () {
+            return !!this.URI;
+        };
+        return Client;
+    }());
+    // private refreshToken: string;
+    Client.refreshCountInitial = 1;
+    Client.refreshCount = Client.refreshCountInitial;
+    Client._clientUuid = 'v2.clientUuid';
+    Client._clientId = 'v2.clientId';
+    Client._refreshCount = 'v2.refreshCount';
+
     var Connection = /** @class */ (function () {
         function Connection(_sdk, _storage, _logger) {
             this._sdk = _sdk;
@@ -1033,18 +1089,18 @@
         };
         Connection.prototype.setClient = function (client) {
             this.client = client;
-            if (!this.user) {
-                this.user = {};
-            }
+            //if (!this.user) {
+            //    this.user = new ClientUser();
+            //}
             // this._user._id = this._client.clientId;
-            this.user._name = JSON.parse(this.getIdPayload({ name: '' })).name;
+            //this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
         };
         Connection.prototype.setUser = function (user) {
             this.user = user;
-            if (this.client && this.user._id) {
-                this.client.setClientId(this.user._id);
+            if (this.client && this.user.id) {
+                this.client.setClientId(this.user.id);
                 // store only clientId
-                delete this.user._id;
+                // delete this.user._id;
             }
         };
         Connection.prototype.getUser = function () {
@@ -1248,8 +1304,8 @@
                     return reject(new Error$2(400, 'Need an initialized client.'));
                 }
                 _this.getClient().reAuthenticate(_this.refreshToken)
-                    .then(function (user) {
-                    _this.setConnection(user);
+                    .then(function (clientTokens) {
+                    _this.setConnection(clientTokens);
                     resolve(_this.getUser());
                 })
                     .catch(function (err) {
@@ -1268,34 +1324,28 @@
             });
         };
         ;
-        Connection.prototype.setConnection = function (clientUser) {
+        Connection.prototype.setConnection = function (clientTokens) {
             // only in private storage
-            if (clientUser.access_token) {
-                this.accessToken = clientUser.access_token;
+            if (clientTokens.accessToken) {
+                this.accessToken = clientTokens.accessToken.data;
                 this._storage.set(Connection._accessToken, this.accessToken);
-                delete clientUser.access_token;
                 var salt = JSON.parse(this.getAccessPayload({ salt: '' })).salt;
                 if (salt) {
                     this.setCryptoSalt(salt);
                 }
             }
-            if (clientUser.id_token) {
-                this.idToken = clientUser.id_token;
+            if (clientTokens.idToken) {
+                this.idToken = clientTokens.idToken.data;
                 this._storage.set(Connection._idToken, this.idToken);
-                delete clientUser.id_token;
             }
-            if (clientUser.refresh_token) {
-                this.refreshToken = clientUser.refresh_token;
+            if (clientTokens.refreshToken) {
+                this.refreshToken = clientTokens.refreshToken.data;
                 this._storage.set(Connection._refreshToken, this.refreshToken);
-                delete clientUser.refresh_token;
             }
             // store changed states
             this._storage.set(Connection._states, this.states);
             // expose roles, message
-            // clientUser.roles = self.fidjRoles();
-            // clientUser.message = self.fidjMessage();
-            clientUser.roles = JSON.parse(this.getIdPayload({ roles: [] })).roles;
-            clientUser.message = JSON.parse(this.getIdPayload({ message: '' })).message;
+            var clientUser = new ClientUser(clientTokens.username, clientTokens.username, JSON.parse(this.getIdPayload({ roles: [] })).roles, JSON.parse(this.getIdPayload({ message: '' })).message);
             this.setUser(clientUser);
         };
         ;
@@ -1312,11 +1362,7 @@
                 this.refreshToken = options.refreshToken;
                 this._storage.set(Connection._refreshToken, this.refreshToken);
             }
-            this.setUser({
-                roles: JSON.parse(this.getIdPayload({ roles: [] })).roles,
-                message: JSON.parse(this.getIdPayload({ message: '' })).message,
-                _id: 'demo'
-            });
+            this.setUser(new ClientUser('demo', 'demo', JSON.parse(this.getIdPayload({ roles: [] })).roles, JSON.parse(this.getIdPayload({ message: '' })).message));
         };
         Connection.prototype.getApiEndpoints = function (options) {
             // todo : let ea = ['https://fidj/v3', 'https://fidj-proxy.herokuapp.com/v3'];
@@ -1982,7 +2028,6 @@
         return LoggerService;
     }());
 
-    // import PouchDB from 'pouchdb';
     var urljoin = require('url-join');
     // import {LocalStorage} from 'node-localstorage';
     // import 'localstorage-polyfill/localStorage';
@@ -2102,40 +2147,54 @@
          * @returns
          */
         InternalService.prototype.fidjLogin = function (login, password) {
-            var self = this;
-            self.logger.log('fidj.sdk.service.fidjLogin');
-            if (!self.connection.isReady()) {
-                return self.promise.reject(new Error$2(404, 'Need an intialized FidjService'));
-            }
-            return new self.promise(function (resolve, reject) {
-                self._removeAll()
-                    .then(function () {
-                    return self.connection.verifyConnectionStates();
-                })
-                    .then(function () {
-                    return self._createSession(self.connection.fidjId);
-                })
-                    .then(function () {
-                    return self._loginInternal(login, password);
-                })
-                    .then(function (user) {
-                    self.connection.setConnection(user);
-                    if (!self.sdk.useDB) {
-                        resolve(self.connection.getUser());
+            return __awaiter(this, void 0, void 0, function () {
+                var err_1, e_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            this.logger.log('fidj.sdk.service.fidjLogin');
+                            if (!this.connection.isReady()) {
+                                throw new Error$2(404, 'Need an intialized FidjService');
+                            }
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 6, , 7]);
+                            return [4 /*yield*/, this._removeAll()];
+                        case 2:
+                            _a.sent();
+                            return [4 /*yield*/, this.connection.verifyConnectionStates()];
+                        case 3:
+                            _a.sent();
+                            return [4 /*yield*/, this._createSession(this.connection.fidjId)];
+                        case 4:
+                            _a.sent();
+                            return [4 /*yield*/, this._loginInternal(login, password)];
+                        case 5:
+                            _a.sent();
+                            return [3 /*break*/, 7];
+                        case 6:
+                            err_1 = _a.sent();
+                            throw new Error$2(500, err_1.toString());
+                        case 7:
+                            if (!this.sdk.useDB) {
+                                return [2 /*return*/, this.connection.getUser()];
+                            }
+                            _a.label = 8;
+                        case 8:
+                            _a.trys.push([8, 10, , 11]);
+                            return [4 /*yield*/, this.session.sync(this.connection.getClientId())];
+                        case 9:
+                            _a.sent();
+                            return [3 /*break*/, 11];
+                        case 10:
+                            e_1 = _a.sent();
+                            this.logger.warn('fidj.sdk.service.fidjLogin: sync -not blocking- issue  ', e_1.toString());
+                            return [3 /*break*/, 11];
+                        case 11: return [2 /*return*/, this.connection.getUser()];
                     }
-                    else {
-                        self.session.sync(self.connection.getClientId())
-                            .then(function () { return resolve(self.connection.getUser()); })
-                            .catch(function (err) { return resolve(self.connection.getUser()); });
-                    }
-                })
-                    .catch(function (err) {
-                    self.logger.error('fidj.sdk.service.fidjLogin: ', err.toString());
-                    reject(err);
                 });
             });
         };
-        ;
         /**
          *
          * @param options
@@ -2513,9 +2572,8 @@
                     .catch(function (err) {
                     return self.connection.getClient().login(login, password, updateProperties);
                 })
-                    .then(function (loginUser) {
-                    loginUser.email = login;
-                    resolve(loginUser);
+                    .then(function (clientTokens) {
+                    resolve(clientTokens);
                 })
                     .catch(function (err) {
                     self.logger.error('fidj.sdk.service._loginInternal error : ' + err);

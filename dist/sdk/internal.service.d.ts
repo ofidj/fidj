@@ -1,4 +1,5 @@
 import { LoggerInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface, ErrorInterface, EndpointInterface, EndpointFilterInterface } from './interfaces';
+import { ClientUser } from '../connection';
 /**
  * please use its angular.js or angular.io wrapper
  * usefull only for fidj dev team
@@ -32,7 +33,7 @@ export declare class InternalService {
      * @param password
      * @returns
      */
-    fidjLogin(login: string, password: string): Promise<any | ErrorInterface>;
+    fidjLogin(login: string, password: string): Promise<ClientUser | ErrorInterface>;
     /**
      *
      * @param options
