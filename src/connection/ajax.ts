@@ -127,10 +127,9 @@ export class Ajax {
             opt.headers = args.headers;
         }
 
-        return this.xhr
-            .post(opt.url, opt.data, {
+        return this.xhr.post(opt.url, opt.data, {
                 headers: opt.headers,
-                timeout: 10000
+                // timeout: 10000
             })
             .then(res => {
                 if (res.status &&

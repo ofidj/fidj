@@ -1,7 +1,7 @@
 import {InternalService} from '../src/sdk/internal.service';
 import {LoggerService} from '../src/sdk/logger.service';
 import {SessionCryptoInterface} from '../src/session';
-import {ConnectionFindOptionsInterface, Error as FidjError} from '../src/connection';
+import {ClientUser, ConnectionFindOptionsInterface, Error as FidjError} from '../src/connection';
 import {Base64} from '../src/tools';
 import {EndpointFilterInterface, ErrorInterface, LoggerLevelEnum, ModuleServiceInitOptionsInterface} from '../src/sdk/interfaces';
 import createSpy = jasmine.createSpy;
@@ -233,7 +233,7 @@ describe('fidj.sdk', () => {
                     expect((srv as any).connection.setClient).toHaveBeenCalledTimes(1);
                     return srv.fidjLogin(_login, _password);
                 })
-                .then(function (user) {
+                .then(function (user: ClientUser) {
                     expect(user.id).toBe('getUser');
                     expect((srv as any).connection.isReady).toHaveBeenCalledTimes(1);
                     expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);
@@ -269,7 +269,7 @@ describe('fidj.sdk', () => {
 
             srv
                 .fidjLogin(_login, _password)
-                .then(function (user) {
+                .then(function (user: ClientUser) {
                     expect(user.id).toBe('getUser');
                     expect((srv as any).connection.isReady).toHaveBeenCalledTimes(1);
                     expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);

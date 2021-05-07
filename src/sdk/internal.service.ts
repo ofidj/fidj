@@ -16,6 +16,7 @@ import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
 import {Ajax} from '../connection/ajax';
 import {LoggerService} from './logger.service';
+import {ClientTokens, ClientUser} from '../connection';
 
 const urljoin = require('url-join');
 // import {LocalStorage} from 'node-localstorage';
@@ -151,41 +152,32 @@ export class InternalService {
      * @param password
      * @returns
      */
-    public fidjLogin(login: string, password: string): Promise<any | ErrorInterface> {
-        const self = this;
-        self.logger.log('fidj.sdk.service.fidjLogin');
-        if (!self.connection.isReady()) {
-            return self.promise.reject(new Error(404, 'Need an intialized FidjService'));
+    public async fidjLogin(login: string, password: string): Promise<ClientUser | ErrorInterface> {
+        this.logger.log('fidj.sdk.service.fidjLogin');
+        if (!this.connection.isReady()) {
+            throw new Error(404, 'Need an intialized FidjService');
         }
 
-        return new self.promise((resolve, reject) => {
-            self._removeAll()
-                .then(() => {
-                    return self.connection.verifyConnectionStates();
-                })
-                .then(() => {
-                    return self._createSession(self.connection.fidjId);
-                })
-                .then(() => {
-                    return self._loginInternal(login, password);
-                })
-                .then((user) => {
-                    self.connection.setConnection(user);
+        try {
+            await this._removeAll();
+            await this.connection.verifyConnectionStates();
+            await this._createSession(this.connection.fidjId);
+            await this._loginInternal(login, password);
+        } catch (err) {
+            throw new Error(500, err.toString());
+        }
 
-                    if (!self.sdk.useDB) {
-                        resolve(self.connection.getUser());
-                    } else {
-                        self.session.sync(self.connection.getClientId())
-                            .then(() => resolve(self.connection.getUser()))
-                            .catch((err) => resolve(self.connection.getUser()));
-                    }
-                })
-                .catch((err) => {
-                    self.logger.error('fidj.sdk.service.fidjLogin: ', err.toString());
-                    reject(err);
-                });
-        });
-    };
+        if (!this.sdk.useDB) {
+            return this.connection.getUser();
+        }
+
+        try {
+            await this.session.sync(this.connection.getClientId());
+        } catch (e) {
+            this.logger.warn('fidj.sdk.service.fidjLogin: sync -not blocking- issue  ', e.toString());
+        }
+        return this.connection.getUser();
+    }
 
     /**
      *
@@ -585,7 +577,7 @@ export class InternalService {
      * @param password
      * @param updateProperties
      */
-    private _loginInternal(login: string, password: string, updateProperties?: any): Promise<any | ErrorInterface> {
+    private _loginInternal(login: string, password: string, updateProperties?: any): Promise<ClientTokens | ErrorInterface> {
         const self = this;
         self.logger.log('fidj.sdk.service._loginInternal');
         if (!self.connection.isReady()) {
@@ -601,9 +593,8 @@ export class InternalService {
                     .catch((err) => {
                         return self.connection.getClient().login(login, password, updateProperties);
                     })
-                    .then(loginUser => {
-                        loginUser.email = login;
-                        resolve(loginUser);
+                    .then(clientTokens => {
+                        resolve(clientTokens);
                     })
                     .catch(err => {
                         self.logger.error('fidj.sdk.service._loginInternal error : ' + err);

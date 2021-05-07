@@ -2,7 +2,7 @@ import {Client} from './client';
 import {ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface, LoggerInterface} from '../sdk/interfaces';
 import {Base64, LocalStorage, Xor} from '../tools';
 import {Ajax} from './ajax';
-import {ConnectionFindOptionsInterface} from './interfaces';
+import {ClientTokens, ClientUser, ConnectionFindOptionsInterface} from './interfaces';
 import {Error} from '../sdk/error';
 
 export class Connection {
@@ -10,7 +10,6 @@ export class Connection {
     public fidjId: string;
     public fidjVersion: string;
     public fidjCrypto: boolean;
-    public tokenId : string;
     public accessToken: string;
     public accessTokenPrevious: string;
     public idToken: string;
@@ -21,9 +20,8 @@ export class Connection {
     private cryptoSalt: string;
     private cryptoSaltNext: string;
     private client: Client;
-    private user: any;
+    private user: ClientUser;
 
-    private static _tokenId = 'v2.tokenId';
     private static _accessToken = 'v2.accessToken';
     private static _accessTokenPrevious = 'v2.accessTokenPrevious';
     private static _idToken = 'v2.idToken';
@@ -83,25 +81,25 @@ export class Connection {
     setClient(client: Client): void {
 
         this.client = client;
-        if (!this.user) {
-            this.user = {};
-        }
+        //if (!this.user) {
+        //    this.user = new ClientUser();
+        //}
 
         // this._user._id = this._client.clientId;
-        this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
+        //this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
     }
 
-    setUser(user: any): void {
+    setUser(user: ClientUser): void {
         this.user = user;
-        if (this.client && this.user._id) {
-            this.client.setClientId(this.user._id);
+        if (this.client && this.user.id) {
+            this.client.setClientId(this.user.id);
 
             // store only clientId
-            delete this.user._id;
+            // delete this.user._id;
         }
     }
 
-    getUser(): any {
+    getUser(): ClientUser {
         return this.user;
     }
 
@@ -285,7 +283,7 @@ export class Connection {
         return def ? def : null;
     }
 
-    refreshConnection(): Promise<any | ErrorInterface> {
+    refreshConnection(): Promise<ClientUser | ErrorInterface> {
 
         // store states
         this._storage.set(Connection._states, this.states);
@@ -331,8 +329,8 @@ export class Connection {
             }
 
             this.getClient().reAuthenticate(this.refreshToken)
-                .then(user => {
-                    this.setConnection(user);
+                .then((clientTokens: ClientTokens) => {
+                    this.setConnection(clientTokens);
                     resolve(this.getUser());
                 })
                 .catch(err => {
@@ -353,42 +351,35 @@ export class Connection {
         });
     };
 
-    setConnection(clientUser: any): void {
+    setConnection(clientTokens: ClientTokens): void {
 
         // only in private storage
-        if (clientUser.id) {
-            this.tokenId = clientUser.id;
-            this._storage.set(Connection._tokenId, this.tokenId);
-        }
-        if (clientUser.access_token) {
-            this.accessToken = clientUser.access_token;
+        if (clientTokens.accessToken) {
+            this.accessToken = clientTokens.accessToken.data;
             this._storage.set(Connection._accessToken, this.accessToken);
-            delete clientUser.access_token;
 
             const salt: string = JSON.parse(this.getAccessPayload({salt: ''})).salt;
             if (salt) {
                 this.setCryptoSalt(salt);
             }
         }
-        if (clientUser.id_token) {
-            this.idToken = clientUser.id_token;
+        if (clientTokens.idToken) {
+            this.idToken = clientTokens.idToken.data;
             this._storage.set(Connection._idToken, this.idToken);
-            delete clientUser.id_token;
         }
-        if (clientUser.refresh_token) {
-            this.refreshToken = clientUser.refresh_token;
+        if (clientTokens.refreshToken) {
+            this.refreshToken = clientTokens.refreshToken.data;
             this._storage.set(Connection._refreshToken, this.refreshToken);
-            delete clientUser.refresh_token;
         }
 
         // store changed states
         this._storage.set(Connection._states, this.states);
 
         // expose roles, message
-        // clientUser.roles = self.fidjRoles();
-        // clientUser.message = self.fidjMessage();
-        clientUser.roles = JSON.parse(this.getIdPayload({roles: []})).roles;
-        clientUser.message = JSON.parse(this.getIdPayload({message: ''})).message;
+        const clientUser = new ClientUser(
+            clientTokens.username, clientTokens.username,
+            JSON.parse(this.getIdPayload({roles: []})).roles,
+            JSON.parse(this.getIdPayload({message: ''})).message);
         this.setUser(clientUser);
     };
 
@@ -407,11 +398,9 @@ export class Connection {
             this._storage.set(Connection._refreshToken, this.refreshToken);
         }
 
-        this.setUser({
-            roles: JSON.parse(this.getIdPayload({roles: []})).roles,
-            message: JSON.parse(this.getIdPayload({message: ''})).message,
-            _id: 'demo'
-        });
+        this.setUser(new ClientUser('demo', 'demo' ,
+            JSON.parse(this.getIdPayload({roles: []})).roles,
+            JSON.parse(this.getIdPayload({message: ''})).message));
     }
 
     getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface> {

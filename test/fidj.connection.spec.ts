@@ -1,4 +1,4 @@
-import {Ajax, XhrErrorReason, Client, Connection} from '../src/connection';
+import {Ajax, XhrErrorReason, Client, Connection, ClientTokens, ClientToken} from '../src/connection';
 import {Base64} from '../src/tools';
 import {LoggerInterface, LoggerLevelEnum} from '../src/sdk/interfaces';
 import {LoggerService} from '../src/sdk/logger.service';
@@ -60,7 +60,6 @@ describe('fidj.connection', () => {
                 .catch((err) => done.fail(err));
         });
 
-
         it('should GET a URI', (done) => {
             jasmine.Ajax.stubRequest(/.*sandbox*/).andReturn(
                 {
@@ -118,31 +117,21 @@ describe('fidj.connection', () => {
                 });
         });
 
-        it('should POST fail due to timeout (408) on fake url', (done) => {
-            // For timeout
-            (jasmine.Ajax
-                .stubRequest(/.*/) as any)
-                .andTimeout();
+        it('should POST fail due to timeout (408) on fake url', async () => {
+            jasmine.Ajax.stubRequest(/.*/).andError({status: 408});
 
-            new Ajax()
-                .post({url: _dogURI, data: _dogData})
-                .then((data) => {
-                    done.fail(data);
-                })
-                .catch(err => {
-                    // console.log('data:', data);
-                    // expect(err.status).toBe(0);
-                    // console.log(err);
-                    expect(err.reason).toBe(XhrErrorReason.TIMEOUT);
-                    expect(err.code).toBe(408);
-                    done();
-                });
+            let data;
+            try {
+                data = await new Ajax().post({url: _dogURI, data: _dogData});
+                expect('should fail').toBeUndefined();
+            } catch (err) {
+                expect(err.code).toBe(408);
+                expect(err.reason).toBe(XhrErrorReason.STATUS);
+            }
         });
 
-        it('should GET fail due to error (500) on fake url', (done) => {
-            (jasmine.Ajax
-                .stubRequest(/.*/) as any)
-                .andError();
+        it('should GET fail due to error (500) on failing service', (done) => {
+            jasmine.Ajax.stubRequest(/.*/).andError({status: 500});
 
             new Ajax()
                 .get({url: _dogURI + '/' + _dogName})
@@ -480,12 +469,12 @@ describe('fidj.connection', () => {
             spyOn(cx, 'setUser').and.returnValue({});
             spyOn((cx as any)._storage, 'set').and.returnValue({});
 
-            cx.setConnection({
-                _id: 'test',
-                access_token: 'test1',
-                id_token: 'test2',
-                refresh_token: 'test3'
-            });
+            const clientTokens = new ClientTokens('test',
+                new ClientToken('test1Id', 'idToken', 'test1data'),
+                new ClientToken('test2Id', 'accessToken', 'test2data'),
+                new ClientToken('test3Id', 'refreshToken', 'test3data'),
+            );
+            cx.setConnection(clientTokens);
             expect(cx.setUser).toHaveBeenCalledTimes(1);
             expect(cx.setUser).toHaveBeenCalledWith({_id: 'test', roles: [], message: ''});
             expect((cx as any)._storage.set).toHaveBeenCalledTimes(4);

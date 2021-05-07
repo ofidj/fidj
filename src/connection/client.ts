@@ -2,6 +2,7 @@ import {Ajax} from './ajax';
 import {LocalStorage} from '../tools';
 import {SdkInterface, ErrorInterface} from '../sdk/interfaces';
 import * as tools from '../tools';
+import {ClientToken, ClientTokens, ClientUser} from './interfaces';
 
 export class Client {
 
@@ -49,7 +50,7 @@ export class Client {
         // this.storage.set('clientInfo', this.clientInfo);
     }
 
-    public login(login: string, password: string, updateProperties?: any): Promise<any | ErrorInterface> {
+    public async login(login: string, password: string, updateProperties?: any): Promise<ClientTokens | ErrorInterface> {
 
         if (!this.URI) {
             console.error('no api uri');
@@ -64,35 +65,54 @@ export class Client {
             password: password
         };
 
-        return new Ajax()
-            .post({
-                url: urlLogin,
-                data: dataLogin,
-                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-            })
-            .then(createdUser => {
+        const createdUser: ClientUser = await new Ajax().post({
+            url: urlLogin,
+            data: dataLogin,
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+        });
 
-                this.setClientId(createdUser._id);
-                const urlToken = this.URI + '/me/tokens';
-                const dataToken = {
-                    grant_type: 'client_credentials',
-                    client_id: this.clientId,
-                    client_secret: password,
-                    client_udid: this.clientUuid,
-                    client_info: this.clientInfo,
-                    audience: this.appId,
-                    scope: JSON.stringify(this.sdk)
-                };
-                return new Ajax()
-                    .post({
-                        url: urlToken,
-                        data: dataToken,
-                        headers: {
-                            'Content-Type': 'application/json', 'Accept': 'application/json',
-                            'Authorization': 'Basic ' + tools.Base64.encode('' + login + ':'+password)
-                        }
-                    });
-            });
+        this.setClientId(login); // login or createdUser.id or createdUser._id
+        const urlToken = this.URI + '/me/tokens';
+        const dataToken = {
+            grant_type: 'access_token',
+            // grant_type: 'client_credentials',
+            // client_id: this.clientId,
+            // client_secret: password,
+            client_udid: this.clientUuid,
+            client_info: this.clientInfo,
+            audience: this.appId,
+            scope: JSON.stringify(this.sdk)
+        };
+        const createdAccessToken: ClientToken = await new Ajax().post({
+            url: urlToken,
+            data: dataToken,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Basic ' + tools.Base64.encode('' + login + ':' + password)
+            }
+        });
+
+        dataToken.grant_type = 'id_token';
+        const createdIdToken: ClientToken = await new Ajax().post({
+            url: urlToken,
+            data: dataToken,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + createdAccessToken.data
+            }
+        });
+
+        dataToken.grant_type = 'refresh_token';
+        const createdRefreshToken: ClientToken = await new Ajax().post({
+            url: urlToken,
+            data: dataToken,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + createdAccessToken.data
+            }
+        });
+
+        return new ClientTokens(login, createdAccessToken, createdIdToken, createdRefreshToken);
     }
 
     public reAuthenticate(refreshToken: string): Promise<any | ErrorInterface> {
@@ -105,13 +125,13 @@ export class Client {
         const url = this.URI + '/me/tokens';
         const data = {
             grant_type: 'refresh_token',
-            client_id: this.clientId,
+            // client_id: this.clientId,
             client_udid: this.clientUuid,
             client_info: this.clientInfo,
-            audience: this.appId,
+            // audience: this.appId,
             scope: JSON.stringify(this.sdk),
-            refresh_token: refreshToken,
-            refresh_extra: Client.refreshCount,
+            // refresh_token: refreshToken,
+            refreshCount: Client.refreshCount,
         };
 
         return new Ajax()
@@ -123,7 +143,7 @@ export class Client {
                     'Authorization': 'Bearer ' + refreshToken
                 }
             })
-            .then((obj: any) => {
+            .then((obj: ClientToken) => {
                 Client.refreshCount++;
                 this.storage.set(Client._refreshCount, Client.refreshCount);
                 return Promise.resolve(obj);
@@ -151,10 +171,10 @@ export class Client {
         const url = this.URI + '/me/tokens';
         const data = {
             token: refreshToken,
-            client_id: this.clientId,
+            // client_id: this.clientId,
             client_udid: this.clientUuid,
             client_info: this.clientInfo,
-            audience: this.appId,
+            // audience: this.appId,
             scope: JSON.stringify(this.sdk)
         };
 
