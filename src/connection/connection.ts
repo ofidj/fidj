@@ -2,7 +2,7 @@ import {Client} from './client';
 import {ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface, LoggerInterface} from '../sdk/interfaces';
 import {Base64, LocalStorage, Xor} from '../tools';
 import {Ajax} from './ajax';
-import {ClientTokens, ClientUser, ConnectionFindOptionsInterface} from './interfaces';
+import {ClientToken, ClientTokens, ClientUser, ConnectionFindOptionsInterface} from './interfaces';
 import {Error} from '../sdk/error';
 
 export class Connection {
@@ -49,7 +49,7 @@ export class Connection {
         return !!this.client && this.client.isReady();
     }
 
-    destroy(force?: boolean): void {
+    async destroy(force?: boolean) {
 
         this._storage.remove(Connection._accessToken);
         this._storage.remove(Connection._idToken);
@@ -70,7 +70,7 @@ export class Connection {
         this.user = null;
         if (this.client) {
             // this.client.setClientId(null);
-            this.client.logout();
+            await this.client.logout();
         }
         this.accessToken = null;
         this.idToken = null;
@@ -148,7 +148,7 @@ export class Connection {
         let decrypted = null;
 
         try {
-            if (!decrypted && this.fidjCrypto && this.cryptoSaltNext) {
+            if (this.fidjCrypto && this.cryptoSaltNext) {
                 const key = this.cryptoSaltNext;
                 decrypted = Xor.decrypt(data, key);
                 decrypted = JSON.parse(decrypted);
@@ -212,7 +212,7 @@ export class Connection {
 
     // todo reintegrate client.login()
 
-    logout(): Promise<void | ErrorInterface> {
+    async logout(): Promise<void | ErrorInterface> {
         return this.getClient().logout(this.refreshToken);
     }
 
@@ -223,13 +223,13 @@ export class Connection {
         return this.client.clientId;
     }
 
-    getIdToken(): string {
+    async getIdToken() {
         return this.idToken;
     }
 
-    getIdPayload(def?: any): string {
+    async getIdPayload(def?: any) {
 
-        const idToken = this.getIdToken();
+        const idToken = await this.getIdToken();
 
         try {
             let payload;
@@ -253,7 +253,7 @@ export class Connection {
         return null;
     }
 
-    getAccessPayload(def?: any): string {
+    async getAccessPayload(def?: any): Promise<string> {
         if (def && typeof def !== 'string') {
             def = JSON.stringify(def);
         }
@@ -283,7 +283,10 @@ export class Connection {
         return def ? def : null;
     }
 
-    refreshConnection(): Promise<ClientUser | ErrorInterface> {
+    /**
+     * @throws ErrorInterface
+     */
+    async refreshConnection(): Promise<ClientUser> {
 
         // store states
         this._storage.set(Connection._states, this.states);
@@ -321,44 +324,28 @@ export class Connection {
 
         // refresh authentication
         this._logger.log('fidj.connection.connection.refreshConnection : refresh authentication.');
-        return new Promise((resolve, reject) => {
-            const client = this.getClient();
+        const client = this.getClient();
+        if (!client) {
+            throw new Error(400, 'Need an initialized client.');
+        }
 
-            if (!client) {
-                return reject(new Error(400, 'Need an initialized client.'))
-            }
+        const refreshToken: ClientToken = await this.getClient().reAuthenticate(this.refreshToken);
 
-            this.getClient().reAuthenticate(this.refreshToken)
-                .then((clientTokens: ClientTokens) => {
-                    this.setConnection(clientTokens);
-                    resolve(this.getUser());
-                })
-                .catch(err => {
-
-                    // if (err && err.code === 408) {
-                    //     code = 408; // no api uri or basic timeout : offline
-                    // } else if (err && err.code === 404) {
-                    //     code = 404; // page not found : offline
-                    // } else if (err && err.code === 410) {
-                    //     code = 403; // token expired or device not sure : need relogin
-                    // } else if (err) {
-                    //     code = 403; // forbidden : need relogin
-                    // }
-
-                    // resolve(code);
-                    reject(err);
-                });
-        });
+        const previousIdToken = new ClientToken(this.getClientId(), 'idToken', this.idToken);
+        const previousAccessToken = new ClientToken(this.getClientId(), 'accessToken', this.accessToken);
+        const clientTokens = new ClientTokens(this.getClientId(), previousIdToken, previousAccessToken, refreshToken);
+        await this.setConnection(clientTokens);
+        return this.getUser();
     };
 
-    setConnection(clientTokens: ClientTokens): void {
+    async setConnection(clientTokens: ClientTokens) {
 
         // only in private storage
         if (clientTokens.accessToken) {
             this.accessToken = clientTokens.accessToken.data;
             this._storage.set(Connection._accessToken, this.accessToken);
 
-            const salt: string = JSON.parse(this.getAccessPayload({salt: ''})).salt;
+            const salt: string = JSON.parse(await this.getAccessPayload({salt: ''})).salt;
             if (salt) {
                 this.setCryptoSalt(salt);
             }
@@ -378,12 +365,12 @@ export class Connection {
         // expose roles, message
         const clientUser = new ClientUser(
             clientTokens.username, clientTokens.username,
-            JSON.parse(this.getIdPayload({roles: []})).roles,
-            JSON.parse(this.getIdPayload({message: ''})).message);
+            JSON.parse(await this.getIdPayload({roles: []})).roles,
+            JSON.parse(await this.getIdPayload({message: ''})).message);
         this.setUser(clientUser);
     };
 
-    setConnectionOffline(options: ModuleServiceLoginOptionsInterface): void {
+    async setConnectionOffline(options: ModuleServiceLoginOptionsInterface) {
 
         if (options.accessToken) {
             this.accessToken = options.accessToken;
@@ -398,12 +385,12 @@ export class Connection {
             this._storage.set(Connection._refreshToken, this.refreshToken);
         }
 
-        this.setUser(new ClientUser('demo', 'demo' ,
-            JSON.parse(this.getIdPayload({roles: []})).roles,
-            JSON.parse(this.getIdPayload({message: ''})).message));
+        this.setUser(new ClientUser('demo', 'demo',
+            JSON.parse(await this.getIdPayload({roles: []})).roles,
+            JSON.parse(await this.getIdPayload({message: ''})).message));
     }
 
-    getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface> {
+    async getApiEndpoints(options?: ConnectionFindOptionsInterface): Promise<Array<EndpointInterface>> {
 
         // todo : let ea = ['https://fidj/v3', 'https://fidj-proxy.herokuapp.com/v3'];
         let ea: EndpointInterface[] = [
@@ -418,7 +405,7 @@ export class Connection {
         }
 
         if (this.accessToken) {
-            const val = this.getAccessPayload({apis: []});
+            const val = await this.getAccessPayload({apis: []});
             const apiEndpoints: EndpointInterface[] = JSON.parse(val).apis;
             if (apiEndpoints && apiEndpoints.length) {
                 ea = [];
@@ -455,7 +442,6 @@ export class Connection {
         }
 
         if (options && options.filter) {
-
             if (couldCheckStates && options.filter === 'theBestOne') {
                 for (let i = 0; (i < ea.length) && (filteredEa.length === 0); i++) {
                     const endpoint = ea[i];
@@ -488,7 +474,7 @@ export class Connection {
         return filteredEa;
     };
 
-    getDBs(options?: ConnectionFindOptionsInterface): EndpointInterface[] {
+    async getDBs(options?: ConnectionFindOptionsInterface): Promise<EndpointInterface[]> {
 
         if (!this.accessToken) {
             return [];
@@ -496,7 +482,7 @@ export class Connection {
 
         // todo test random DB connection
         const random = Math.random() % 2;
-        let dbs = JSON.parse(this.getAccessPayload({dbs: []})).dbs || [];
+        let dbs = JSON.parse(await this.getAccessPayload({dbs: []})).dbs || [];
 
         // need to synchronize db
         if (random === 0) {
@@ -577,7 +563,7 @@ export class Connection {
 
         try {
             // console.log('verifyDbState: ', dbEndpoint);
-            const data = await new Ajax()
+            await new Ajax()
                 .get({
                     url: dbEndpoint,
                     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -597,7 +583,7 @@ export class Connection {
         }
     }
 
-    verifyConnectionStates(): Promise<any | ErrorInterface> {
+    async verifyConnectionStates(): Promise<any | ErrorInterface> {
 
         const currentTime = new Date().getTime();
 
@@ -612,7 +598,7 @@ export class Connection {
         // verify via GET status on Endpoints & DBs
         const promises = [];
         // this.states = {};
-        this.apis = this.getApiEndpoints();
+        this.apis = await this.getApiEndpoints();
         this.apis.forEach((endpointObj) => {
             let endpointUrl: string = endpointObj.url;
             if (!endpointUrl) {
@@ -621,7 +607,7 @@ export class Connection {
             promises.push(this.verifyApiState(currentTime, endpointUrl));
         });
 
-        const dbs = this.getDBs();
+        const dbs = await this.getDBs();
         dbs.forEach((dbEndpointObj) => {
             let dbEndpoint: string = dbEndpointObj.url;
             if (!dbEndpoint) {

@@ -13,11 +13,11 @@ export declare class FidjService implements ModuleServiceInterface {
     login(login: string, password: string): Promise<any | ErrorInterface>;
     loginAsDemo(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface>;
     isLoggedIn(): boolean;
-    getRoles(): Array<string>;
-    getEndpoints(): Array<EndpointInterface>;
+    getRoles(): Promise<Array<string>>;
+    getEndpoints(): Promise<Array<EndpointInterface>>;
     sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface>;
-    getIdToken(): string;
-    getMessage(): string;
+    getIdToken(): Promise<string>;
+    getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;
     /**
      *

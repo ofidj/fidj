@@ -22,11 +22,11 @@ export interface ModuleServiceInterface {
     login(login: string, password: string): Promise<any | ErrorInterface>;
     loginAsDemo(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface>;
     isLoggedIn(): boolean;
-    getRoles(): Array<string>;
-    getEndpoints(): Array<EndpointInterface>;
+    getRoles(): Promise<Array<string>>;
+    getEndpoints(): Promise<Array<EndpointInterface>>;
     sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface>;
-    getIdToken(): string;
-    getMessage(): string;
+    getIdToken(): Promise<string | ErrorInterface>;
+    getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;
     sync(fnInitFirstData?: any): Promise<any | ErrorInterface>;
     put(data: any): Promise<any | ErrorInterface>;

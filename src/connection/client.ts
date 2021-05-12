@@ -50,7 +50,14 @@ export class Client {
         // this.storage.set('clientInfo', this.clientInfo);
     }
 
-    public async login(login: string, password: string, updateProperties?: any): Promise<ClientTokens | ErrorInterface> {
+    /**
+     *
+     * @param login
+     * @param password
+     * @param updateProperties
+     * @throws {ErrorInterface}
+     */
+    public async login(login: string, password: string, updateProperties?: any): Promise<ClientTokens> {
 
         if (!this.URI) {
             console.error('no api uri');
@@ -115,14 +122,19 @@ export class Client {
         return new ClientTokens(login, createdAccessToken, createdIdToken, createdRefreshToken);
     }
 
-    public reAuthenticate(refreshToken: string): Promise<any | ErrorInterface> {
+    /**
+     *
+     * @param refreshToken
+     * @throws ErrorInterface
+     */
+    public async reAuthenticate(refreshToken: string): Promise<ClientToken> {
 
         if (!this.URI) {
             console.error('no api uri');
             return Promise.reject({code: 408, reason: 'no-api-uri'});
         }
 
-        const url = this.URI + '/me/tokens';
+        const url = this.URI + '/apps/' + this.appId + '/tokens';
         const data = {
             grant_type: 'refresh_token',
             // client_id: this.clientId,
@@ -130,24 +142,23 @@ export class Client {
             client_info: this.clientInfo,
             // audience: this.appId,
             scope: JSON.stringify(this.sdk),
-            // refresh_token: refreshToken,
+            refresh_token: refreshToken,
             refreshCount: Client.refreshCount,
         };
 
-        return new Ajax()
-            .post({
-                url: url,
-                data: data,
-                headers: {
-                    'Content-Type': 'application/json', 'Accept': 'application/json',
-                    'Authorization': 'Bearer ' + refreshToken
-                }
-            })
-            .then((obj: ClientToken) => {
-                Client.refreshCount++;
-                this.storage.set(Client._refreshCount, Client.refreshCount);
-                return Promise.resolve(obj);
-            });
+        const clientToken: ClientToken = await new Ajax().post({
+            url: url,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + refreshToken
+            }
+        })
+
+        Client.refreshCount++;
+        this.storage.set(Client._refreshCount, Client.refreshCount);
+
+        return clientToken;
     }
 
     public logout(refreshToken?: string): Promise<void | ErrorInterface> {
@@ -168,20 +179,11 @@ export class Client {
             return Promise.resolve();
         }
 
-        const url = this.URI + '/me/tokens';
-        const data = {
-            token: refreshToken,
-            // client_id: this.clientId,
-            client_udid: this.clientUuid,
-            client_info: this.clientInfo,
-            // audience: this.appId,
-            scope: JSON.stringify(this.sdk)
-        };
+        const url = this.URI + '/apps/' + this.appId + '/tokens';
 
         return new Ajax()
             .delete({
                 url: url,
-                data: data,
                 headers: {
                     'Content-Type': 'application/json', 'Accept': 'application/json',
                     'Authorization': 'Bearer ' + refreshToken

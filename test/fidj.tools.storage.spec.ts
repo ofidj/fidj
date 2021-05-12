@@ -23,7 +23,7 @@ describe('fidj.tools.LocalStorage', () => {
             fs.clear();
             expect(fs.size()).toBe(0);
 
-            var v = fs.set('a', 'v');
+            let v = fs.set('a', 'v');
 
             expect(v).toEqual('{"string":"v"}');
             expect(fs.size()).toBe(1);
@@ -45,7 +45,7 @@ describe('fidj.tools.LocalStorage', () => {
             fs.clear();
             expect(fs.size()).toBe(0);
 
-            var v = fs.set('a', 15);
+            let v = fs.set('a', 15);
 
             expect(v).toEqual('{"number":15}');
             expect(fs.size()).toBe(1);
@@ -67,7 +67,7 @@ describe('fidj.tools.LocalStorage', () => {
             fs.clear();
             expect(fs.size()).toBe(0);
 
-            var v = fs.set('a', true);
+            let v = fs.set('a', true);
 
             expect(v).toEqual('{"bool":true}');
             expect(fs.size()).toBe(1);
@@ -82,7 +82,7 @@ describe('fidj.tools.LocalStorage', () => {
             fs.clear();
             expect(fs.size()).toBe(0);
 
-            var v = fs.set('a', {a: 1, b: 's'});
+            let v = fs.set('a', {a: 1, b: 's'});
 
             expect(v).toEqual('{"json":{"a":1,"b":"s"}}');
             expect(fs.size()).toBe(1);
@@ -101,8 +101,8 @@ it('should set an XML item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var xml = fidj.Xml.string2Xml('<span><div><p/></div></span>');
-    var v = fs.set('a', xml);
+    let xml = fidj.Xml.string2Xml('<span><div><p/></div></span>');
+    let v = fs.set('a', xml);
 
     expect(v).toEqual('{"xml":"<span><div><p/></div></span>"}');
     expect(fs.size()).toBe(1);
@@ -119,7 +119,7 @@ it('should set null value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', null);
+    let v = fs.set('a', null);
 
     expect(v).toBe('null');
     expect(fs.size()).toBe(1);
@@ -135,8 +135,8 @@ it('should set undefined value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var u;
-    var v = fs.set('a', u);
+    let u;
+    let v = fs.set('a', u);
 
     expect(typeof(u)).toEqual('undefined');
     expect(v).toBe('null');
@@ -153,8 +153,8 @@ it('should reject function value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
     try {
         v = fs.set('a',  () => {
             return 1;
@@ -177,8 +177,8 @@ it('should reject number key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set(2, 'v');
@@ -205,8 +205,8 @@ it('should reject boolean key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set(true, 'v');
@@ -233,8 +233,8 @@ it('should reject object key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set({a:"a", b:1}, 'v');
@@ -267,7 +267,7 @@ it('should browse all items with instance method',  () => {
         //console.log('Index.prototype.add '+n);
     };
     Index.prototype.get = function (n) {
-        var val = this.list[n];
+        let val = this.list[n];
         //console.log('Index.prototype.get '+n);
         return this.list[n];
     };
@@ -287,7 +287,7 @@ it('should browse all items with instance method',  () => {
     expect(fs.get('d')).toBe('2');
     expect(fs.get('u')).toBe('3');
 
-    var index = new Index();
+    let index = new Index();
 
     expect(index.size()).toBe(0);
 
@@ -303,8 +303,8 @@ it('should browse all items with instance method',  () => {
 
 it('should browse all items with class method',  () => {
 
-    var Index = ( () => {
-        var list = [];
+    let Index = ( () => {
+        let list = [];
 
         function Index() {
         }
@@ -347,7 +347,7 @@ it('should browse all items with class method',  () => {
 
 it('should browse all items with function',  () => {
 
-    var list = [];
+    let list = [];
 
     fs.clear();
     expect(fs.size()).toBe(0);
@@ -378,8 +378,8 @@ it('should browse all items with function',  () => {
 
 describe('with window storage',  () => {
 
-var LocalStorage = null;
-var fs = null;
+let LocalStorage = null;
+let fs = null;
 beforeEach( () => {
     LocalStorage = new fidj.LocalStorageFactory(window.localStorage);
     fs = new LocalStorage();
@@ -396,7 +396,7 @@ it('should set a string item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', 'v');
+    let v = fs.set('a', 'v');
 
     expect(v).toEqual('{"string":"v"}');
     expect(fs.size()).toBe(1);
@@ -418,7 +418,7 @@ it('should set a number item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', 15);
+    let v = fs.set('a', 15);
 
     expect(v).toEqual('{"number":15}');
     expect(fs.size()).toBe(1);
@@ -440,7 +440,7 @@ it('should set a boolean item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', true);
+    let v = fs.set('a', true);
 
     expect(v).toEqual('{"bool":true}');
     expect(fs.size()).toBe(1);
@@ -455,7 +455,7 @@ it('should set an object item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', {a:1, b:"s"});
+    let v = fs.set('a', {a:1, b:"s"});
 
     expect(v).toEqual('{"json":{"a":1,"b":"s"}}');
     expect(fs.size()).toBe(1);
@@ -471,8 +471,8 @@ it('should set an XML item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var xml = fidj.Xml.string2Xml('<span><div><p/></div></span>');
-    var v = fs.set('a', xml);
+    let xml = fidj.Xml.string2Xml('<span><div><p/></div></span>');
+    let v = fs.set('a', xml);
 
     expect(v).toEqual('{"xml":"<span><div><p/></div></span>"}');
     expect(fs.size()).toBe(1);
@@ -489,7 +489,7 @@ it('should set null value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', null);
+    let v = fs.set('a', null);
 
     expect(v).toBe('null');
     expect(fs.size()).toBe(1);
@@ -505,8 +505,8 @@ it('should set undefined value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var u;
-    var v = fs.set('a', u);
+    let u;
+    let v = fs.set('a', u);
 
     expect(typeof(u)).toEqual('undefined');
     expect(v).toBe('null');
@@ -523,8 +523,8 @@ it('should reject function value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
     try {
         v = fs.set('a',  () => {
             return 1;
@@ -547,8 +547,8 @@ it('should reject number key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set(2, 'v');
@@ -575,8 +575,8 @@ it('should reject boolean key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set(true, 'v');
@@ -603,8 +603,8 @@ it('should reject object key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set({a:"a", b:1}, 'v');
@@ -654,7 +654,7 @@ it('should browse all items with instance method',  () => {
     expect(fs.get('d')).toBe('2');
     expect(fs.get('u')).toBe('3');
 
-    var index = new Index();
+    let index = new Index();
 
     expect(index.size()).toBe(0);
 
@@ -662,8 +662,8 @@ it('should browse all items with instance method',  () => {
 
 it('should browse all items with class method',  () => {
 
-    var Index = ( () => {
-        var list = [];
+    let Index = ( () => {
+        let list = [];
 
         function Index() {
         }
@@ -698,7 +698,7 @@ it('should browse all items with class method',  () => {
 
 it('should browse all items with function',  () => {
 
-    var list = [];
+    let list = [];
 
     fs.clear();
     expect(fs.size()).toBe(0);
@@ -729,8 +729,8 @@ it('should browse all items with function',  () => {
 
 describe('with memory storage',  () => {
 
-var LocalStorage = null;
-var fs = null;
+let LocalStorage = null;
+let fs = null;
 beforeEach( () => {
     LocalStorage = new fidj.LocalStorageFactory(new fidj.MemoryStorage());
     fs = new LocalStorage();
@@ -747,7 +747,7 @@ it('should set a string item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', 'v');
+    let v = fs.set('a', 'v');
 
     expect(v).toEqual('{"string":"v"}');
     expect(fs.size()).toBe(1);
@@ -769,7 +769,7 @@ it('should set a number item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', 15);
+    let v = fs.set('a', 15);
 
     expect(v).toEqual('{"number":15}');
     expect(fs.size()).toBe(1);
@@ -791,7 +791,7 @@ it('should set a boolean item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', true);
+    let v = fs.set('a', true);
 
     expect(v).toEqual('{"bool":true}');
     expect(fs.size()).toBe(1);
@@ -806,7 +806,7 @@ it('should set an object item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', {a:1, b:"s"});
+    let v = fs.set('a', {a:1, b:"s"});
 
     expect(v).toEqual('{"json":{"a":1,"b":"s"}}');
     expect(fs.size()).toBe(1);
@@ -822,8 +822,8 @@ it('should set an XML item',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var xml = fidj.Xml.string2Xml('<span><div><p/></div></span>');
-    var v = fs.set('a', xml);
+    let xml = fidj.Xml.string2Xml('<span><div><p/></div></span>');
+    let v = fs.set('a', xml);
 
     expect(v).toEqual('{"xml":"<span><div><p/></div></span>"}');
     expect(fs.size()).toBe(1);
@@ -840,7 +840,7 @@ it('should set null value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var v = fs.set('a', null);
+    let v = fs.set('a', null);
 
     expect(v).toBe('null');
     expect(fs.size()).toBe(1);
@@ -856,8 +856,8 @@ it('should set undefined value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var u;
-    var v = fs.set('a', u);
+    let u;
+    let v = fs.set('a', u);
 
     expect(typeof(u)).toEqual('undefined');
     expect(v).toBe('null');
@@ -874,8 +874,8 @@ it('should reject function value',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
     try {
         v = fs.set('a',  () => {
             return 1;
@@ -898,8 +898,8 @@ it('should reject number key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set(2, 'v');
@@ -926,8 +926,8 @@ it('should reject boolean key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set(true, 'v');
@@ -954,8 +954,8 @@ it('should reject object key',  () => {
     fs.clear();
     expect(fs.size()).toBe(0);
 
-    var errorMsg;
-    var v;
+    let errorMsg;
+    let v;
 
     try {
         v = fs.set({a:"a", b:1}, 'v');
@@ -1005,7 +1005,7 @@ it('should browse all items with instance method',  () => {
     expect(fs.get('d')).toBe('2');
     expect(fs.get('u')).toBe('3');
 
-    var index = new Index();
+    let index = new Index();
 
     expect(index.size()).toBe(0);
 
@@ -1021,8 +1021,8 @@ it('should browse all items with instance method',  () => {
 
 it('should browse all items with class method',  () => {
 
-    var Index = ( () => {
-        var list = [];
+    let Index = ( () => {
+        let list = [];
 
         function Index() {
         }
@@ -1065,7 +1065,7 @@ it('should browse all items with class method',  () => {
 
 it('should browse all items with function',  () => {
 
-    var list = [];
+    let list = [];
 
     fs.clear();
     expect(fs.size()).toBe(0);

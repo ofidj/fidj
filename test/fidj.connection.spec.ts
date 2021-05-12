@@ -1,7 +1,7 @@
-import {Ajax, XhrErrorReason, Client, Connection, ClientTokens, ClientToken} from '../src/connection';
-import {Base64} from '../src/tools';
-import {LoggerInterface, LoggerLevelEnum} from '../src/sdk/interfaces';
+import {Base64} from '../src';
+import {LoggerInterface, LoggerLevelEnum} from '../src';
 import {LoggerService} from '../src/sdk/logger.service';
+import {Ajax, XhrErrorReason, Client, Connection, ClientTokens, ClientToken, ClientUser} from '../src/connection';
 
 describe('fidj.connection', () => {
 
@@ -120,9 +120,8 @@ describe('fidj.connection', () => {
         it('should POST fail due to timeout (408) on fake url', async () => {
             jasmine.Ajax.stubRequest(/.*/).andError({status: 408});
 
-            let data;
             try {
-                data = await new Ajax().post({url: _dogURI, data: _dogData});
+                await new Ajax().post({url: _dogURI, data: _dogData});
                 expect('should fail').toBeUndefined();
             } catch (err) {
                 expect(err.code).toBe(408);
@@ -226,7 +225,7 @@ describe('fidj.connection', () => {
             );
             const client = new Client(_appId, _uri, _storage, _sdk);
             expect(client).toBeDefined();
-            spyOn(client, 'setClientId').and.returnValue({});
+            spyOn(client, 'setClientId').and.returnValue();
 
             client.login('', '')
                 .then(user => {
@@ -251,10 +250,10 @@ describe('fidj.connection', () => {
 
         });
 
-        it('should reAuthenticate', (done) => {
+        it('should reAuthenticate', async () => {
 
-            const tokenJson = {token: '1234'};
-            jasmine.Ajax.stubRequest(/.*token/).andReturn(
+            const tokenJson = {token: {id: '1234', type: 'refresh_token', data: 'data1234'}};
+            jasmine.Ajax.stubRequest(/.*tokens/).andReturn(
                 {
                     status: 200,
                     contentType: 'application/json',
@@ -264,39 +263,32 @@ describe('fidj.connection', () => {
             const client = new Client(_appId, _uri, _storage, _sdk);
             expect(client).toBeDefined();
 
-            client.reAuthenticate('refreshToken')
-                .then(user => {
-                    expect(user).toBeDefined();
-                    const ready = client.isReady();
-                    expect(ready).toBeTruthy();
-                    const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe(_uri + '/me/tokens');
-                    expect(request.method).toBe('POST');
-                    const data: any = JSON.parse(request.params);
-                    expect(data).toBeDefined();
-                    expect(data.grant_type).toEqual('refresh_token');
-                    expect(data.audience).toEqual(_appId);
-                    expect(data.refresh_token).toEqual('refreshToken');
-                    expect(data.refresh_extra).toEqual(1);
+            let user = await client.reAuthenticate('refreshToken');
 
-                    return client.reAuthenticate('refreshToken');
-                })
-                .then(user => {
-                    const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe(_uri + '/me/tokens');
-                    expect(request.method).toBe('POST');
-                    const data: any = JSON.parse(JSON.parse(request.params).data);
-                    expect(data.refresh_token).toEqual('refreshToken');
-                    expect(data.refresh_extra).toEqual(2);
-                    done();
-                })
-                .catch(err => {
-                    done.fail(err);
-                });
+            expect(user).toBeDefined();
+            const ready = client.isReady();
+            expect(ready).toBeTruthy();
+            let request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(_uri + '/apps/' + _appId + '/tokens');
+            expect(request.method).toBe('POST');
+            let data: any = JSON.parse(request.params);
+            expect(data).toBeDefined();
+            expect(data.grant_type).toEqual('refresh_token');
+            expect(data.refresh_token).toEqual('refreshToken');
+            expect(data.refreshCount).toEqual(1);
+
+            user = await client.reAuthenticate('refreshToken');
+
+            request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(_uri + '/apps/'+_appId+'/tokens');
+            expect(request.method).toBe('POST');
+            data = JSON.parse(request.params);
+            expect(data.refresh_token).toEqual('refreshToken');
+            expect(data.refreshCount).toEqual(2);
 
         });
 
-        it('should be correctly initialized', async () => {
+        it('should logout', async () => {
 
             const responseJson = {ok: 'done'};
             jasmine.Ajax.stubRequest(/.*tokens/).andReturn(
@@ -318,13 +310,10 @@ describe('fidj.connection', () => {
             const ready = client.isReady();
             expect(ready).toBeTruthy();
             const request = jasmine.Ajax.requests.mostRecent();
-            expect(request.url).toBe(_uri + '/me/tokens/' + client.clientId);
+            expect(request.url).toBe(_uri + '/apps/'+_appId+'/tokens');
             expect(request.method).toBe('DELETE');
             const data: any = JSON.parse(request.params);
-            expect(data).toBeDefined();
-            expect(data.token).toEqual('tokenMockAsConnected');
-            expect(data.client_id).toEqual('clientMockAsConnected');
-            expect(data.audience).toEqual(_appId);
+            expect(data).toBeNull();
             expect(_storage.remove).toHaveBeenCalledTimes(2);
             expect(_storage.remove).toHaveBeenCalledWith('v2.clientId');
             // expect(_storage.remove).toHaveBeenCalledWith('v2.clientUuid');
@@ -401,40 +390,40 @@ describe('fidj.connection', () => {
             expect(i).toBeTruthy();
         });
 
-        it('should getIdPayload & getAccessPayload', () => {
+        it('should getIdPayload & getAccessPayload', async () => {
             const cx = new Connection(_sdk, _storage, _log);
 
-            let payload = cx.getIdPayload();
+            let payload = await cx.getIdPayload();
             expect(payload).toBe(null);
-            payload = cx.getAccessPayload();
-            expect(payload).toBe(null);
-
-            (cx as any).accessToken = 'fake.fake.fake';
-            (cx as any).idToken = 'fake.fake.fake';
-            payload = cx.getIdPayload();
-            expect(payload).toBe(null);
-            payload = cx.getAccessPayload();
+            payload = await cx.getAccessPayload();
             expect(payload).toBe(null);
 
             (cx as any).accessToken = 'fake.fake.fake';
             (cx as any).idToken = 'fake.fake.fake';
-            payload = cx.getIdPayload({mock: true});
+            payload = await cx.getIdPayload();
+            expect(payload).toBe(null);
+            payload = await cx.getAccessPayload();
+            expect(payload).toBe(null);
+
+            (cx as any).accessToken = 'fake.fake.fake';
+            (cx as any).idToken = 'fake.fake.fake';
+            payload = await cx.getIdPayload({mock: true});
             expect(payload).toBe(JSON.stringify({mock: true}));
-            payload = cx.getAccessPayload(JSON.stringify({mock: true}));
+            payload = await cx.getAccessPayload(JSON.stringify({mock: true}));
             expect(payload).toBe(JSON.stringify({mock: true}));
 
             (cx as any).accessToken = 'fake.fake.fake';
             (cx as any).idToken = 'fake.fake.fake';
-            payload = cx.getIdPayload('fakeTest');
+            payload = await cx.getIdPayload('fakeTest');
             expect(payload).toBe('fakeTest');
-            payload = cx.getAccessPayload('fakeTest');
+            payload = await cx.getAccessPayload('fakeTest');
             expect(payload).toBe('fakeTest');
 
             (cx as any).accessToken = '';
             (cx as any).idToken = '';
-            payload = cx.getIdPayload('emptyTest');
+            payload = await cx.getIdPayload('emptyTest');
             expect(payload).toBe('emptyTest');
-            payload = cx.getAccessPayload('emptyTest');
+            payload = await cx.getAccessPayload('emptyTest');
             expect(payload).toBe('emptyTest');
 
             // a real one
@@ -457,16 +446,16 @@ describe('fidj.connection', () => {
             // console.log('token2: ', token2);
             (cx as any).accessToken = token1;
             (cx as any).idToken = token2;
-            payload = cx.getAccessPayload();
+            payload = await cx.getAccessPayload();
             expect(payload).toBe(JSON.stringify(realValue1));
-            payload = cx.getIdPayload();
+            payload = await cx.getIdPayload();
             expect(payload).toBe(JSON.stringify(realValue2));
 
         });
 
-        it('should setConnection', () => {
+        it('should setConnection', async () => {
             const cx = new Connection(_sdk, _storage, _log);
-            spyOn(cx, 'setUser').and.returnValue({});
+            spyOn(cx, 'setUser').and.returnValue();
             spyOn((cx as any)._storage, 'set').and.returnValue({});
 
             const clientTokens = new ClientTokens('test',
@@ -474,79 +463,77 @@ describe('fidj.connection', () => {
                 new ClientToken('test2Id', 'accessToken', 'test2data'),
                 new ClientToken('test3Id', 'refreshToken', 'test3data'),
             );
-            cx.setConnection(clientTokens);
+            await cx.setConnection(clientTokens);
             expect(cx.setUser).toHaveBeenCalledTimes(1);
-            expect(cx.setUser).toHaveBeenCalledWith({_id: 'test', roles: [], message: ''});
+            expect(cx.setUser).toHaveBeenCalledWith(new ClientUser('test', 'test', [], ''));
             expect((cx as any)._storage.set).toHaveBeenCalledTimes(4);
-            expect((cx as any)._storage.set).toHaveBeenCalledWith('v2.accessToken', 'test1');
-            expect((cx as any)._storage.set).toHaveBeenCalledWith('v2.idToken', 'test2');
-            expect((cx as any)._storage.set).toHaveBeenCalledWith('v2.refreshToken', 'test3');
-            // todo expect((cx as any)._storage.set).toHaveBeenCalledWith('v2.states', 'test3');
-            // todo expect((cx as any)._storage.set).toHaveBeenCalledWith('_cryptoSalt', 'test4');
+            expect((cx as any)._storage.set).toHaveBeenCalledWith('v2.accessToken', 'test1data');
+            expect((cx as any)._storage.set).toHaveBeenCalledWith('v2.idToken', 'test2data');
+            expect((cx as any)._storage.set).toHaveBeenCalledWith('v2.refreshToken', 'test3data');
         });
 
-        it('should setConnectionOffline', () => {
+        it('should setConnectionOffline', async () => {
             const cx = new Connection(_sdk, _storage, _log);
-            spyOn(cx, 'setUser').and.returnValue({});
+            spyOn(cx, 'setUser').and.returnValue();
             spyOn((cx as any)._storage, 'set').and.returnValue({});
 
-            cx.setConnectionOffline({
+            await cx.setConnectionOffline({
                 accessToken: 'test1',
                 idToken: 'test2',
                 refreshToken: 'test3'
             });
             expect(cx.setUser).toHaveBeenCalledTimes(1);
-            expect(cx.setUser).toHaveBeenCalledWith({_id: 'demo', roles: [], message: ''});
+            expect(cx.setUser).toHaveBeenCalledWith(new ClientUser('demo', 'demo', [], ''));
             expect((cx as any)._storage.set).toHaveBeenCalledTimes(3);
 
         });
 
-        it('should getApiEndpoints', () => {
+        it('should getApiEndpoints', async () => {
 
             const srv = new Connection(_sdk, _storage, _log);
 
             // without initialisation : default endpoints
-            expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints()).length).toBe(2);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'}))[0].url).toBe('http://localhost:3201/v3');
 
             // with corrupted access_token endpoints : default endpoints
             srv.accessToken = 'aaa.bbb.ccc';
-            expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints()).length).toBe(2);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'}))[0].url).toBe('http://localhost:3201/v3');
 
             // with access_token without endpoints : default endpoints
             srv.accessToken = mocks.tokens.withoutAnyUrl;
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'}))[0].url).toBe('http://localhost:3201/v3');
 
             // with valid access_token endpoints : valid new enpoints
             srv.accessToken = mocks.tokens.withApis01;
-            expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints()[1].url).toBe('http://api_2');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints()).length).toBe(2);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints())[1].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'}))[0].url).toBe('http://api_1');
 
             // with states only ok for the last one
             srv.states = {
                 'http://api_1': {state: false, time: 0, lastTimeWasOk: 2},
                 'http://api_2': {state: true, time: 0, lastTimeWasOk: 2}
             };
-            expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints()).length).toBe(2);
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://api_2');
 
             // with states only ok for the last one
             srv.states = {
@@ -554,14 +541,14 @@ describe('fidj.connection', () => {
                 'http://api_2': {state: false, time: 0, lastTimeWasOk: 2},
                 'http://api3': {state: true, time: 0, lastTimeWasOk: 0}
             };
-            expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints()[1].url).toBe('http://api_2');
-            // expect(srv.getApiEndpoints()[2].url).toBe('http://api3');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(0);
-            // expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api3');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints()).length).toBe(2);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints())[1].url).toBe('http://api_2');
+            // expect((await srv.getApiEndpoints())[2].url).toBe('http://api3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'})).length).toBe(0);
+            // expect((await srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'}))[0].url).toBe('http://api_2');
 
             // with other states, could not filter
             srv.states = {
@@ -569,17 +556,17 @@ describe('fidj.connection', () => {
                 'http://otherapi2': {state: false, time: 0, lastTimeWasOk: 2},
                 'http://otherapi3': {state: true, time: 0, lastTimeWasOk: 0}
             };
-            expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints()[1].url).toBe('http://api_2');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'}).length).toBe(1);
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints()).length).toBe(2);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints())[1].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'})).length).toBe(1);
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'}))[0].url).toBe('http://api_1');
 
         });
 
-        it('should getApiEndpoints based on accessTokenPrev', () => {
+        it('should getApiEndpoints based on accessTokenPrev', async () => {
 
             const srv = new Connection(_sdk, _storage, _log);
 
@@ -589,174 +576,172 @@ describe('fidj.connection', () => {
             // previous accessToken with valid endpoints
             srv.accessTokenPrevious = previous;
             srv.accessToken = null;
-            expect(srv.getApiEndpoints().length).toBe(4);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints()[2].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints()[3].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints()).length).toBe(4);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[2].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints())[3].url).toBe('http://api_2');
 
             // with corrupted access_token endpoints : default endpoints
             srv.accessTokenPrevious = previous;
             srv.accessToken = 'aaa.bbb.ccc';
-            expect(srv.getApiEndpoints().length).toBe(4);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints()[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://localhost:3201/v3');
-            expect(srv.getApiEndpoints()[2].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints()[3].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints()).length).toBe(4);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[1].url).toBe('https://fidj-sandbox.herokuapp.com/v3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://localhost:3201/v3');
+            expect((await srv.getApiEndpoints())[2].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints())[3].url).toBe('http://api_2');
 
             // with same access_token endpoints : valid same enpoints
             srv.accessTokenPrevious = previous;
             srv.accessToken = previous;
-            expect(srv.getApiEndpoints().length).toBe(2);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints()[1].url).toBe('http://api_2');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints()).length).toBe(2);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints())[1].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://api_1');
 
             // with access_token with new endpoints (new at the beginning)
             srv.accessTokenPrevious = previous;
             srv.accessToken = actual;
-            expect(srv.getApiEndpoints().length).toBe(4);
-            expect(srv.getApiEndpoints()[0].url).toBe('http://api_3');
-            expect(srv.getApiEndpoints()[1].url).toBe('http://api_4');
-            expect(srv.getApiEndpoints()[2].url).toBe('http://api_1');
-            expect(srv.getApiEndpoints()[3].url).toBe('http://api_2');
-            expect(srv.getApiEndpoints({filter: 'theBestOne'})[0].url).toBe('http://api_3');
+            expect((await srv.getApiEndpoints()).length).toBe(4);
+            expect((await srv.getApiEndpoints())[0].url).toBe('http://api_3');
+            expect((await srv.getApiEndpoints())[1].url).toBe('http://api_4');
+            expect((await srv.getApiEndpoints())[2].url).toBe('http://api_1');
+            expect((await srv.getApiEndpoints())[3].url).toBe('http://api_2');
+            expect((await srv.getApiEndpoints({filter: 'theBestOne'}))[0].url).toBe('http://api_3');
 
-            expect(srv.getApiEndpoints({filter: 'theBestOldOne'})[0].url).toBe('http://api_3');
+            expect((await srv.getApiEndpoints({filter: 'theBestOldOne'}))[0].url).toBe('http://api_3');
         });
 
-        it('should getDBs', () => {
+        it('should getDBs', async () => {
 
             const srv = new Connection(_sdk, _storage, _log);
 
             // without initialisation : no DB
-            expect(srv.getDBs().length).toBe(0);
-            expect(srv.getDBs({filter: 'theBestOne'}).length).toBe(0);
+            expect((await srv.getDBs()).length).toBe(0);
+            expect((await srv.getDBs({filter: 'theBestOne'})).length).toBe(0);
 
             // with corrupted access_token endpoints : no DB
             srv.accessToken = 'aaa.bbb.ccc';
-            expect(srv.getDBs().length).toBe(0);
-            expect(srv.getDBs({filter: 'theBestOne'}).length).toBe(0);
+            expect((await srv.getDBs()).length).toBe(0);
+            expect((await srv.getDBs({filter: 'theBestOne'})).length).toBe(0);
 
             // with access_token without endpoints : no DB
             srv.accessToken = mocks.tokens.withoutAnyUrl;
-            expect(srv.getDBs().length).toBe(0);
-            expect(srv.getDBs({filter: 'theBestOne'}).length).toBe(0);
+            expect((await srv.getDBs()).length).toBe(0);
+            expect((await srv.getDBs({filter: 'theBestOne'})).length).toBe(0);
 
             // with valid access_token endpoints : valid new enpoints
             srv.accessToken = mocks.tokens.withDbs;
-            expect(srv.getDBs().length).toBe(2);
-            expect(srv.getDBs()[0].url).toBe('http://db1');
-            expect(srv.getDBs()[1].url).toBe('http://db2');
-            expect(srv.getDBs({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getDBs({filter: 'theBestOne'})[0].url).toBe('http://db1');
-            expect(srv.getDBs({filter: 'theBestOnes'}).length).toBe(2);
-            expect(srv.getDBs({filter: 'theBestOnes'})[0].url).toBe('http://db1');
-            expect(srv.getDBs({filter: 'theBestOnes'})[1].url).toBe('http://db2');
+            expect((await srv.getDBs()).length).toBe(2);
+            expect((await srv.getDBs())[0].url).toBe('http://db1');
+            expect((await srv.getDBs())[1].url).toBe('http://db2');
+            expect((await srv.getDBs({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getDBs({filter: 'theBestOne'}))[0].url).toBe('http://db1');
+            expect((await srv.getDBs({filter: 'theBestOnes'})).length).toBe(2);
+            expect((await srv.getDBs({filter: 'theBestOnes'}))[0].url).toBe('http://db1');
+            expect((await srv.getDBs({filter: 'theBestOnes'}))[1].url).toBe('http://db2');
 
             // with other endpoints states
             srv.states = {
                 'http://otherdb1': {state: true, time: 0, lastTimeWasOk: 1},
                 'http://otherdb2': {state: true, time: 0, lastTimeWasOk: 2}
             };
-            expect(srv.getDBs().length).toBe(2);
-            expect(srv.getDBs()[0].url).toBe('http://db1');
-            expect(srv.getDBs()[1].url).toBe('http://db2');
-            expect(srv.getDBs({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getDBs({filter: 'theBestOne'})[0].url).toBe('http://db1');
-            expect(srv.getDBs({filter: 'theBestOnes'}).length).toBe(2);
-            expect(srv.getDBs({filter: 'theBestOnes'})[0].url).toBe('http://db1');
-            expect(srv.getDBs({filter: 'theBestOnes'})[1].url).toBe('http://db2');
+            expect((await srv.getDBs()).length).toBe(2);
+            expect((await srv.getDBs())[0].url).toBe('http://db1');
+            expect((await srv.getDBs())[1].url).toBe('http://db2');
+            expect((await srv.getDBs({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getDBs({filter: 'theBestOne'}))[0].url).toBe('http://db1');
+            expect((await srv.getDBs({filter: 'theBestOnes'})).length).toBe(2);
+            expect((await srv.getDBs({filter: 'theBestOnes'}))[0].url).toBe('http://db1');
+            expect((await srv.getDBs({filter: 'theBestOnes'}))[1].url).toBe('http://db2');
 
             // with all ok states
             srv.states = {
                 'http://db1': {state: true, time: 0, lastTimeWasOk: 1},
                 'http://db2': {state: true, time: 0, lastTimeWasOk: 2}
             };
-            expect(srv.getDBs().length).toBe(2);
-            expect(srv.getDBs()[0].url).toBe('http://db1');
-            expect(srv.getDBs()[1].url).toBe('http://db2');
-            expect(srv.getDBs({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getDBs({filter: 'theBestOne'})[0].url).toBe('http://db1');
-            expect(srv.getDBs({filter: 'theBestOnes'}).length).toBe(2);
-            expect(srv.getDBs({filter: 'theBestOnes'})[0].url).toBe('http://db1');
-            expect(srv.getDBs({filter: 'theBestOnes'})[1].url).toBe('http://db2');
+            expect((await srv.getDBs()).length).toBe(2);
+            expect((await srv.getDBs())[0].url).toBe('http://db1');
+            expect((await srv.getDBs())[1].url).toBe('http://db2');
+            expect((await srv.getDBs({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getDBs({filter: 'theBestOne'}))[0].url).toBe('http://db1');
+            expect((await srv.getDBs({filter: 'theBestOnes'})).length).toBe(2);
+            expect((await srv.getDBs({filter: 'theBestOnes'}))[0].url).toBe('http://db1');
+            expect((await srv.getDBs({filter: 'theBestOnes'}))[1].url).toBe('http://db2');
 
             // with states only ok for the last one
             srv.states = {
                 'http://db1': {state: false, time: 0, lastTimeWasOk: 1},
                 'http://db2': {state: true, time: 0, lastTimeWasOk: 2}
             };
-            expect(srv.getDBs().length).toBe(2);
-            expect(srv.getDBs()[0].url).toBe('http://db1');
-            expect(srv.getDBs()[1].url).toBe('http://db2');
-            expect(srv.getDBs({filter: 'theBestOne'}).length).toBe(1);
-            expect(srv.getDBs({filter: 'theBestOne'})[0].url).toBe('http://db2');
-            expect(srv.getDBs({filter: 'theBestOnes'}).length).toBe(1);
-            expect(srv.getDBs({filter: 'theBestOnes'})[0].url).toBe('http://db2');
+            expect((await srv.getDBs()).length).toBe(2);
+            expect((await srv.getDBs())[0].url).toBe('http://db1');
+            expect((await srv.getDBs())[1].url).toBe('http://db2');
+            expect((await srv.getDBs({filter: 'theBestOne'})).length).toBe(1);
+            expect((await srv.getDBs({filter: 'theBestOne'}))[0].url).toBe('http://db2');
+            expect((await srv.getDBs({filter: 'theBestOnes'})).length).toBe(1);
+            expect((await srv.getDBs({filter: 'theBestOnes'}))[0].url).toBe('http://db2');
         });
 
-        it('should verifyConnectionStates', (done) => {
+        it('should verifyConnectionStates', async () => {
             const srv = new Connection(_sdk, _storage, _log);
             jasmine.Ajax.stubRequest(/.*mock*/).andReturn({
                 status: 200,
                 contentType: 'application/json',
                 responseText: JSON.stringify({_id: 'myuserId', isOk: true})
             });
-            spyOn(srv, 'getApiEndpoints').and.returnValue(['http://mock/api1', 'http://mock/api2']);
-            spyOn(srv, 'getDBs').and.returnValue(['http://mock/db1']);
+            spyOn(srv, 'getApiEndpoints').and.returnValue(Promise.resolve([{key: '1', url: 'http://mock/api1', blocked: false}, {
+                key: '2',
+                url: 'http://mock/api2',
+                blocked: false
+            }]));
+            spyOn(srv, 'getDBs').and.returnValue(Promise.resolve([{key: '1', url: 'http://mock/db1', blocked: false}]));
 
             // todo test on states lastTimeWasOk
-            srv.verifyConnectionStates()
-                .then(() => {
-                    expect(srv.getApiEndpoints).toHaveBeenCalledTimes(1);
-                    expect(srv.getDBs).toHaveBeenCalledTimes(1);
-                    expect(jasmine.Ajax.requests.count()).toBe(3);
+            await srv.verifyConnectionStates();
+            expect(srv.getApiEndpoints).toHaveBeenCalledTimes(1);
+            expect(srv.getDBs).toHaveBeenCalledTimes(1);
+            expect(jasmine.Ajax.requests.count()).toBe(3);
 
-                    let request = jasmine.Ajax.requests.at(0);
-                    expect(request.url).toBe('http://mock/api1/status?isOk=mock.sdk');
-                    request = jasmine.Ajax.requests.at(1);
-                    expect(request.url).toBe('http://mock/api2/status?isOk=mock.sdk');
-                    request = jasmine.Ajax.requests.at(2);
-                    expect(request.url).toBe('http://mock/db1');
-                    expect(Object.keys(srv.states).length).toBe(3);
-                    // console.log('1:', srv.states);
-                    expect(srv.states['http://mock/api1']).toBeDefined();
-                    expect(srv.states['http://mock/api1'].state).toBeTruthy();
-                    expect(srv.states['http://mock/api2'].state).toBeTruthy();
-                    expect(srv.states['http://mock/db1'].state).toBeTruthy();
+            let request = jasmine.Ajax.requests.at(0);
+            expect(request.url).toBe('http://mock/api1/status?isOk=mock.sdk');
+            request = jasmine.Ajax.requests.at(1);
+            expect(request.url).toBe('http://mock/api2/status?isOk=mock.sdk');
+            request = jasmine.Ajax.requests.at(2);
+            expect(request.url).toBe('http://mock/db1');
+            expect(Object.keys(srv.states).length).toBe(3);
+            // console.log('1:', srv.states);
+            expect(srv.states['http://mock/api1']).toBeDefined();
+            expect(srv.states['http://mock/api1'].state).toBeTruthy();
+            expect(srv.states['http://mock/api2'].state).toBeTruthy();
+            expect(srv.states['http://mock/db1'].state).toBeTruthy();
 
-                    jasmine.Ajax.stubRequest(/.*1/).andReturn({
-                        status: 500, responseText: ''
-                    });
+            jasmine.Ajax.stubRequest(/.*1/).andReturn({
+                status: 500, responseText: ''
+            });
 
-                    return srv.verifyConnectionStates();
-                })
-                .then(() => {
-                    expect(srv.getApiEndpoints).toHaveBeenCalledTimes(2);
-                    expect(srv.getDBs).toHaveBeenCalledTimes(2);
-                    expect(jasmine.Ajax.requests.count()).toBe(6);
-                    let request = jasmine.Ajax.requests.at(0);
-                    expect(request.url).toBe('http://mock/api1/status?isOk=mock.sdk');
-                    request = jasmine.Ajax.requests.at(1);
-                    expect(request.url).toBe('http://mock/api2/status?isOk=mock.sdk');
-                    request = jasmine.Ajax.requests.at(2);
-                    expect(request.url).toBe('http://mock/db1');
-                    expect(Object.keys(srv.states).length).toBe(3);
-                    // console.log('2:', srv.states);
-                    expect(srv.states['http://mock/api1'].state).toBeFalsy();
-                    expect(srv.states['http://mock/api2'].state).toBeTruthy();
-                    expect(srv.states['http://mock/db1'].state).toBeFalsy();
-                    done();
-                })
-                .catch((err) => {
-                    done.fail(err);
-                });
+            await srv.verifyConnectionStates();
+
+            expect(srv.getApiEndpoints).toHaveBeenCalledTimes(2);
+            expect(srv.getDBs).toHaveBeenCalledTimes(2);
+            expect(jasmine.Ajax.requests.count()).toBe(6);
+            request = jasmine.Ajax.requests.at(0);
+            expect(request.url).toBe('http://mock/api1/status?isOk=mock.sdk');
+            request = jasmine.Ajax.requests.at(1);
+            expect(request.url).toBe('http://mock/api2/status?isOk=mock.sdk');
+            request = jasmine.Ajax.requests.at(2);
+            expect(request.url).toBe('http://mock/db1');
+            expect(Object.keys(srv.states).length).toBe(3);
+            // console.log('2:', srv.states);
+            expect(srv.states['http://mock/api1'].state).toBeFalsy();
+            expect(srv.states['http://mock/api2'].state).toBeTruthy();
+            expect(srv.states['http://mock/db1'].state).toBeFalsy();
+
         });
 
-        it('should refreshConnection : verify tokens', (done) => {
+        it('should refreshConnection : verify tokens', async () => {
 
             const srv = new Connection(_sdk, _storage, _log);
             const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' +
@@ -777,15 +762,14 @@ describe('fidj.connection', () => {
                 reAuthenticate: () => {
                 }
             };
-            spyOn((srv as any).client, 'reAuthenticate').and.returnValue(Promise.resolve({name: 'not408'}));
-            spyOn(srv, 'setConnection').and.returnValue({});
-            spyOn(srv, 'getUser').and.returnValue({name: 'getUser'});
+            spyOn((srv as any).client, 'reAuthenticate').and.returnValue(Promise.resolve(new ClientToken( 'not408', 'refresh_token', 'token')));
+            spyOn(srv, 'setConnection').and.returnValue(Promise.resolve());
+            spyOn(srv, 'getUser').and.returnValue(new ClientUser('id', 'getUser', [], 'message'));
             spyOn((srv as any)._storage, 'remove').and.returnValue({});
             spyOn((srv as any)._storage, 'set').and.returnValue({});
 
-            srv.refreshConnection()
-                .then((user) => {
-                    expect(JSON.stringify(user)).toBe('{"name":"getUser"}');
+            const user: ClientUser = await srv.refreshConnection();
+                    expect(user.id).toBe('id');
                     expect((srv as any).client.reAuthenticate).toHaveBeenCalledTimes(1);
                     expect(srv.setConnection).toHaveBeenCalledTimes(1);
                     expect(srv.getUser).toHaveBeenCalledTimes(1);
@@ -798,12 +782,6 @@ describe('fidj.connection', () => {
                     expect(srv.accessTokenPrevious).toBe(expiredToken);
                     expect((srv as any)._storage.set).toHaveBeenCalledTimes(2);
                     expect((srv as any)._storage.set).toHaveBeenCalledWith('v2.accessTokenPrevious', expiredToken);
-                    // todo expect((srv as any)._storage.set).toHaveBeenCalledWith('v2.states', []);
-                    done();
-                })
-                .catch((err) => {
-                    done.fail(err);
-                });
         });
 
         it('should encrypt & decrypt', () => {
