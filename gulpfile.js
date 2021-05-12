@@ -16,6 +16,8 @@ gulp.task('dist:clean', function (done) {
     delete packageJson.dependencies['pouchdb-adapter-cordova-sqlite'];
     fs.writeFileSync('./bower.json', JSON.stringify(packageJson, null, 2));
 
+    fs.writeFileSync('./dist/RELEASE.md', fs.readFileSync('./RELEASE.md').toString());
+
     done();
 });
 
