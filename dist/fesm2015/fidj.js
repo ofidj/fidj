@@ -301,7 +301,7 @@ FidjModule.ctorParameters = () => [];
  */
 
 // bumped version via gulp
-const version = '3.3.0';
+const version = '3.3.1';
 
 class ClientToken {
     constructor(id, type, data) {

@@ -641,7 +641,7 @@
     }
 
     // bumped version via gulp
-    var version = '3.3.0';
+    var version = '3.3.1';
 
     var ClientToken = /** @class */ (function () {
         function ClientToken(id, type, data) {
