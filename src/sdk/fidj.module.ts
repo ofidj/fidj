@@ -1,6 +1,5 @@
-import {ModuleWithProviders, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FidjService} from './angular.service';
 
 
 /**
@@ -17,8 +16,6 @@ import {FidjService} from './angular.service';
     declarations: [],
 
     exports: [],
-
-    providers: [FidjService]
 })
 export class FidjModule {
     constructor() {

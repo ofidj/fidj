@@ -1,7 +1,7 @@
 {
   "name": "fidj",
-  "version": "2.1.51",
-  "description": "fidj.ovh js framework",
+  "version": "3.3.0",
+  "description": "api.fidj.ovh js framework",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ofidj/fidj.git"
@@ -23,10 +23,10 @@
   "homepage": "https://github.com/ofidj/fidj#readme",
   "dependencies": {
     "atob": "^2.1.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "localstorage-polyfill": "^1.0.1",
-    "pouchdb": "^7.1.1",
+    "pouchdb": "^7.2.2",
     "pouchdb-adapter-cordova-sqlite": "^2.0.7",
     "url-join": "^4.0.1"
   },
@@ -44,17 +44,24 @@
     "tsconfig.json",
     "tslint.json"
   ],
-  "angularjsDependencies": {
-    "angular": "^1.5.3",
-    "angular-mocks": "^1.5.3"
-  },
-  "angularjsMain": "fidj.angularjs.js",
   "main": "bundles/fidj.umd.js",
+  "module_ivy_ngcc": "__ivy_ngcc__/fesm2015/fidj.js",
   "module": "fesm2015/fidj.js",
+  "es2015_ivy_ngcc": "__ivy_ngcc__/fesm2015/fidj.js",
   "es2015": "fesm2015/fidj.js",
   "esm2015": "esm2015/fidj.js",
+  "fesm2015_ivy_ngcc": "__ivy_ngcc__/fesm2015/fidj.js",
   "fesm2015": "fesm2015/fidj.js",
   "typings": "fidj.d.ts",
   "metadata": "fidj.metadata.json",
-  "sideEffects": false
+  "sideEffects": false,
+  "__processed_by_ivy_ngcc__": {
+    "es2015": "10.0.14",
+    "fesm2015": "10.0.14",
+    "module": "10.0.14",
+    "typings": "10.0.14"
+  },
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by NGCC. This is not allowed.\\nPlease delete and rebuild the package, without compiling with NGCC, before attempting to publish.\\nNote that NGCC may have been run by importing this package into another project that is being built with Ivy enabled.\\n')\" && exit 1"
+  }
 }

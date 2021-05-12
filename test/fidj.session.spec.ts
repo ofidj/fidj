@@ -226,7 +226,8 @@ describe('fidj.session', () => {
                 callback(null, response);
             };
             const obj = {
-                crypto: () => {
+                crypto: (jsonStr : string) => {
+                    return ';'
                 }
             };
             spyOn(obj, 'crypto').and.returnValue('encrypted');
@@ -296,7 +297,8 @@ describe('fidj.session', () => {
                 return Promise.resolve(row);
             };
             const obj = {
-                decrypt: () => {
+                decrypt: (str) => {
+                    return {};
                 }
             };
             spyOn(obj, 'decrypt').and.returnValue({json: '{"id" : "mockjson"}'});
@@ -333,7 +335,8 @@ describe('fidj.session', () => {
                 return Promise.resolve({rows: rows});
             };
             const obj = {
-                decrypt: () => {
+                decrypt: (str) => {
+                    return {};
                 }
             };
             spyOn(obj, 'decrypt').and.returnValue({'string': 'decrypted'});

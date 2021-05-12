@@ -1,19 +1,10 @@
 import { EndpointInterface, ErrorInterface, ModuleServiceInitOptionsInterface, ModuleServiceInterface, ModuleServiceLoginOptionsInterface } from './interfaces';
 /**
- * Angular2+ FidjService
+ * Angular FidjService
  * @see ModuleServiceInterface
  *
- * @exemple
- *      // ... after install :
- *      // $ npm install --save-dev fidj
- *      // then init your app.js & use it in your services
- * TODO refresh gist :
- * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.inject.js"></script>
- *
- * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.sync.js"></script>
- *
- *
  */
+import * as ɵngcc0 from '@angular/core';
 export declare class FidjService implements ModuleServiceInterface {
     private logger;
     private fidjService;
@@ -23,11 +14,11 @@ export declare class FidjService implements ModuleServiceInterface {
     login(login: string, password: string): Promise<any | ErrorInterface>;
     loginAsDemo(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface>;
     isLoggedIn(): boolean;
-    getRoles(): Array<string>;
-    getEndpoints(): Array<EndpointInterface>;
+    getRoles(): Promise<Array<string>>;
+    getEndpoints(): Promise<Array<EndpointInterface>>;
     sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface>;
-    getIdToken(): string;
-    getMessage(): string;
+    getIdToken(): Promise<string>;
+    getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;
     /**
      *
@@ -65,4 +56,7 @@ export declare class FidjService implements ModuleServiceInterface {
      */
     find(id: string): Promise<any | ErrorInterface>;
     findAll(): Promise<any[] | ErrorInterface>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<FidjService, never>;
 }
+
+//# sourceMappingURL=angular.service.d.ts.map

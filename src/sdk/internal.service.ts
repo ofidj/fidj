@@ -10,12 +10,13 @@ import {
     ModuleServiceInitOptionsInterface,
     ModuleServiceLoginOptionsInterface,
     SdkInterface,
-    ErrorInterface, EndpointInterface, EndpointFilterInterface
+    ErrorInterface, EndpointInterface, EndpointFilterInterface, LoggerLevelEnum
 } from './interfaces';
 import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
 import {Ajax} from '../connection/ajax';
 import {LoggerService} from './logger.service';
+import {ClientTokens, ClientUser} from '../connection';
 
 const urljoin = require('url-join');
 // import {LocalStorage} from 'node-localstorage';
@@ -74,71 +75,65 @@ export class InternalService {
      * Check uri
      * Done each app start
      *
+     * @param fidjId
      * @param options Optional settings
      * @param options.fidjId  required use your customized endpoints
      * @param options.fidjSalt required use your customized endpoints
      * @param options.fidjVersion required use your customized endpoints
      * @param options.devMode optional default false, use your customized endpoints
      * @returns
+     * @throws {ErrorInterface}
      */
-    public fidjInit(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface> {
+    public async fidjInit(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void> {
 
-        const self = this;
-        /*
-        if (options && options.forcedEndpoint) {
+        /*if (options && options.forcedEndpoint) {
             this.fidjService.setAuthEndpoint(options.forcedEndpoint);
         }
         if (options && options.forcedDBEndpoint) {
             this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
         }*/
         if (options && options.logLevel) {
-            self.logger.setLevel(options.logLevel);
+            this.logger.setLevel(options.logLevel);
+        } else {
+            this.logger.setLevel(LoggerLevelEnum.NONE);
         }
 
-        self.logger.log('fidj.sdk.service.fidjInit : ', options);
+        this.logger.log('fidj.sdk.service.fidjInit : ', options);
         if (!fidjId) {
-            self.logger.error('fidj.sdk.service.fidjInit : bad init');
-            return self.promise.reject(new Error(400, 'Need a fidjId'));
+            this.logger.error('fidj.sdk.service.fidjInit : bad init');
+            return this.promise.reject(new Error(400, 'Need a fidjId'));
         }
 
-        self.sdk.prod = !options ? true : options.prod;
-        self.sdk.useDB = !options ? true : options.useDB;
-        self.connection.fidjId = fidjId;
-        self.connection.fidjVersion = self.sdk.version;
-        self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
+        this.sdk.prod = !options ? true : options.prod;
+        this.sdk.useDB = !options ? false : options.useDB;
+        this.connection.fidjId = fidjId;
+        this.connection.fidjVersion = this.sdk.version;
+        this.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? false : options.crypto;
 
-        return new self.promise((resolve, reject) => {
-            self.connection.verifyConnectionStates()
-                .then(() => {
+        let bestUrls, bestOldUrls;
+        try {
+            await this.connection.verifyConnectionStates();
+            bestUrls = await this.connection.getApiEndpoints({filter: 'theBestOne'});
+            bestOldUrls = await this.connection.getApiEndpoints({filter: 'theBestOldOne'});
+        } catch (err) {
+            this.logger.error('fidj.sdk.service.fidjInit: ', err);
+            throw new Error(500, err.toString());
+        }
 
-                    let theBestUrl: any = self.connection.getApiEndpoints({filter: 'theBestOne'})[0];
-                    let theBestOldUrl: any = self.connection.getApiEndpoints({filter: 'theBestOldOne'})[0];
-                    const isLogin = self.fidjIsLogin();
-                    self.logger.log('fidj.sdk.service.fidjInit > verifyConnectionStates : ', theBestUrl, theBestOldUrl, isLogin);
+        if (!bestUrls || !bestOldUrls || (bestUrls.length === 0 && bestOldUrls.length === 0)) {
+            throw new Error(404, 'Need one connection - or too old SDK version (check update)');
+        }
 
-                    if (theBestUrl && theBestUrl.url) {
-                        theBestUrl = theBestUrl.url;
-                    }
-                    if (theBestOldUrl && theBestOldUrl.url) {
-                        theBestOldUrl = theBestOldUrl.url;
-                    }
+        let theBestFirstUrl = bestUrls[0];
+        let theBestFirstOldUrl = bestOldUrls[0];
+        const isLogin = this.fidjIsLogin();
+        this.logger.log('fidj.sdk.service.fidjInit > verifyConnectionStates : ', theBestFirstUrl, theBestFirstOldUrl, isLogin);
 
-                    if (theBestUrl) {
-                        self.connection.setClient(new connection.Client(self.connection.fidjId, theBestUrl, self.storage, self.sdk));
-                        resolve();
-                    } else if (isLogin && theBestOldUrl) {
-                        self.connection.setClient(new connection.Client(self.connection.fidjId, theBestOldUrl, self.storage, self.sdk));
-                        resolve();
-                    } else {
-                        reject(new Error(404, 'Need one connection - or too old SDK version (check update)'));
-                    }
-
-                })
-                .catch((err) => {
-                    self.logger.error('fidj.sdk.service.fidjInit: ', err);
-                    reject(new Error(500, err.toString()));
-                });
-        });
+        if (theBestFirstUrl) {
+            this.connection.setClient(new connection.Client(this.connection.fidjId, theBestFirstUrl.url, this.storage, this.sdk));
+        } else {
+            this.connection.setClient(new connection.Client(this.connection.fidjId, theBestFirstOldUrl.url, this.storage, this.sdk));
+        }
     };
 
     /**
@@ -147,43 +142,35 @@ export class InternalService {
      *
      * @param login
      * @param password
-     * @returns
+     * @throws {ErrorInterface}
      */
-    public fidjLogin(login: string, password: string): Promise<any | ErrorInterface> {
-        const self = this;
-        self.logger.log('fidj.sdk.service.fidjLogin');
-        if (!self.connection.isReady()) {
-            return self.promise.reject(new Error(404, 'Need an intialized FidjService'));
+    public async fidjLogin(login: string, password: string): Promise<ClientUser> {
+        this.logger.log('fidj.sdk.service.fidjLogin');
+        if (!this.connection.isReady()) {
+            throw new Error(404, 'Need an initialized FidjService');
         }
 
-        return new self.promise((resolve, reject) => {
-            self._removeAll()
-                .then(() => {
-                    return self.connection.verifyConnectionStates();
-                })
-                .then(() => {
-                    return self._createSession(self.connection.fidjId);
-                })
-                .then(() => {
-                    return self._loginInternal(login, password);
-                })
-                .then((user) => {
-                    self.connection.setConnection(user);
+        try {
+            await this._removeAll();
+            await this.connection.verifyConnectionStates();
+            await this._createSession(this.connection.fidjId);
+            const clientTokens = await this._loginInternal(login, password);
+            await this.connection.setConnection(clientTokens);
+        } catch (err) {
+            throw new Error(500, err.toString());
+        }
 
-                    if (!self.sdk.useDB) {
-                        resolve(self.connection.getUser());
-                    } else {
-                        self.session.sync(self.connection.getClientId())
-                            .then(() => resolve(self.connection.getUser()))
-                            .catch((err) => resolve(self.connection.getUser()));
-                    }
-                })
-                .catch((err) => {
-                    self.logger.error('fidj.sdk.service.fidjLogin: ', err.toString());
-                    reject(err);
-                });
-        });
-    };
+        if (!this.sdk.useDB) {
+            return this.connection.getUser();
+        }
+
+        try {
+            await this.session.sync(this.connection.getClientId());
+        } catch (e) {
+            this.logger.warn('fidj.sdk.service.fidjLogin: sync -not blocking- issue  ', e.toString());
+        }
+        return this.connection.getUser();
+    }
 
     /**
      *
@@ -192,7 +179,7 @@ export class InternalService {
      * @param options.idToken  optional
      * @returns
      */
-    public fidjLoginInDemoMode(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface> {
+    public async fidjLoginInDemoMode(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface> {
         const self = this;
 
         // generate one day tokens if not set
@@ -222,8 +209,8 @@ export class InternalService {
                 .then(() => {
                     return self._createSession(self.connection.fidjId);
                 })
-                .then(() => {
-                    self.connection.setConnectionOffline(options);
+                .then(async () => {
+                    await self.connection.setConnectionOffline(options);
                     resolve(self.connection.getUser());
                 })
                 .catch((err) => {
@@ -233,12 +220,16 @@ export class InternalService {
         });
     };
 
-    public fidjGetEndpoints(filter?: EndpointFilterInterface): Array<EndpointInterface> {
+    public fidjIsLogin(): boolean {
+        return this.connection.isLogin();
+    };
+
+    public async fidjGetEndpoints(filter?: EndpointFilterInterface): Promise<Array<EndpointInterface>> {
 
         if (!filter) {
             filter = {showBlocked: false};
         }
-        const ap = this.connection.getAccessPayload({endpoints: []});
+        const ap = await this.connection.getAccessPayload({endpoints: []});
         let endpoints = JSON.parse(ap).endpoints;
         if (!endpoints || !Array.isArray(endpoints)) {
             return [];
@@ -257,19 +248,15 @@ export class InternalService {
         return endpoints;
     };
 
-    public fidjRoles(): Array<string> {
-        return JSON.parse(this.connection.getIdPayload({roles: []})).roles;
+    public async fidjRoles(): Promise<Array<string>> {
+        return JSON.parse(await this.connection.getIdPayload({roles: []})).roles;
     };
 
-    public fidjMessage(): string {
-        return JSON.parse(this.connection.getIdPayload({message: ''})).message;
+    public async fidjMessage(): Promise<string> {
+        return JSON.parse(await this.connection.getIdPayload({message: ''})).message;
     };
 
-    public fidjIsLogin(): boolean {
-        return this.connection.isLogin();
-    };
-
-    public fidjLogout(force?: boolean): Promise<void | ErrorInterface> {
+    public async fidjLogout(force?: boolean): Promise<void | ErrorInterface> {
         const self = this;
         if (!self.connection.getClient() && !force) {
             return self._removeAll()
@@ -298,7 +285,7 @@ export class InternalService {
      * @param fnInitFirstData_Arg arg to set to fnInitFirstData()
      * @returns  promise
      */
-    public fidjSync(fnInitFirstData?, fnInitFirstData_Arg?): Promise<void | ErrorInterface> {
+    public async fidjSync(fnInitFirstData?, fnInitFirstData_Arg?): Promise<void | ErrorInterface> {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjSync');
         // if (!self.session.isReady()) {
@@ -385,7 +372,7 @@ export class InternalService {
         });
     };
 
-    public fidjPutInDb(data: any): Promise<string | ErrorInterface> {
+    public async fidjPutInDb(data: any): Promise<string | ErrorInterface> {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
         if (!self.sdk.useDB) {
@@ -424,7 +411,7 @@ export class InternalService {
             crypto);
     };
 
-    public fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface> {
+    public async fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface> {
         const self = this;
         self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
         if (!self.sdk.useDB) {
@@ -444,7 +431,7 @@ export class InternalService {
         return self.session.remove(data_id);
     };
 
-    public fidjFindInDb(data_id: string): Promise<any | ErrorInterface> {
+    public async fidjFindInDb(data_id: string): Promise<any | ErrorInterface> {
         const self = this;
 
         if (!self.sdk.useDB) {
@@ -470,7 +457,7 @@ export class InternalService {
         return self.session.get(data_id, crypto);
     };
 
-    public fidjFindAllInDb(): Promise<Array<any> | ErrorInterface> {
+    public async fidjFindAllInDb(): Promise<Array<any> | ErrorInterface> {
         const self = this;
 
         if (!self.sdk.useDB) {
@@ -500,11 +487,11 @@ export class InternalService {
             });
     };
 
-    public fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any): Promise<any | ErrorInterface> {
+    public async fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any) {
         const filter: EndpointFilterInterface = {
             key: key
         };
-        const endpoints = this.fidjGetEndpoints(filter);
+        const endpoints = await this.fidjGetEndpoints(filter);
         if (!endpoints || endpoints.length !== 1) {
             return this.promise.reject(
                 new Error(400,
@@ -515,7 +502,7 @@ export class InternalService {
         if (relativePath) {
             endpointUrl = urljoin(endpointUrl, relativePath);
         }
-        const jwt = this.connection.getIdToken();
+        const jwt = await this.connection.getIdToken();
         let answer;
         const query = new Ajax();
         switch (verb) {
@@ -570,7 +557,7 @@ export class InternalService {
         return answer;
     };
 
-    public fidjGetIdToken(): string {
+    public async fidjGetIdToken() {
         return this.connection.getIdToken();
     };
 
@@ -582,42 +569,32 @@ export class InternalService {
      * @param login
      * @param password
      * @param updateProperties
+     * @throws {ErrorInterface}
      */
-    private _loginInternal(login: string, password: string, updateProperties?: any): Promise<any | ErrorInterface> {
-        const self = this;
-        self.logger.log('fidj.sdk.service._loginInternal');
-        if (!self.connection.isReady()) {
-            return self.promise.reject(new Error(403, 'Need an intialized FidjService'));
+    private async _loginInternal(login: string, password: string, updateProperties?: any): Promise<ClientTokens> {
+        this.logger.log('fidj.sdk.service._loginInternal');
+        if (!this.connection.isReady()) {
+            throw new Error(403, 'Need an initialized FidjService');
         }
 
-        return new self.promise((resolve, reject) => {
+        await this.connection.logout();
 
-                self.connection.logout()
-                    .then(() => {
-                        return self.connection.getClient().login(login, password, updateProperties);
-                    })
-                    .catch((err) => {
-                        return self.connection.getClient().login(login, password, updateProperties);
-                    })
-                    .then(loginUser => {
-                        loginUser.email = login;
-                        resolve(loginUser);
-                    })
-                    .catch(err => {
-                        self.logger.error('fidj.sdk.service._loginInternal error : ' + err);
-                        reject(err);
-                    });
-            }
-        );
+        let clientTokens;
+        try {
+            clientTokens = this.connection.getClient().login(login, password, updateProperties);
+        } catch (e) {
+            clientTokens = await this.connection.getClient().login(login, password, updateProperties);
+        }
+        return clientTokens;
     };
 
-    protected _removeAll(): Promise<void | ErrorInterface> {
+    protected async _removeAll(): Promise<void | ErrorInterface> {
         this.connection.destroy();
         return this.session.destroy();
     };
 
-    private _createSession(uid: string): Promise<void | ErrorInterface> {
-        const dbs: EndpointInterface[] = this.connection.getDBs({filter: 'theBestOnes'});
+    private async _createSession(uid: string): Promise<void | ErrorInterface> {
+        const dbs: EndpointInterface[] = await this.connection.getDBs({filter: 'theBestOnes'});
         if (!dbs || dbs.length === 0) {
             this.logger.warn('Seems that you are in Demo mode or using Node (no remote DB).');
         }
@@ -625,7 +602,7 @@ export class InternalService {
         return this.session.create(uid);
     };
 
-    private _testPromise(a?): Promise<any> {
+    private async _testPromise(a?): Promise<any> {
         if (a) {
             return this.promise.resolve('test promise ok ' + a);
         }

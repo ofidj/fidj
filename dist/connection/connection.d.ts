@@ -1,7 +1,7 @@
 import { Client } from './client';
 import { ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface, LoggerInterface } from '../sdk/interfaces';
 import { LocalStorage } from '../tools';
-import { ConnectionFindOptionsInterface } from './interfaces';
+import { ClientTokens, ClientUser, ConnectionFindOptionsInterface } from './interfaces';
 export declare class Connection {
     private _sdk;
     private _storage;
@@ -34,10 +34,10 @@ export declare class Connection {
     private static _cryptoSaltNext;
     constructor(_sdk: SdkInterface, _storage: LocalStorage, _logger: LoggerInterface);
     isReady(): boolean;
-    destroy(force?: boolean): void;
+    destroy(force?: boolean): Promise<void>;
     setClient(client: Client): void;
-    setUser(user: any): void;
-    getUser(): any;
+    setUser(user: ClientUser): void;
+    getUser(): ClientUser;
     getClient(): Client;
     setCryptoSalt(value: string): void;
     setCryptoSaltAsVerified(): void;
@@ -46,15 +46,18 @@ export declare class Connection {
     isLogin(): boolean;
     logout(): Promise<void | ErrorInterface>;
     getClientId(): string;
-    getIdToken(): string;
-    getIdPayload(def?: any): string;
-    getAccessPayload(def?: any): string;
+    getIdToken(): Promise<string>;
+    getIdPayload(def?: any): Promise<any>;
+    getAccessPayload(def?: any): Promise<string>;
     getPreviousAccessPayload(def?: any): string;
-    refreshConnection(): Promise<any | ErrorInterface>;
-    setConnection(clientUser: any): void;
-    setConnectionOffline(options: ModuleServiceLoginOptionsInterface): void;
-    getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface>;
-    getDBs(options?: ConnectionFindOptionsInterface): EndpointInterface[];
+    /**
+     * @throws ErrorInterface
+     */
+    refreshConnection(): Promise<ClientUser>;
+    setConnection(clientTokens: ClientTokens): Promise<void>;
+    setConnectionOffline(options: ModuleServiceLoginOptionsInterface): Promise<void>;
+    getApiEndpoints(options?: ConnectionFindOptionsInterface): Promise<Array<EndpointInterface>>;
+    getDBs(options?: ConnectionFindOptionsInterface): Promise<EndpointInterface[]>;
     private verifyApiState;
     private verifyDbState;
     verifyConnectionStates(): Promise<any | ErrorInterface>;

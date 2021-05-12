@@ -1,6 +1,8 @@
 import {Ajax} from './ajax';
 import {LocalStorage} from '../tools';
 import {SdkInterface, ErrorInterface} from '../sdk/interfaces';
+import * as tools from '../tools';
+import {ClientToken, ClientTokens, ClientUser} from './interfaces';
 
 export class Client {
 
@@ -48,7 +50,14 @@ export class Client {
         // this.storage.set('clientInfo', this.clientInfo);
     }
 
-    public login(login: string, password: string, updateProperties?: any): Promise<any | ErrorInterface> {
+    /**
+     *
+     * @param login
+     * @param password
+     * @param updateProperties
+     * @throws {ErrorInterface}
+     */
+    public async login(login: string, password: string, updateProperties?: any): Promise<ClientTokens> {
 
         if (!this.URI) {
             console.error('no api uri');
@@ -63,64 +72,93 @@ export class Client {
             password: password
         };
 
-        return new Ajax()
-            .post({
-                url: urlLogin,
-                data: dataLogin,
-                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-            })
-            .then(createdUser => {
+        const createdUser: ClientUser = (await new Ajax().post({
+            url: urlLogin,
+            data: dataLogin,
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+        }) as any).user;
 
-                this.setClientId(createdUser._id);
-                const urlToken = this.URI + '/oauth/token';
-                const dataToken = {
-                    grant_type: 'client_credentials',
-                    client_id: this.clientId,
-                    client_secret: password,
-                    client_udid: this.clientUuid,
-                    client_info: this.clientInfo,
-                    audience: this.appId,
-                    scope: JSON.stringify(this.sdk)
-                };
-                return new Ajax()
-                    .post({
-                        url: urlToken,
-                        data: dataToken,
-                        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-                    });
-            });
+        this.setClientId(login); // login or createdUser.id or createdUser._id
+        const urlToken = this.URI + '/apps/' + this.appId + '/tokens';
+        const dataToken = {
+            grant_type: 'access_token',
+            // grant_type: 'client_credentials',
+            // client_id: this.clientId,
+            // client_secret: password,
+            client_udid: this.clientUuid,
+            client_info: this.clientInfo,
+            // audience: this.appId,
+            scope: JSON.stringify(this.sdk)
+        };
+        const createdAccessToken: ClientToken = (await new Ajax().post({
+            url: urlToken,
+            data: dataToken,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Basic ' + tools.Base64.encode('' + login + ':' + password)
+            }
+        }) as any).token;
+
+        dataToken.grant_type = 'id_token';
+        const createdIdToken: ClientToken = (await new Ajax().post({
+            url: urlToken,
+            data: dataToken,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + createdAccessToken.data
+            }
+        }) as any).token;
+
+        dataToken.grant_type = 'refresh_token';
+        const createdRefreshToken: ClientToken = (await new Ajax().post({
+            url: urlToken,
+            data: dataToken,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + createdAccessToken.data
+            }
+        }) as any).token;
+
+        return new ClientTokens(login, createdAccessToken, createdIdToken, createdRefreshToken);
     }
 
-    public reAuthenticate(refreshToken: string): Promise<any | ErrorInterface> {
+    /**
+     *
+     * @param refreshToken
+     * @throws ErrorInterface
+     */
+    public async reAuthenticate(refreshToken: string): Promise<ClientToken> {
 
         if (!this.URI) {
             console.error('no api uri');
             return Promise.reject({code: 408, reason: 'no-api-uri'});
         }
 
-        const url = this.URI + '/oauth/token';
+        const url = this.URI + '/apps/' + this.appId + '/tokens';
         const data = {
             grant_type: 'refresh_token',
-            client_id: this.clientId,
+            // client_id: this.clientId,
             client_udid: this.clientUuid,
             client_info: this.clientInfo,
-            audience: this.appId,
+            // audience: this.appId,
             scope: JSON.stringify(this.sdk),
             refresh_token: refreshToken,
-            refresh_extra: Client.refreshCount,
+            refreshCount: Client.refreshCount,
         };
 
-        return new Ajax()
-            .post({
-                url: url,
-                data: data,
-                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
-            })
-            .then((obj: any) => {
-                Client.refreshCount++;
-                this.storage.set(Client._refreshCount, Client.refreshCount);
-                return Promise.resolve(obj);
-            });
+        const clientToken: ClientToken = await new Ajax().post({
+            url: url,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json', 'Accept': 'application/json',
+                'Authorization': 'Bearer ' + refreshToken
+            }
+        })
+
+        Client.refreshCount++;
+        this.storage.set(Client._refreshCount, Client.refreshCount);
+
+        return clientToken;
     }
 
     public logout(refreshToken?: string): Promise<void | ErrorInterface> {
@@ -141,21 +179,15 @@ export class Client {
             return Promise.resolve();
         }
 
-        const url = this.URI + '/oauth/revoke';
-        const data = {
-            token: refreshToken,
-            client_id: this.clientId,
-            client_udid: this.clientUuid,
-            client_info: this.clientInfo,
-            audience: this.appId,
-            scope: JSON.stringify(this.sdk)
-        };
+        const url = this.URI + '/apps/' + this.appId + '/tokens';
 
         return new Ajax()
-            .post({
+            .delete({
                 url: url,
-                data: data,
-                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
             });
     }
 

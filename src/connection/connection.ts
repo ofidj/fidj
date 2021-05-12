@@ -2,7 +2,7 @@ import {Client} from './client';
 import {ModuleServiceLoginOptionsInterface, SdkInterface, ErrorInterface, EndpointInterface, LoggerInterface} from '../sdk/interfaces';
 import {Base64, LocalStorage, Xor} from '../tools';
 import {Ajax} from './ajax';
-import {ConnectionFindOptionsInterface} from './interfaces';
+import {ClientToken, ClientTokens, ClientUser, ConnectionFindOptionsInterface} from './interfaces';
 import {Error} from '../sdk/error';
 
 export class Connection {
@@ -20,7 +20,7 @@ export class Connection {
     private cryptoSalt: string;
     private cryptoSaltNext: string;
     private client: Client;
-    private user: any;
+    private user: ClientUser;
 
     private static _accessToken = 'v2.accessToken';
     private static _accessTokenPrevious = 'v2.accessTokenPrevious';
@@ -49,7 +49,7 @@ export class Connection {
         return !!this.client && this.client.isReady();
     }
 
-    destroy(force?: boolean): void {
+    async destroy(force?: boolean) {
 
         this._storage.remove(Connection._accessToken);
         this._storage.remove(Connection._idToken);
@@ -70,7 +70,7 @@ export class Connection {
         this.user = null;
         if (this.client) {
             // this.client.setClientId(null);
-            this.client.logout();
+            await this.client.logout();
         }
         this.accessToken = null;
         this.idToken = null;
@@ -81,25 +81,25 @@ export class Connection {
     setClient(client: Client): void {
 
         this.client = client;
-        if (!this.user) {
-            this.user = {};
-        }
+        //if (!this.user) {
+        //    this.user = new ClientUser();
+        //}
 
         // this._user._id = this._client.clientId;
-        this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
+        //this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
     }
 
-    setUser(user: any): void {
+    setUser(user: ClientUser): void {
         this.user = user;
-        if (this.client && this.user._id) {
-            this.client.setClientId(this.user._id);
+        if (this.client && this.user.id) {
+            this.client.setClientId(this.user.id);
 
             // store only clientId
-            delete this.user._id;
+            // delete this.user._id;
         }
     }
 
-    getUser(): any {
+    getUser(): ClientUser {
         return this.user;
     }
 
@@ -148,7 +148,7 @@ export class Connection {
         let decrypted = null;
 
         try {
-            if (!decrypted && this.fidjCrypto && this.cryptoSaltNext) {
+            if (this.fidjCrypto && this.cryptoSaltNext) {
                 const key = this.cryptoSaltNext;
                 decrypted = Xor.decrypt(data, key);
                 decrypted = JSON.parse(decrypted);
@@ -212,7 +212,7 @@ export class Connection {
 
     // todo reintegrate client.login()
 
-    logout(): Promise<void | ErrorInterface> {
+    async logout(): Promise<void | ErrorInterface> {
         return this.getClient().logout(this.refreshToken);
     }
 
@@ -223,27 +223,37 @@ export class Connection {
         return this.client.clientId;
     }
 
-    getIdToken(): string {
+    async getIdToken() {
         return this.idToken;
     }
 
-    getIdPayload(def?: any): string {
-        if (def && typeof def !== 'string') {
-            def = JSON.stringify(def);
-        }
+    async getIdPayload(def?: any) {
+
+        const idToken = await this.getIdToken();
 
         try {
-            const payload = this.getIdToken().split('.')[1];
+            let payload;
+            if (idToken) {
+                payload = idToken.split('.')[1];
+            }
             if (payload) {
                 return Base64.decode(payload);
             }
         } catch (e) {
             this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
         }
-        return def ? def : null;
+
+        if (def) {
+            if (typeof def !== 'string') {
+                def = JSON.stringify(def);
+            }
+            return def;
+        }
+
+        return null;
     }
 
-    getAccessPayload(def?: any): string {
+    async getAccessPayload(def?: any): Promise<string> {
         if (def && typeof def !== 'string') {
             def = JSON.stringify(def);
         }
@@ -273,7 +283,10 @@ export class Connection {
         return def ? def : null;
     }
 
-    refreshConnection(): Promise<any | ErrorInterface> {
+    /**
+     * @throws ErrorInterface
+     */
+    async refreshConnection(): Promise<ClientUser> {
 
         // store states
         this._storage.set(Connection._states, this.states);
@@ -311,72 +324,53 @@ export class Connection {
 
         // refresh authentication
         this._logger.log('fidj.connection.connection.refreshConnection : refresh authentication.');
-        return new Promise((resolve, reject) => {
-            const client = this.getClient();
+        const client = this.getClient();
+        if (!client) {
+            throw new Error(400, 'Need an initialized client.');
+        }
 
-            if (!client) {
-                return reject(new Error(400, 'Need an initialized client.'))
-            }
+        const refreshToken: ClientToken = await this.getClient().reAuthenticate(this.refreshToken);
 
-            this.getClient().reAuthenticate(this.refreshToken)
-                .then(user => {
-                    this.setConnection(user);
-                    resolve(this.getUser());
-                })
-                .catch(err => {
-
-                    // if (err && err.code === 408) {
-                    //     code = 408; // no api uri or basic timeout : offline
-                    // } else if (err && err.code === 404) {
-                    //     code = 404; // page not found : offline
-                    // } else if (err && err.code === 410) {
-                    //     code = 403; // token expired or device not sure : need relogin
-                    // } else if (err) {
-                    //     code = 403; // forbidden : need relogin
-                    // }
-
-                    // resolve(code);
-                    reject(err);
-                });
-        });
+        const previousIdToken = new ClientToken(this.getClientId(), 'idToken', this.idToken);
+        const previousAccessToken = new ClientToken(this.getClientId(), 'accessToken', this.accessToken);
+        const clientTokens = new ClientTokens(this.getClientId(), previousIdToken, previousAccessToken, refreshToken);
+        await this.setConnection(clientTokens);
+        return this.getUser();
     };
 
-    setConnection(clientUser: any): void {
+    async setConnection(clientTokens: ClientTokens) {
 
         // only in private storage
-        if (clientUser.access_token) {
-            this.accessToken = clientUser.access_token;
+        if (clientTokens.accessToken) {
+            this.accessToken = clientTokens.accessToken.data;
             this._storage.set(Connection._accessToken, this.accessToken);
-            delete clientUser.access_token;
 
-            const salt: string = JSON.parse(this.getAccessPayload({salt: ''})).salt;
+            const salt: string = JSON.parse(await this.getAccessPayload({salt: ''})).salt;
             if (salt) {
                 this.setCryptoSalt(salt);
             }
         }
-        if (clientUser.id_token) {
-            this.idToken = clientUser.id_token;
+        if (clientTokens.idToken) {
+            this.idToken = clientTokens.idToken.data;
             this._storage.set(Connection._idToken, this.idToken);
-            delete clientUser.id_token;
         }
-        if (clientUser.refresh_token) {
-            this.refreshToken = clientUser.refresh_token;
+        if (clientTokens.refreshToken) {
+            this.refreshToken = clientTokens.refreshToken.data;
             this._storage.set(Connection._refreshToken, this.refreshToken);
-            delete clientUser.refresh_token;
         }
 
         // store changed states
         this._storage.set(Connection._states, this.states);
 
         // expose roles, message
-        // clientUser.roles = self.fidjRoles();
-        // clientUser.message = self.fidjMessage();
-        clientUser.roles = JSON.parse(this.getIdPayload({roles: []})).roles;
-        clientUser.message = JSON.parse(this.getIdPayload({message: ''})).message;
+        const clientUser = new ClientUser(
+            clientTokens.username, clientTokens.username,
+            JSON.parse(await this.getIdPayload({roles: []})).roles,
+            JSON.parse(await this.getIdPayload({message: ''})).message);
         this.setUser(clientUser);
     };
 
-    setConnectionOffline(options: ModuleServiceLoginOptionsInterface): void {
+    async setConnectionOffline(options: ModuleServiceLoginOptionsInterface) {
 
         if (options.accessToken) {
             this.accessToken = options.accessToken;
@@ -391,29 +385,27 @@ export class Connection {
             this._storage.set(Connection._refreshToken, this.refreshToken);
         }
 
-        this.setUser({
-            roles: JSON.parse(this.getIdPayload({roles: []})).roles,
-            message: JSON.parse(this.getIdPayload({message: ''})).message,
-            _id: 'demo'
-        });
+        this.setUser(new ClientUser('demo', 'demo',
+            JSON.parse(await this.getIdPayload({roles: []})).roles,
+            JSON.parse(await this.getIdPayload({message: ''})).message));
     }
 
-    getApiEndpoints(options?: ConnectionFindOptionsInterface): Array<EndpointInterface> {
+    async getApiEndpoints(options?: ConnectionFindOptionsInterface): Promise<Array<EndpointInterface>> {
 
-        // todo : let ea = ['https://fidj/api', 'https://fidj-proxy.herokuapp.com/api'];
+        // todo : let ea = ['https://fidj/v3', 'https://fidj-proxy.herokuapp.com/v3'];
         let ea: EndpointInterface[] = [
-            {key: 'fidj.default', url: 'https://fidj.ovh/api', blocked: false}];
+            {key: 'fidj.default', url: 'https://api.fidj.ovh/v3', blocked: false}];
         let filteredEa = [];
 
         if (!this._sdk.prod) {
             ea = [
-                {key: 'fidj.default', url: 'http://localhost:3201/api', blocked: false},
-                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/api', blocked: false}
+                {key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false},
+                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v3', blocked: false}
             ];
         }
 
         if (this.accessToken) {
-            const val = this.getAccessPayload({apis: []});
+            const val = await this.getAccessPayload({apis: []});
             const apiEndpoints: EndpointInterface[] = JSON.parse(val).apis;
             if (apiEndpoints && apiEndpoints.length) {
                 ea = [];
@@ -450,7 +442,6 @@ export class Connection {
         }
 
         if (options && options.filter) {
-
             if (couldCheckStates && options.filter === 'theBestOne') {
                 for (let i = 0; (i < ea.length) && (filteredEa.length === 0); i++) {
                     const endpoint = ea[i];
@@ -483,7 +474,7 @@ export class Connection {
         return filteredEa;
     };
 
-    getDBs(options?: ConnectionFindOptionsInterface): EndpointInterface[] {
+    async getDBs(options?: ConnectionFindOptionsInterface): Promise<EndpointInterface[]> {
 
         if (!this.accessToken) {
             return [];
@@ -491,7 +482,7 @@ export class Connection {
 
         // todo test random DB connection
         const random = Math.random() % 2;
-        let dbs = JSON.parse(this.getAccessPayload({dbs: []})).dbs || [];
+        let dbs = JSON.parse(await this.getAccessPayload({dbs: []})).dbs || [];
 
         // need to synchronize db
         if (random === 0) {
@@ -545,12 +536,12 @@ export class Connection {
 
             const data = await new Ajax()
                 .get({
-                    url: endpointUrl + '/status?isok=' + this._sdk.version,
+                    url: endpointUrl + '/status?isOk=' + this._sdk.version,
                     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
                 });
 
             let state = false;
-            if (data && data.isok) {
+            if (data && data.isOk) {
                 state = true;
             }
             this.states[endpointUrl] = {state: state, time: currentTime, lastTimeWasOk: currentTime};
@@ -572,7 +563,7 @@ export class Connection {
 
         try {
             // console.log('verifyDbState: ', dbEndpoint);
-            const data = await new Ajax()
+            await new Ajax()
                 .get({
                     url: dbEndpoint,
                     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
@@ -592,7 +583,7 @@ export class Connection {
         }
     }
 
-    verifyConnectionStates(): Promise<any | ErrorInterface> {
+    async verifyConnectionStates(): Promise<any | ErrorInterface> {
 
         const currentTime = new Date().getTime();
 
@@ -607,7 +598,7 @@ export class Connection {
         // verify via GET status on Endpoints & DBs
         const promises = [];
         // this.states = {};
-        this.apis = this.getApiEndpoints();
+        this.apis = await this.getApiEndpoints();
         this.apis.forEach((endpointObj) => {
             let endpointUrl: string = endpointObj.url;
             if (!endpointUrl) {
@@ -616,7 +607,7 @@ export class Connection {
             promises.push(this.verifyApiState(currentTime, endpointUrl));
         });
 
-        const dbs = this.getDBs();
+        const dbs = await this.getDBs();
         dbs.forEach((dbEndpointObj) => {
             let dbEndpoint: string = dbEndpointObj.url;
             if (!dbEndpoint) {

@@ -2,7 +2,29 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common')) :
     typeof define === 'function' && define.amd ? define('fidj', ['exports', '@angular/core', '@angular/common'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.fidj = {}, global.ng.core, global.ng.common));
-}(this, (function (exports, core, common) { 'use strict';
+}(this, (function (exports, i0, common) { 'use strict';
+
+    function _interopNamespace(e) {
+        if (e && e.__esModule) return e;
+        var n = Object.create(null);
+        if (e) {
+            Object.keys(e).forEach(function (k) {
+                if (k !== 'default') {
+                    var d = Object.getOwnPropertyDescriptor(e, k);
+                    Object.defineProperty(n, k, d.get ? d : {
+                        enumerable: true,
+                        get: function () {
+                            return e[k];
+                        }
+                    });
+                }
+            });
+        }
+        n['default'] = e;
+        return Object.freeze(n);
+    }
+
+    var i0__namespace = /*#__PURE__*/_interopNamespace(i0);
 
     var Base64 = /** @class */ (function () {
         function Base64() {
@@ -247,30 +269,91 @@
     }());
     Xor.header = 'artemis-lotsum';
 
+    exports.LoggerLevelEnum = void 0;
+    (function (LoggerLevelEnum) {
+        LoggerLevelEnum[LoggerLevelEnum["INFO"] = 1] = "INFO";
+        LoggerLevelEnum[LoggerLevelEnum["WARN"] = 2] = "WARN";
+        LoggerLevelEnum[LoggerLevelEnum["ERROR"] = 3] = "ERROR";
+        LoggerLevelEnum[LoggerLevelEnum["NONE"] = 4] = "NONE";
+    })(exports.LoggerLevelEnum || (exports.LoggerLevelEnum = {}));
+
+    var Error$2 = /** @class */ (function () {
+        function Error(code, reason) {
+            this.code = code;
+            this.reason = reason;
+        }
+        ;
+        Error.prototype.equals = function (err) {
+            return this.code === err.code && this.reason === err.reason;
+        };
+        Error.prototype.toString = function () {
+            var msg = (typeof this.reason === 'string') ? this.reason : JSON.stringify(this.reason);
+            return '' + this.code + ' - ' + msg;
+        };
+        return Error;
+    }());
+
+    /**
+     * `NgModule` which provides associated services.
+     *
+     * ...
+     *
+     * @stable
+     */
+    var FidjModule = /** @class */ (function () {
+        function FidjModule() {
+        }
+        return FidjModule;
+    }());
+    FidjModule.decorators = [
+        { type: i0.NgModule, args: [{
+                    imports: [
+                        common.CommonModule
+                    ],
+                    declarations: [],
+                    exports: [],
+                },] }
+    ];
+    FidjModule.ctorParameters = function () { return []; };
+    /**
+     * module FidjModule
+     *
+     * exemple
+     *      // ... after install :
+     *      // $ npm install fidj
+     *      // then init your app.js & use it in your services
+     * TODO refresh gist :
+     * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
+     *
+     * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
+     */
+
     /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation. All rights reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-    this file except in compliance with the License. You may obtain a copy of the
-    License at http://www.apache.org/licenses/LICENSE-2.0
+    Copyright (c) Microsoft Corporation.
 
-    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-    MERCHANTABLITY OR NON-INFRINGEMENT.
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
 
-    See the Apache Version 2.0 License for specific language governing permissions
-    and limitations under the License.
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
     /* global Reflect, Promise */
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b)
-                if (b.hasOwnProperty(p))
+                if (Object.prototype.hasOwnProperty.call(b, p))
                     d[p] = b[p]; };
         return extendStatics(d, b);
     };
     function __extends(d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -317,6 +400,7 @@
             return Reflect.metadata(metadataKey, metadataValue);
     }
     function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try {
                 step(generator.next(value));
@@ -330,7 +414,7 @@
             catch (e) {
                 reject(e);
             } }
-            function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     }
@@ -403,22 +487,33 @@
             return { value: op[0] ? op[1] : void 0, done: true };
         }
     }
-    function __exportStar(m, exports) {
+    var __createBinding = Object.create ? (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
+        Object.defineProperty(o, k2, { enumerable: true, get: function () { return m[k]; } });
+    }) : (function (o, m, k, k2) {
+        if (k2 === undefined)
+            k2 = k;
+        o[k2] = m[k];
+    });
+    function __exportStar(m, o) {
         for (var p in m)
-            if (!exports.hasOwnProperty(p))
-                exports[p] = m[p];
+            if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p))
+                __createBinding(o, m, p);
     }
     function __values(o) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
         if (m)
             return m.call(o);
-        return {
-            next: function () {
-                if (o && i >= o.length)
-                    o = void 0;
-                return { value: o && o[i++], done: !o };
-            }
-        };
+        if (o && typeof o.length === "number")
+            return {
+                next: function () {
+                    if (o && i >= o.length)
+                        o = void 0;
+                    return { value: o && o[i++], done: !o };
+                }
+            };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     }
     function __read(o, n) {
         var m = typeof Symbol === "function" && o[Symbol.iterator];
@@ -444,11 +539,13 @@
         }
         return ar;
     }
+    /** @deprecated */
     function __spread() {
         for (var ar = [], i = 0; i < arguments.length; i++)
             ar = ar.concat(__read(arguments[i]));
         return ar;
     }
+    /** @deprecated */
     function __spreadArrays() {
         for (var s = 0, i = 0, il = arguments.length; i < il; i++)
             s += arguments[i].length;
@@ -457,7 +554,11 @@
                 r[k] = a[j];
         return r;
     }
-    ;
+    function __spreadArray(to, from) {
+        for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+            to[j] = from[i];
+        return to;
+    }
     function __await(v) {
         return this instanceof __await ? (this.v = v, this) : new __await(v);
     }
@@ -503,31 +604,70 @@
         return cooked;
     }
     ;
+    var __setModuleDefault = Object.create ? (function (o, v) {
+        Object.defineProperty(o, "default", { enumerable: true, value: v });
+    }) : function (o, v) {
+        o["default"] = v;
+    };
     function __importStar(mod) {
         if (mod && mod.__esModule)
             return mod;
         var result = {};
         if (mod != null)
             for (var k in mod)
-                if (Object.hasOwnProperty.call(mod, k))
-                    result[k] = mod[k];
-        result.default = mod;
+                if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+                    __createBinding(result, mod, k);
+        __setModuleDefault(result, mod);
         return result;
     }
     function __importDefault(mod) {
         return (mod && mod.__esModule) ? mod : { default: mod };
     }
-
-    var LoggerLevelEnum;
-    (function (LoggerLevelEnum) {
-        LoggerLevelEnum[LoggerLevelEnum["LOG"] = 1] = "LOG";
-        LoggerLevelEnum[LoggerLevelEnum["WARN"] = 2] = "WARN";
-        LoggerLevelEnum[LoggerLevelEnum["ERROR"] = 3] = "ERROR";
-        LoggerLevelEnum[LoggerLevelEnum["NONE"] = 4] = "NONE";
-    })(LoggerLevelEnum || (LoggerLevelEnum = {}));
+    function __classPrivateFieldGet(receiver, state, kind, f) {
+        if (kind === "a" && !f)
+            throw new TypeError("Private accessor was defined without a getter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+            throw new TypeError("Cannot read private member from an object whose class did not declare it");
+        return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+    }
+    function __classPrivateFieldSet(receiver, state, value, kind, f) {
+        if (kind === "m")
+            throw new TypeError("Private method is not writable");
+        if (kind === "a" && !f)
+            throw new TypeError("Private accessor was defined without a setter");
+        if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver))
+            throw new TypeError("Cannot write private member to an object whose class did not declare it");
+        return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+    }
 
     // bumped version via gulp
-    var version = '2.1.51';
+    var version = '3.3.0';
+
+    var ClientToken = /** @class */ (function () {
+        function ClientToken(id, type, data) {
+            this.id = id;
+            this.type = type;
+            this.data = data;
+        }
+        return ClientToken;
+    }());
+    var ClientTokens = /** @class */ (function () {
+        function ClientTokens(username, accessToken, idToken, refreshToken) {
+            this.username = username;
+            this.accessToken = accessToken;
+            this.idToken = idToken;
+            this.refreshToken = refreshToken;
+        }
+        return ClientTokens;
+    }());
+    var ClientUser = /** @class */ (function () {
+        function ClientUser(id, username, roles, message) {
+            this.id = id;
+            this.username = username;
+            this.roles = roles;
+        }
+        return ClientUser;
+    }());
 
     // import {XHRPromise} from './xhrpromise';
     // const superagent = require('superagent');
@@ -623,11 +763,8 @@
             if (args.headers) {
                 opt.headers = args.headers;
             }
-            return this.xhr
-                .post(opt.url, {
-                data: opt.data,
+            return this.xhr.post(opt.url, opt.data, {
                 headers: opt.headers,
-                timeout: 10000
             })
                 .then(function (res) {
                 if (res.status &&
@@ -650,8 +787,7 @@
                 opt.headers = args.headers;
             }
             return this.xhr
-                .put(opt.url, {
-                data: opt.data,
+                .put(opt.url, opt.data, {
                 headers: opt.headers,
                 timeout: 10000
             })
@@ -676,8 +812,8 @@
                 opt.headers = args.headers;
             }
             return this.xhr
-                .delete(opt.url, {
-                data: opt.data,
+                .delete(opt.url, // no data
+            {
                 headers: opt.headers,
                 timeout: 10000
             })
@@ -706,7 +842,7 @@
             }
             return this.xhr
                 .get(opt.url, {
-                data: opt.data,
+                // opt.data,
                 headers: opt.headers,
                 timeout: 10000
             })
@@ -757,72 +893,127 @@
             this.clientInfo = '' + value;
             // this.storage.set('clientInfo', this.clientInfo);
         };
+        /**
+         *
+         * @param login
+         * @param password
+         * @param updateProperties
+         * @throws {ErrorInterface}
+         */
         Client.prototype.login = function (login, password, updateProperties) {
-            var _this = this;
-            if (!this.URI) {
-                console.error('no api uri');
-                return Promise.reject({ code: 408, reason: 'no-api-uri' });
-            }
-            var urlLogin = this.URI + '/users';
-            var dataLogin = {
-                name: login,
-                username: login,
-                email: login,
-                password: password
-            };
-            return new Ajax()
-                .post({
-                url: urlLogin,
-                data: dataLogin,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-            })
-                .then(function (createdUser) {
-                _this.setClientId(createdUser._id);
-                var urlToken = _this.URI + '/oauth/token';
-                var dataToken = {
-                    grant_type: 'client_credentials',
-                    client_id: _this.clientId,
-                    client_secret: password,
-                    client_udid: _this.clientUuid,
-                    client_info: _this.clientInfo,
-                    audience: _this.appId,
-                    scope: JSON.stringify(_this.sdk)
-                };
-                return new Ajax()
-                    .post({
-                    url: urlToken,
-                    data: dataToken,
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+            return __awaiter(this, void 0, void 0, function () {
+                var urlLogin, dataLogin, createdUser, urlToken, dataToken, createdAccessToken, createdIdToken, createdRefreshToken;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!this.URI) {
+                                console.error('no api uri');
+                                return [2 /*return*/, Promise.reject({ code: 408, reason: 'no-api-uri' })];
+                            }
+                            urlLogin = this.URI + '/users';
+                            dataLogin = {
+                                name: login,
+                                username: login,
+                                email: login,
+                                password: password
+                            };
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlLogin,
+                                    data: dataLogin,
+                                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                                })];
+                        case 1:
+                            createdUser = (_a.sent()).user;
+                            this.setClientId(login); // login or createdUser.id or createdUser._id
+                            urlToken = this.URI + '/apps/' + this.appId + '/tokens';
+                            dataToken = {
+                                grant_type: 'access_token',
+                                // grant_type: 'client_credentials',
+                                // client_id: this.clientId,
+                                // client_secret: password,
+                                client_udid: this.clientUuid,
+                                client_info: this.clientInfo,
+                                // audience: this.appId,
+                                scope: JSON.stringify(this.sdk)
+                            };
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlToken,
+                                    data: dataToken,
+                                    headers: {
+                                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                                        'Authorization': 'Basic ' + Base64.encode('' + login + ':' + password)
+                                    }
+                                })];
+                        case 2:
+                            createdAccessToken = (_a.sent()).token;
+                            dataToken.grant_type = 'id_token';
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlToken,
+                                    data: dataToken,
+                                    headers: {
+                                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                                        'Authorization': 'Bearer ' + createdAccessToken.data
+                                    }
+                                })];
+                        case 3:
+                            createdIdToken = (_a.sent()).token;
+                            dataToken.grant_type = 'refresh_token';
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: urlToken,
+                                    data: dataToken,
+                                    headers: {
+                                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                                        'Authorization': 'Bearer ' + createdAccessToken.data
+                                    }
+                                })];
+                        case 4:
+                            createdRefreshToken = (_a.sent()).token;
+                            return [2 /*return*/, new ClientTokens(login, createdAccessToken, createdIdToken, createdRefreshToken)];
+                    }
                 });
             });
         };
+        /**
+         *
+         * @param refreshToken
+         * @throws ErrorInterface
+         */
         Client.prototype.reAuthenticate = function (refreshToken) {
-            var _this = this;
-            if (!this.URI) {
-                console.error('no api uri');
-                return Promise.reject({ code: 408, reason: 'no-api-uri' });
-            }
-            var url = this.URI + '/oauth/token';
-            var data = {
-                grant_type: 'refresh_token',
-                client_id: this.clientId,
-                client_udid: this.clientUuid,
-                client_info: this.clientInfo,
-                audience: this.appId,
-                scope: JSON.stringify(this.sdk),
-                refresh_token: refreshToken,
-                refresh_extra: Client.refreshCount,
-            };
-            return new Ajax()
-                .post({
-                url: url,
-                data: data,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-            })
-                .then(function (obj) {
-                Client.refreshCount++;
-                _this.storage.set(Client._refreshCount, Client.refreshCount);
-                return Promise.resolve(obj);
+            return __awaiter(this, void 0, void 0, function () {
+                var url, data, clientToken;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!this.URI) {
+                                console.error('no api uri');
+                                return [2 /*return*/, Promise.reject({ code: 408, reason: 'no-api-uri' })];
+                            }
+                            url = this.URI + '/apps/' + this.appId + '/tokens';
+                            data = {
+                                grant_type: 'refresh_token',
+                                // client_id: this.clientId,
+                                client_udid: this.clientUuid,
+                                client_info: this.clientInfo,
+                                // audience: this.appId,
+                                scope: JSON.stringify(this.sdk),
+                                refresh_token: refreshToken,
+                                refreshCount: Client.refreshCount,
+                            };
+                            return [4 /*yield*/, new Ajax().post({
+                                    url: url,
+                                    data: data,
+                                    headers: {
+                                        'Content-Type': 'application/json', 'Accept': 'application/json',
+                                        'Authorization': 'Bearer ' + refreshToken
+                                    }
+                                })];
+                        case 1:
+                            clientToken = _a.sent();
+                            Client.refreshCount++;
+                            this.storage.set(Client._refreshCount, Client.refreshCount);
+                            return [2 /*return*/, clientToken];
+                    }
+                });
             });
         };
         Client.prototype.logout = function (refreshToken) {
@@ -839,20 +1030,14 @@
             if (!refreshToken || !this.clientId) {
                 return Promise.resolve();
             }
-            var url = this.URI + '/oauth/revoke';
-            var data = {
-                token: refreshToken,
-                client_id: this.clientId,
-                client_udid: this.clientUuid,
-                client_info: this.clientInfo,
-                audience: this.appId,
-                scope: JSON.stringify(this.sdk)
-            };
+            var url = this.URI + '/apps/' + this.appId + '/tokens';
             return new Ajax()
-                .post({
+                .delete({
                 url: url,
-                data: data,
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json', 'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + refreshToken
+                }
             });
         };
         Client.prototype.isReady = function () {
@@ -866,22 +1051,6 @@
     Client._clientUuid = 'v2.clientUuid';
     Client._clientId = 'v2.clientId';
     Client._refreshCount = 'v2.refreshCount';
-
-    var Error$2 = /** @class */ (function () {
-        function Error(code, reason) {
-            this.code = code;
-            this.reason = reason;
-        }
-        ;
-        Error.prototype.equals = function (err) {
-            return this.code === err.code && this.reason === err.reason;
-        };
-        Error.prototype.toString = function () {
-            var msg = (typeof this.reason === 'string') ? this.reason : JSON.stringify(this.reason);
-            return '' + this.code + ' - ' + msg;
-        };
-        return Error;
-    }());
 
     var Connection = /** @class */ (function () {
         function Connection(_sdk, _storage, _logger) {
@@ -904,43 +1073,55 @@
             return !!this.client && this.client.isReady();
         };
         Connection.prototype.destroy = function (force) {
-            this._storage.remove(Connection._accessToken);
-            this._storage.remove(Connection._idToken);
-            this._storage.remove(Connection._refreshToken);
-            this._storage.remove(Connection._states);
-            if (this.accessToken) {
-                this.accessTokenPrevious = this.accessToken;
-                this._storage.set(Connection._accessTokenPrevious, this.accessTokenPrevious);
-            }
-            if (force) {
-                this._storage.remove(Connection._cryptoSalt);
-                this._storage.remove(Connection._cryptoSaltNext);
-                this._storage.remove(Connection._accessTokenPrevious);
-            }
-            this.user = null;
-            if (this.client) {
-                // this.client.setClientId(null);
-                this.client.logout();
-            }
-            this.accessToken = null;
-            this.idToken = null;
-            this.refreshToken = null;
-            this.states = {}; // new Map<string, boolean>();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            this._storage.remove(Connection._accessToken);
+                            this._storage.remove(Connection._idToken);
+                            this._storage.remove(Connection._refreshToken);
+                            this._storage.remove(Connection._states);
+                            if (this.accessToken) {
+                                this.accessTokenPrevious = this.accessToken;
+                                this._storage.set(Connection._accessTokenPrevious, this.accessTokenPrevious);
+                            }
+                            if (force) {
+                                this._storage.remove(Connection._cryptoSalt);
+                                this._storage.remove(Connection._cryptoSaltNext);
+                                this._storage.remove(Connection._accessTokenPrevious);
+                            }
+                            this.user = null;
+                            if (!this.client) return [3 /*break*/, 2];
+                            // this.client.setClientId(null);
+                            return [4 /*yield*/, this.client.logout()];
+                        case 1:
+                            // this.client.setClientId(null);
+                            _a.sent();
+                            _a.label = 2;
+                        case 2:
+                            this.accessToken = null;
+                            this.idToken = null;
+                            this.refreshToken = null;
+                            this.states = {}; // new Map<string, boolean>();
+                            return [2 /*return*/];
+                    }
+                });
+            });
         };
         Connection.prototype.setClient = function (client) {
             this.client = client;
-            if (!this.user) {
-                this.user = {};
-            }
+            //if (!this.user) {
+            //    this.user = new ClientUser();
+            //}
             // this._user._id = this._client.clientId;
-            this.user._name = JSON.parse(this.getIdPayload({ name: '' })).name;
+            //this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
         };
         Connection.prototype.setUser = function (user) {
             this.user = user;
-            if (this.client && this.user._id) {
-                this.client.setClientId(this.user._id);
+            if (this.client && this.user.id) {
+                this.client.setClientId(this.user.id);
                 // store only clientId
-                delete this.user._id;
+                // delete this.user._id;
             }
         };
         Connection.prototype.getUser = function () {
@@ -985,7 +1166,7 @@
         Connection.prototype.decrypt = function (data) {
             var decrypted = null;
             try {
-                if (!decrypted && this.fidjCrypto && this.cryptoSaltNext) {
+                if (this.fidjCrypto && this.cryptoSaltNext) {
                     var key = this.cryptoSaltNext;
                     decrypted = Xor.decrypt(data, key);
                     decrypted = JSON.parse(decrypted);
@@ -1043,7 +1224,11 @@
         };
         // todo reintegrate client.login()
         Connection.prototype.logout = function () {
-            return this.getClient().logout(this.refreshToken);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.getClient().logout(this.refreshToken)];
+                });
+            });
         };
         Connection.prototype.getClientId = function () {
             if (!this.client) {
@@ -1052,36 +1237,61 @@
             return this.client.clientId;
         };
         Connection.prototype.getIdToken = function () {
-            return this.idToken;
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.idToken];
+                });
+            });
         };
         Connection.prototype.getIdPayload = function (def) {
-            if (def && typeof def !== 'string') {
-                def = JSON.stringify(def);
-            }
-            try {
-                var payload = this.getIdToken().split('.')[1];
-                if (payload) {
-                    return Base64.decode(payload);
-                }
-            }
-            catch (e) {
-                this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
-            }
-            return def ? def : null;
+            return __awaiter(this, void 0, void 0, function () {
+                var idToken, payload;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.getIdToken()];
+                        case 1:
+                            idToken = _a.sent();
+                            try {
+                                payload = void 0;
+                                if (idToken) {
+                                    payload = idToken.split('.')[1];
+                                }
+                                if (payload) {
+                                    return [2 /*return*/, Base64.decode(payload)];
+                                }
+                            }
+                            catch (e) {
+                                this._logger.log('fidj.connection.getIdPayload pb: ', def, e);
+                            }
+                            if (def) {
+                                if (typeof def !== 'string') {
+                                    def = JSON.stringify(def);
+                                }
+                                return [2 /*return*/, def];
+                            }
+                            return [2 /*return*/, null];
+                    }
+                });
+            });
         };
         Connection.prototype.getAccessPayload = function (def) {
-            if (def && typeof def !== 'string') {
-                def = JSON.stringify(def);
-            }
-            try {
-                var payload = this.accessToken.split('.')[1];
-                if (payload) {
-                    return Base64.decode(payload);
-                }
-            }
-            catch (e) {
-            }
-            return def ? def : null;
+            return __awaiter(this, void 0, void 0, function () {
+                var payload;
+                return __generator(this, function (_a) {
+                    if (def && typeof def !== 'string') {
+                        def = JSON.stringify(def);
+                    }
+                    try {
+                        payload = this.accessToken.split('.')[1];
+                        if (payload) {
+                            return [2 /*return*/, Base64.decode(payload)];
+                        }
+                    }
+                    catch (e) {
+                    }
+                    return [2 /*return*/, def ? def : null];
+                });
+            });
         };
         Connection.prototype.getPreviousAccessPayload = function (def) {
             if (def && typeof def !== 'string') {
@@ -1097,247 +1307,296 @@
             }
             return def ? def : null;
         };
+        /**
+         * @throws ErrorInterface
+         */
         Connection.prototype.refreshConnection = function () {
-            var _this = this;
-            // store states
-            this._storage.set(Connection._states, this.states);
-            // token not expired : ok
-            if (this.accessToken) {
-                var payload = this.accessToken.split('.')[1];
-                var decoded = Base64.decode(payload);
-                var notExpired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
-                // console.log('new Date().getTime() < JSON.parse(decoded).exp :', (new Date().getTime() / 1000), JSON.parse(decoded).exp);
-                this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', notExpired);
-                if (notExpired) {
-                    return Promise.resolve(this.getUser());
-                }
-            }
-            // remove expired refreshToken
-            if (this.refreshToken) {
-                var payload = this.refreshToken.split('.')[1];
-                var decoded = Base64.decode(payload);
-                var expired = (new Date().getTime() / 1000) >= JSON.parse(decoded).exp;
-                this._logger.log('fidj.connection.connection.refreshConnection : refreshToken not expired ? ', expired);
-                if (expired) {
-                    this._storage.remove(Connection._refreshToken);
-                }
-            }
-            // remove expired accessToken & idToken & store it as Previous one
-            this.accessTokenPrevious = this.accessToken;
-            this._storage.set('v2.accessTokenPrevious', this.accessTokenPrevious);
-            this._storage.remove(Connection._accessToken);
-            this._storage.remove(Connection._idToken);
-            this.accessToken = null;
-            this.idToken = null;
-            // refresh authentication
-            this._logger.log('fidj.connection.connection.refreshConnection : refresh authentication.');
-            return new Promise(function (resolve, reject) {
-                var client = _this.getClient();
-                if (!client) {
-                    return reject(new Error$2(400, 'Need an initialized client.'));
-                }
-                _this.getClient().reAuthenticate(_this.refreshToken)
-                    .then(function (user) {
-                    _this.setConnection(user);
-                    resolve(_this.getUser());
-                })
-                    .catch(function (err) {
-                    // if (err && err.code === 408) {
-                    //     code = 408; // no api uri or basic timeout : offline
-                    // } else if (err && err.code === 404) {
-                    //     code = 404; // page not found : offline
-                    // } else if (err && err.code === 410) {
-                    //     code = 403; // token expired or device not sure : need relogin
-                    // } else if (err) {
-                    //     code = 403; // forbidden : need relogin
-                    // }
-                    // resolve(code);
-                    reject(err);
+            return __awaiter(this, void 0, void 0, function () {
+                var payload, decoded, notExpired, payload, decoded, expired, client, refreshToken, previousIdToken, previousAccessToken, clientTokens;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            // store states
+                            this._storage.set(Connection._states, this.states);
+                            // token not expired : ok
+                            if (this.accessToken) {
+                                payload = this.accessToken.split('.')[1];
+                                decoded = Base64.decode(payload);
+                                notExpired = (new Date().getTime() / 1000) < JSON.parse(decoded).exp;
+                                // console.log('new Date().getTime() < JSON.parse(decoded).exp :', (new Date().getTime() / 1000), JSON.parse(decoded).exp);
+                                this._logger.log('fidj.connection.connection.refreshConnection : token not expired ? ', notExpired);
+                                if (notExpired) {
+                                    return [2 /*return*/, Promise.resolve(this.getUser())];
+                                }
+                            }
+                            // remove expired refreshToken
+                            if (this.refreshToken) {
+                                payload = this.refreshToken.split('.')[1];
+                                decoded = Base64.decode(payload);
+                                expired = (new Date().getTime() / 1000) >= JSON.parse(decoded).exp;
+                                this._logger.log('fidj.connection.connection.refreshConnection : refreshToken not expired ? ', expired);
+                                if (expired) {
+                                    this._storage.remove(Connection._refreshToken);
+                                }
+                            }
+                            // remove expired accessToken & idToken & store it as Previous one
+                            this.accessTokenPrevious = this.accessToken;
+                            this._storage.set('v2.accessTokenPrevious', this.accessTokenPrevious);
+                            this._storage.remove(Connection._accessToken);
+                            this._storage.remove(Connection._idToken);
+                            this.accessToken = null;
+                            this.idToken = null;
+                            // refresh authentication
+                            this._logger.log('fidj.connection.connection.refreshConnection : refresh authentication.');
+                            client = this.getClient();
+                            if (!client) {
+                                throw new Error$2(400, 'Need an initialized client.');
+                            }
+                            return [4 /*yield*/, this.getClient().reAuthenticate(this.refreshToken)];
+                        case 1:
+                            refreshToken = _a.sent();
+                            previousIdToken = new ClientToken(this.getClientId(), 'idToken', this.idToken);
+                            previousAccessToken = new ClientToken(this.getClientId(), 'accessToken', this.accessToken);
+                            clientTokens = new ClientTokens(this.getClientId(), previousIdToken, previousAccessToken, refreshToken);
+                            return [4 /*yield*/, this.setConnection(clientTokens)];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/, this.getUser()];
+                    }
                 });
             });
         };
         ;
-        Connection.prototype.setConnection = function (clientUser) {
-            // only in private storage
-            if (clientUser.access_token) {
-                this.accessToken = clientUser.access_token;
-                this._storage.set(Connection._accessToken, this.accessToken);
-                delete clientUser.access_token;
-                var salt = JSON.parse(this.getAccessPayload({ salt: '' })).salt;
-                if (salt) {
-                    this.setCryptoSalt(salt);
-                }
-            }
-            if (clientUser.id_token) {
-                this.idToken = clientUser.id_token;
-                this._storage.set(Connection._idToken, this.idToken);
-                delete clientUser.id_token;
-            }
-            if (clientUser.refresh_token) {
-                this.refreshToken = clientUser.refresh_token;
-                this._storage.set(Connection._refreshToken, this.refreshToken);
-                delete clientUser.refresh_token;
-            }
-            // store changed states
-            this._storage.set(Connection._states, this.states);
-            // expose roles, message
-            // clientUser.roles = self.fidjRoles();
-            // clientUser.message = self.fidjMessage();
-            clientUser.roles = JSON.parse(this.getIdPayload({ roles: [] })).roles;
-            clientUser.message = JSON.parse(this.getIdPayload({ message: '' })).message;
-            this.setUser(clientUser);
+        Connection.prototype.setConnection = function (clientTokens) {
+            return __awaiter(this, void 0, void 0, function () {
+                var salt, _a, _b, clientUser, _c, _d, _e, _f, _g, _h;
+                return __generator(this, function (_j) {
+                    switch (_j.label) {
+                        case 0:
+                            if (!clientTokens.accessToken) return [3 /*break*/, 2];
+                            this.accessToken = clientTokens.accessToken.data;
+                            this._storage.set(Connection._accessToken, this.accessToken);
+                            _b = (_a = JSON).parse;
+                            return [4 /*yield*/, this.getAccessPayload({ salt: '' })];
+                        case 1:
+                            salt = _b.apply(_a, [_j.sent()]).salt;
+                            if (salt) {
+                                this.setCryptoSalt(salt);
+                            }
+                            _j.label = 2;
+                        case 2:
+                            if (clientTokens.idToken) {
+                                this.idToken = clientTokens.idToken.data;
+                                this._storage.set(Connection._idToken, this.idToken);
+                            }
+                            if (clientTokens.refreshToken) {
+                                this.refreshToken = clientTokens.refreshToken.data;
+                                this._storage.set(Connection._refreshToken, this.refreshToken);
+                            }
+                            // store changed states
+                            this._storage.set(Connection._states, this.states);
+                            _c = ClientUser.bind;
+                            _d = [void 0, clientTokens.username, clientTokens.username];
+                            _f = (_e = JSON).parse;
+                            return [4 /*yield*/, this.getIdPayload({ roles: [] })];
+                        case 3:
+                            _d = _d.concat([_f.apply(_e, [_j.sent()]).roles]);
+                            _h = (_g = JSON).parse;
+                            return [4 /*yield*/, this.getIdPayload({ message: '' })];
+                        case 4:
+                            clientUser = new (_c.apply(ClientUser, _d.concat([_h.apply(_g, [_j.sent()]).message])))();
+                            this.setUser(clientUser);
+                            return [2 /*return*/];
+                    }
+                });
+            });
         };
         ;
         Connection.prototype.setConnectionOffline = function (options) {
-            if (options.accessToken) {
-                this.accessToken = options.accessToken;
-                this._storage.set(Connection._accessToken, this.accessToken);
-            }
-            if (options.idToken) {
-                this.idToken = options.idToken;
-                this._storage.set(Connection._idToken, this.idToken);
-            }
-            if (options.refreshToken) {
-                this.refreshToken = options.refreshToken;
-                this._storage.set(Connection._refreshToken, this.refreshToken);
-            }
-            this.setUser({
-                roles: JSON.parse(this.getIdPayload({ roles: [] })).roles,
-                message: JSON.parse(this.getIdPayload({ message: '' })).message,
-                _id: 'demo'
+            return __awaiter(this, void 0, void 0, function () {
+                var _a, _b, _c, _d, _e, _f, _g;
+                return __generator(this, function (_h) {
+                    switch (_h.label) {
+                        case 0:
+                            if (options.accessToken) {
+                                this.accessToken = options.accessToken;
+                                this._storage.set(Connection._accessToken, this.accessToken);
+                            }
+                            if (options.idToken) {
+                                this.idToken = options.idToken;
+                                this._storage.set(Connection._idToken, this.idToken);
+                            }
+                            if (options.refreshToken) {
+                                this.refreshToken = options.refreshToken;
+                                this._storage.set(Connection._refreshToken, this.refreshToken);
+                            }
+                            _a = this.setUser;
+                            _b = ClientUser.bind;
+                            _c = [void 0, 'demo', 'demo'];
+                            _e = (_d = JSON).parse;
+                            return [4 /*yield*/, this.getIdPayload({ roles: [] })];
+                        case 1:
+                            _c = _c.concat([_e.apply(_d, [_h.sent()]).roles]);
+                            _g = (_f = JSON).parse;
+                            return [4 /*yield*/, this.getIdPayload({ message: '' })];
+                        case 2:
+                            _a.apply(this, [new (_b.apply(ClientUser, _c.concat([_g.apply(_f, [_h.sent()]).message])))()]);
+                            return [2 /*return*/];
+                    }
+                });
             });
         };
         Connection.prototype.getApiEndpoints = function (options) {
-            // todo : let ea = ['https://fidj/api', 'https://fidj-proxy.herokuapp.com/api'];
-            var ea = [
-                { key: 'fidj.default', url: 'https://fidj.ovh/api', blocked: false }
-            ];
-            var filteredEa = [];
-            if (!this._sdk.prod) {
-                ea = [
-                    { key: 'fidj.default', url: 'http://localhost:3201/api', blocked: false },
-                    { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/api', blocked: false }
-                ];
-            }
-            if (this.accessToken) {
-                var val = this.getAccessPayload({ apis: [] });
-                var apiEndpoints = JSON.parse(val).apis;
-                if (apiEndpoints && apiEndpoints.length) {
-                    ea = [];
-                    apiEndpoints.forEach(function (endpoint) {
-                        if (endpoint.url) {
-                            ea.push(endpoint);
-                        }
-                    });
-                }
-            }
-            if (this.accessTokenPrevious) {
-                var apiEndpoints = JSON.parse(this.getPreviousAccessPayload({ apis: [] })).apis;
-                if (apiEndpoints && apiEndpoints.length) {
-                    apiEndpoints.forEach(function (endpoint) {
-                        if (endpoint.url && ea.filter(function (r) { return r.url === endpoint.url; }).length === 0) {
-                            ea.push(endpoint);
-                        }
-                    });
-                }
-            }
-            this._logger.log('fidj.sdk.connection.getApiEndpoints : ', ea);
-            var couldCheckStates = true;
-            if (this.states && Object.keys(this.states).length) {
-                for (var i = 0; (i < ea.length) && couldCheckStates; i++) {
-                    if (!this.states[ea[i].url]) {
-                        couldCheckStates = false;
+            return __awaiter(this, void 0, void 0, function () {
+                var ea, filteredEa, val, apiEndpoints, apiEndpoints, couldCheckStates, i, i, endpoint, bestOldOne, i, endpoint;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            ea = [
+                                { key: 'fidj.default', url: 'https://api.fidj.ovh/v3', blocked: false }
+                            ];
+                            filteredEa = [];
+                            if (!this._sdk.prod) {
+                                ea = [
+                                    { key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false },
+                                    { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v3', blocked: false }
+                                ];
+                            }
+                            if (!this.accessToken) return [3 /*break*/, 2];
+                            return [4 /*yield*/, this.getAccessPayload({ apis: [] })];
+                        case 1:
+                            val = _a.sent();
+                            apiEndpoints = JSON.parse(val).apis;
+                            if (apiEndpoints && apiEndpoints.length) {
+                                ea = [];
+                                apiEndpoints.forEach(function (endpoint) {
+                                    if (endpoint.url) {
+                                        ea.push(endpoint);
+                                    }
+                                });
+                            }
+                            _a.label = 2;
+                        case 2:
+                            if (this.accessTokenPrevious) {
+                                apiEndpoints = JSON.parse(this.getPreviousAccessPayload({ apis: [] })).apis;
+                                if (apiEndpoints && apiEndpoints.length) {
+                                    apiEndpoints.forEach(function (endpoint) {
+                                        if (endpoint.url && ea.filter(function (r) { return r.url === endpoint.url; }).length === 0) {
+                                            ea.push(endpoint);
+                                        }
+                                    });
+                                }
+                            }
+                            this._logger.log('fidj.sdk.connection.getApiEndpoints : ', ea);
+                            couldCheckStates = true;
+                            if (this.states && Object.keys(this.states).length) {
+                                for (i = 0; (i < ea.length) && couldCheckStates; i++) {
+                                    if (!this.states[ea[i].url]) {
+                                        couldCheckStates = false;
+                                    }
+                                }
+                            }
+                            else {
+                                couldCheckStates = false;
+                            }
+                            if (options && options.filter) {
+                                if (couldCheckStates && options.filter === 'theBestOne') {
+                                    for (i = 0; (i < ea.length) && (filteredEa.length === 0); i++) {
+                                        endpoint = ea[i];
+                                        if (this.states[endpoint.url] &&
+                                            this.states[endpoint.url].state) {
+                                            filteredEa.push(endpoint);
+                                        }
+                                    }
+                                }
+                                else if (couldCheckStates && options.filter === 'theBestOldOne') {
+                                    bestOldOne = void 0;
+                                    for (i = 0; (i < ea.length); i++) {
+                                        endpoint = ea[i];
+                                        if (this.states[endpoint.url] &&
+                                            this.states[endpoint.url].lastTimeWasOk &&
+                                            (!bestOldOne || this.states[endpoint.url].lastTimeWasOk > this.states[bestOldOne.url].lastTimeWasOk)) {
+                                            bestOldOne = endpoint;
+                                        }
+                                    }
+                                    if (bestOldOne) {
+                                        filteredEa.push(bestOldOne);
+                                    }
+                                }
+                                else if (ea.length) {
+                                    filteredEa.push(ea[0]);
+                                }
+                            }
+                            else {
+                                filteredEa = ea;
+                            }
+                            return [2 /*return*/, filteredEa];
                     }
-                }
-            }
-            else {
-                couldCheckStates = false;
-            }
-            if (options && options.filter) {
-                if (couldCheckStates && options.filter === 'theBestOne') {
-                    for (var i = 0; (i < ea.length) && (filteredEa.length === 0); i++) {
-                        var endpoint = ea[i];
-                        if (this.states[endpoint.url] &&
-                            this.states[endpoint.url].state) {
-                            filteredEa.push(endpoint);
-                        }
-                    }
-                }
-                else if (couldCheckStates && options.filter === 'theBestOldOne') {
-                    var bestOldOne = void 0;
-                    for (var i = 0; (i < ea.length); i++) {
-                        var endpoint = ea[i];
-                        if (this.states[endpoint.url] &&
-                            this.states[endpoint.url].lastTimeWasOk &&
-                            (!bestOldOne || this.states[endpoint.url].lastTimeWasOk > this.states[bestOldOne.url].lastTimeWasOk)) {
-                            bestOldOne = endpoint;
-                        }
-                    }
-                    if (bestOldOne) {
-                        filteredEa.push(bestOldOne);
-                    }
-                }
-                else if (ea.length) {
-                    filteredEa.push(ea[0]);
-                }
-            }
-            else {
-                filteredEa = ea;
-            }
-            return filteredEa;
+                });
+            });
         };
         ;
         Connection.prototype.getDBs = function (options) {
-            if (!this.accessToken) {
-                return [];
-            }
-            // todo test random DB connection
-            var random = Math.random() % 2;
-            var dbs = JSON.parse(this.getAccessPayload({ dbs: [] })).dbs || [];
-            // need to synchronize db
-            if (random === 0) {
-                dbs = dbs.sort();
-            }
-            else if (random === 1) {
-                dbs = dbs.reverse();
-            }
-            var filteredDBs = [];
-            var couldCheckStates = true;
-            if (this.states && Object.keys(this.states).length) {
-                for (var i = 0; (i < dbs.length) && couldCheckStates; i++) {
-                    if (!this.states[dbs[i].url]) {
-                        couldCheckStates = false;
+            return __awaiter(this, void 0, void 0, function () {
+                var random, dbs, _a, _b, filteredDBs, couldCheckStates, i, i, endpoint, i, endpoint;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            if (!this.accessToken) {
+                                return [2 /*return*/, []];
+                            }
+                            random = Math.random() % 2;
+                            _b = (_a = JSON).parse;
+                            return [4 /*yield*/, this.getAccessPayload({ dbs: [] })];
+                        case 1:
+                            dbs = _b.apply(_a, [_c.sent()]).dbs || [];
+                            // need to synchronize db
+                            if (random === 0) {
+                                dbs = dbs.sort();
+                            }
+                            else if (random === 1) {
+                                dbs = dbs.reverse();
+                            }
+                            filteredDBs = [];
+                            couldCheckStates = true;
+                            if (this.states && Object.keys(this.states).length) {
+                                for (i = 0; (i < dbs.length) && couldCheckStates; i++) {
+                                    if (!this.states[dbs[i].url]) {
+                                        couldCheckStates = false;
+                                    }
+                                }
+                            }
+                            else {
+                                couldCheckStates = false;
+                            }
+                            if (couldCheckStates && options && options.filter === 'theBestOne') {
+                                for (i = 0; (i < dbs.length) && (filteredDBs.length === 0); i++) {
+                                    endpoint = dbs[i];
+                                    if (this.states[endpoint.url] &&
+                                        this.states[endpoint.url].state) {
+                                        filteredDBs.push(endpoint);
+                                    }
+                                }
+                            }
+                            else if (couldCheckStates && options && options.filter === 'theBestOnes') {
+                                for (i = 0; (i < dbs.length); i++) {
+                                    endpoint = dbs[i];
+                                    if (this.states[endpoint.url] &&
+                                        this.states[endpoint.url].state) {
+                                        filteredDBs.push(endpoint);
+                                    }
+                                }
+                            }
+                            else if (options && options.filter === 'theBestOne' && dbs.length) {
+                                filteredDBs.push(dbs[0]);
+                            }
+                            else {
+                                filteredDBs = dbs;
+                            }
+                            return [2 /*return*/, filteredDBs];
                     }
-                }
-            }
-            else {
-                couldCheckStates = false;
-            }
-            if (couldCheckStates && options && options.filter === 'theBestOne') {
-                for (var i = 0; (i < dbs.length) && (filteredDBs.length === 0); i++) {
-                    var endpoint = dbs[i];
-                    if (this.states[endpoint.url] &&
-                        this.states[endpoint.url].state) {
-                        filteredDBs.push(endpoint);
-                    }
-                }
-            }
-            else if (couldCheckStates && options && options.filter === 'theBestOnes') {
-                for (var i = 0; (i < dbs.length); i++) {
-                    var endpoint = dbs[i];
-                    if (this.states[endpoint.url] &&
-                        this.states[endpoint.url].state) {
-                        filteredDBs.push(endpoint);
-                    }
-                }
-            }
-            else if (options && options.filter === 'theBestOne' && dbs.length) {
-                filteredDBs.push(dbs[0]);
-            }
-            else {
-                filteredDBs = dbs;
-            }
-            return filteredDBs;
+                });
+            });
         };
         ;
         Connection.prototype.verifyApiState = function (currentTime, endpointUrl) {
@@ -1350,13 +1609,13 @@
                             this._logger.log('fidj.sdk.connection.verifyApiState : ', currentTime, endpointUrl);
                             return [4 /*yield*/, new Ajax()
                                     .get({
-                                    url: endpointUrl + '/status?isok=' + this._sdk.version,
+                                    url: endpointUrl + '/status?isOk=' + this._sdk.version,
                                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                                 })];
                         case 1:
                             data = _a.sent();
                             state = false;
-                            if (data && data.isok) {
+                            if (data && data.isOk) {
                                 state = true;
                             }
                             this.states[endpointUrl] = { state: state, time: currentTime, lastTimeWasOk: currentTime };
@@ -1378,18 +1637,20 @@
         };
         Connection.prototype.verifyDbState = function (currentTime, dbEndpoint) {
             return __awaiter(this, void 0, void 0, function () {
-                var data, err_2, lastTimeWasOk;
+                var err_2, lastTimeWasOk;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 2, , 3]);
+                            // console.log('verifyDbState: ', dbEndpoint);
                             return [4 /*yield*/, new Ajax()
                                     .get({
                                     url: dbEndpoint,
                                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                                 })];
                         case 1:
-                            data = _a.sent();
+                            // console.log('verifyDbState: ', dbEndpoint);
+                            _a.sent();
                             this.states[dbEndpoint] = { state: true, time: currentTime, lastTimeWasOk: currentTime };
                             return [3 /*break*/, 3];
                         case 2:
@@ -1406,35 +1667,41 @@
             });
         };
         Connection.prototype.verifyConnectionStates = function () {
-            var _this = this;
-            var currentTime = new Date().getTime();
-            // todo need verification ? not yet (cache)
-            // if (Object.keys(this.states).length > 0) {
-            //     const time = this.states[Object.keys(this.states)[0]].time;
-            //     if (currentTime < time) {
-            //         return Promise.resolve();
-            //     }
-            // }
-            // verify via GET status on Endpoints & DBs
-            var promises = [];
-            // this.states = {};
-            this.apis = this.getApiEndpoints();
-            this.apis.forEach(function (endpointObj) {
-                var endpointUrl = endpointObj.url;
-                if (!endpointUrl) {
-                    endpointUrl = endpointObj.toString();
-                }
-                promises.push(_this.verifyApiState(currentTime, endpointUrl));
+            return __awaiter(this, void 0, void 0, function () {
+                var currentTime, promises, _a, dbs;
+                var _this = this;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            currentTime = new Date().getTime();
+                            promises = [];
+                            // this.states = {};
+                            _a = this;
+                            return [4 /*yield*/, this.getApiEndpoints()];
+                        case 1:
+                            // this.states = {};
+                            _a.apis = _b.sent();
+                            this.apis.forEach(function (endpointObj) {
+                                var endpointUrl = endpointObj.url;
+                                if (!endpointUrl) {
+                                    endpointUrl = endpointObj.toString();
+                                }
+                                promises.push(_this.verifyApiState(currentTime, endpointUrl));
+                            });
+                            return [4 /*yield*/, this.getDBs()];
+                        case 2:
+                            dbs = _b.sent();
+                            dbs.forEach(function (dbEndpointObj) {
+                                var dbEndpoint = dbEndpointObj.url;
+                                if (!dbEndpoint) {
+                                    dbEndpoint = dbEndpointObj.toString();
+                                }
+                                promises.push(_this.verifyDbState(currentTime, dbEndpoint));
+                            });
+                            return [2 /*return*/, Promise.all(promises)];
+                    }
+                });
             });
-            var dbs = this.getDBs();
-            dbs.forEach(function (dbEndpointObj) {
-                var dbEndpoint = dbEndpointObj.url;
-                if (!dbEndpoint) {
-                    dbEndpoint = dbEndpointObj.toString();
-                }
-                promises.push(_this.verifyDbState(currentTime, dbEndpoint));
-            });
-            return Promise.all(promises);
         };
         ;
         return Connection;
@@ -1844,24 +2111,24 @@
         function LoggerService(level) {
             this.level = level;
             if (!level) {
-                this.level = LoggerLevelEnum.ERROR;
+                this.level = exports.LoggerLevelEnum.ERROR;
             }
             if (typeof console === 'undefined') {
-                this.level = LoggerLevelEnum.NONE;
+                this.level = exports.LoggerLevelEnum.NONE;
             }
         }
         LoggerService.prototype.log = function (message, args) {
-            if (this.level === LoggerLevelEnum.LOG) {
+            if (this.level === exports.LoggerLevelEnum.INFO) {
                 console.log(message, args);
             }
         };
         LoggerService.prototype.warn = function (message, args) {
-            if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN) {
+            if (this.level === exports.LoggerLevelEnum.INFO || this.level === exports.LoggerLevelEnum.WARN) {
                 console.warn(message, args);
             }
         };
         LoggerService.prototype.error = function (message, args) {
-            if (this.level === LoggerLevelEnum.LOG || this.level === LoggerLevelEnum.WARN || this.level === LoggerLevelEnum.ERROR) {
+            if (this.level === exports.LoggerLevelEnum.INFO || this.level === exports.LoggerLevelEnum.WARN || this.level === exports.LoggerLevelEnum.ERROR) {
                 console.error(message, args);
             }
         };
@@ -1871,7 +2138,6 @@
         return LoggerService;
     }());
 
-    // import PouchDB from 'pouchdb';
     var urljoin = require('url-join');
     // import {LocalStorage} from 'node-localstorage';
     // import 'localstorage-polyfill/localStorage';
@@ -1918,63 +2184,76 @@
          * Check uri
          * Done each app start
          *
+         * @param fidjId
          * @param options Optional settings
          * @param options.fidjId  required use your customized endpoints
          * @param options.fidjSalt required use your customized endpoints
          * @param options.fidjVersion required use your customized endpoints
          * @param options.devMode optional default false, use your customized endpoints
          * @returns
+         * @throws {ErrorInterface}
          */
         InternalService.prototype.fidjInit = function (fidjId, options) {
-            var self = this;
-            /*
-            if (options && options.forcedEndpoint) {
-                this.fidjService.setAuthEndpoint(options.forcedEndpoint);
-            }
-            if (options && options.forcedDBEndpoint) {
-                this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
-            }*/
-            if (options && options.logLevel) {
-                self.logger.setLevel(options.logLevel);
-            }
-            self.logger.log('fidj.sdk.service.fidjInit : ', options);
-            if (!fidjId) {
-                self.logger.error('fidj.sdk.service.fidjInit : bad init');
-                return self.promise.reject(new Error$2(400, 'Need a fidjId'));
-            }
-            self.sdk.prod = !options ? true : options.prod;
-            self.sdk.useDB = !options ? true : options.useDB;
-            self.connection.fidjId = fidjId;
-            self.connection.fidjVersion = self.sdk.version;
-            self.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? true : options.crypto;
-            return new self.promise(function (resolve, reject) {
-                self.connection.verifyConnectionStates()
-                    .then(function () {
-                    var theBestUrl = self.connection.getApiEndpoints({ filter: 'theBestOne' })[0];
-                    var theBestOldUrl = self.connection.getApiEndpoints({ filter: 'theBestOldOne' })[0];
-                    var isLogin = self.fidjIsLogin();
-                    self.logger.log('fidj.sdk.service.fidjInit > verifyConnectionStates : ', theBestUrl, theBestOldUrl, isLogin);
-                    if (theBestUrl && theBestUrl.url) {
-                        theBestUrl = theBestUrl.url;
+            return __awaiter(this, void 0, void 0, function () {
+                var bestUrls, bestOldUrls, err_1, theBestFirstUrl, theBestFirstOldUrl, isLogin;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            /*if (options && options.forcedEndpoint) {
+                                this.fidjService.setAuthEndpoint(options.forcedEndpoint);
+                            }
+                            if (options && options.forcedDBEndpoint) {
+                                this.fidjService.setDBEndpoint(options.forcedDBEndpoint);
+                            }*/
+                            if (options && options.logLevel) {
+                                this.logger.setLevel(options.logLevel);
+                            }
+                            else {
+                                this.logger.setLevel(exports.LoggerLevelEnum.NONE);
+                            }
+                            this.logger.log('fidj.sdk.service.fidjInit : ', options);
+                            if (!fidjId) {
+                                this.logger.error('fidj.sdk.service.fidjInit : bad init');
+                                return [2 /*return*/, this.promise.reject(new Error$2(400, 'Need a fidjId'))];
+                            }
+                            this.sdk.prod = !options ? true : options.prod;
+                            this.sdk.useDB = !options ? false : options.useDB;
+                            this.connection.fidjId = fidjId;
+                            this.connection.fidjVersion = this.sdk.version;
+                            this.connection.fidjCrypto = (!options || !options.hasOwnProperty('crypto')) ? false : options.crypto;
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 5, , 6]);
+                            return [4 /*yield*/, this.connection.verifyConnectionStates()];
+                        case 2:
+                            _a.sent();
+                            return [4 /*yield*/, this.connection.getApiEndpoints({ filter: 'theBestOne' })];
+                        case 3:
+                            bestUrls = _a.sent();
+                            return [4 /*yield*/, this.connection.getApiEndpoints({ filter: 'theBestOldOne' })];
+                        case 4:
+                            bestOldUrls = _a.sent();
+                            return [3 /*break*/, 6];
+                        case 5:
+                            err_1 = _a.sent();
+                            this.logger.error('fidj.sdk.service.fidjInit: ', err_1);
+                            throw new Error$2(500, err_1.toString());
+                        case 6:
+                            if (!bestUrls || !bestOldUrls || (bestUrls.length === 0 && bestOldUrls.length === 0)) {
+                                throw new Error$2(404, 'Need one connection - or too old SDK version (check update)');
+                            }
+                            theBestFirstUrl = bestUrls[0];
+                            theBestFirstOldUrl = bestOldUrls[0];
+                            isLogin = this.fidjIsLogin();
+                            this.logger.log('fidj.sdk.service.fidjInit > verifyConnectionStates : ', theBestFirstUrl, theBestFirstOldUrl, isLogin);
+                            if (theBestFirstUrl) {
+                                this.connection.setClient(new Client(this.connection.fidjId, theBestFirstUrl.url, this.storage, this.sdk));
+                            }
+                            else {
+                                this.connection.setClient(new Client(this.connection.fidjId, theBestFirstOldUrl.url, this.storage, this.sdk));
+                            }
+                            return [2 /*return*/];
                     }
-                    if (theBestOldUrl && theBestOldUrl.url) {
-                        theBestOldUrl = theBestOldUrl.url;
-                    }
-                    if (theBestUrl) {
-                        self.connection.setClient(new Client(self.connection.fidjId, theBestUrl, self.storage, self.sdk));
-                        resolve();
-                    }
-                    else if (isLogin && theBestOldUrl) {
-                        self.connection.setClient(new Client(self.connection.fidjId, theBestOldUrl, self.storage, self.sdk));
-                        resolve();
-                    }
-                    else {
-                        reject(new Error$2(404, 'Need one connection - or too old SDK version (check update)'));
-                    }
-                })
-                    .catch(function (err) {
-                    self.logger.error('fidj.sdk.service.fidjInit: ', err);
-                    reject(new Error$2(500, err.toString()));
                 });
             });
         };
@@ -1985,43 +2264,60 @@
          *
          * @param login
          * @param password
-         * @returns
+         * @throws {ErrorInterface}
          */
         InternalService.prototype.fidjLogin = function (login, password) {
-            var self = this;
-            self.logger.log('fidj.sdk.service.fidjLogin');
-            if (!self.connection.isReady()) {
-                return self.promise.reject(new Error$2(404, 'Need an intialized FidjService'));
-            }
-            return new self.promise(function (resolve, reject) {
-                self._removeAll()
-                    .then(function () {
-                    return self.connection.verifyConnectionStates();
-                })
-                    .then(function () {
-                    return self._createSession(self.connection.fidjId);
-                })
-                    .then(function () {
-                    return self._loginInternal(login, password);
-                })
-                    .then(function (user) {
-                    self.connection.setConnection(user);
-                    if (!self.sdk.useDB) {
-                        resolve(self.connection.getUser());
+            return __awaiter(this, void 0, void 0, function () {
+                var clientTokens, err_2, e_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            this.logger.log('fidj.sdk.service.fidjLogin');
+                            if (!this.connection.isReady()) {
+                                throw new Error$2(404, 'Need an initialized FidjService');
+                            }
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 7, , 8]);
+                            return [4 /*yield*/, this._removeAll()];
+                        case 2:
+                            _a.sent();
+                            return [4 /*yield*/, this.connection.verifyConnectionStates()];
+                        case 3:
+                            _a.sent();
+                            return [4 /*yield*/, this._createSession(this.connection.fidjId)];
+                        case 4:
+                            _a.sent();
+                            return [4 /*yield*/, this._loginInternal(login, password)];
+                        case 5:
+                            clientTokens = _a.sent();
+                            return [4 /*yield*/, this.connection.setConnection(clientTokens)];
+                        case 6:
+                            _a.sent();
+                            return [3 /*break*/, 8];
+                        case 7:
+                            err_2 = _a.sent();
+                            throw new Error$2(500, err_2.toString());
+                        case 8:
+                            if (!this.sdk.useDB) {
+                                return [2 /*return*/, this.connection.getUser()];
+                            }
+                            _a.label = 9;
+                        case 9:
+                            _a.trys.push([9, 11, , 12]);
+                            return [4 /*yield*/, this.session.sync(this.connection.getClientId())];
+                        case 10:
+                            _a.sent();
+                            return [3 /*break*/, 12];
+                        case 11:
+                            e_1 = _a.sent();
+                            this.logger.warn('fidj.sdk.service.fidjLogin: sync -not blocking- issue  ', e_1.toString());
+                            return [3 /*break*/, 12];
+                        case 12: return [2 /*return*/, this.connection.getUser()];
                     }
-                    else {
-                        self.session.sync(self.connection.getClientId())
-                            .then(function () { return resolve(self.connection.getUser()); })
-                            .catch(function (err) { return resolve(self.connection.getUser()); });
-                    }
-                })
-                    .catch(function (err) {
-                    self.logger.error('fidj.sdk.service.fidjLogin: ', err.toString());
-                    reject(err);
                 });
             });
         };
-        ;
         /**
          *
          * @param options
@@ -2030,96 +2326,144 @@
          * @returns
          */
         InternalService.prototype.fidjLoginInDemoMode = function (options) {
-            var self = this;
-            // generate one day tokens if not set
-            if (!options || !options.accessToken) {
-                var now = new Date();
-                now.setDate(now.getDate() + 1);
-                var tomorrow = now.getTime();
-                var payload = Base64.encode(JSON.stringify({
-                    roles: [],
-                    message: 'demo',
-                    apis: [],
-                    endpoints: [],
-                    dbs: [],
-                    exp: tomorrow
-                }));
-                var jwtSign = Base64.encode(JSON.stringify({}));
-                var token = jwtSign + '.' + payload + '.' + jwtSign;
-                options = {
-                    accessToken: token,
-                    idToken: token,
-                    refreshToken: token
-                };
-            }
-            return new self.promise(function (resolve, reject) {
-                self._removeAll()
-                    .then(function () {
-                    return self._createSession(self.connection.fidjId);
-                })
-                    .then(function () {
-                    self.connection.setConnectionOffline(options);
-                    resolve(self.connection.getUser());
-                })
-                    .catch(function (err) {
-                    self.logger.error('fidj.sdk.service.fidjLoginInDemoMode error: ', err);
-                    reject(err);
+            return __awaiter(this, void 0, void 0, function () {
+                var self, now, tomorrow, payload, jwtSign, token;
+                var _this = this;
+                return __generator(this, function (_a) {
+                    self = this;
+                    // generate one day tokens if not set
+                    if (!options || !options.accessToken) {
+                        now = new Date();
+                        now.setDate(now.getDate() + 1);
+                        tomorrow = now.getTime();
+                        payload = Base64.encode(JSON.stringify({
+                            roles: [],
+                            message: 'demo',
+                            apis: [],
+                            endpoints: [],
+                            dbs: [],
+                            exp: tomorrow
+                        }));
+                        jwtSign = Base64.encode(JSON.stringify({}));
+                        token = jwtSign + '.' + payload + '.' + jwtSign;
+                        options = {
+                            accessToken: token,
+                            idToken: token,
+                            refreshToken: token
+                        };
+                    }
+                    return [2 /*return*/, new self.promise(function (resolve, reject) {
+                            self._removeAll()
+                                .then(function () {
+                                return self._createSession(self.connection.fidjId);
+                            })
+                                .then(function () { return __awaiter(_this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, self.connection.setConnectionOffline(options)];
+                                        case 1:
+                                            _a.sent();
+                                            resolve(self.connection.getUser());
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); })
+                                .catch(function (err) {
+                                self.logger.error('fidj.sdk.service.fidjLoginInDemoMode error: ', err);
+                                reject(err);
+                            });
+                        })];
                 });
             });
-        };
-        ;
-        InternalService.prototype.fidjGetEndpoints = function (filter) {
-            if (!filter) {
-                filter = { showBlocked: false };
-            }
-            var ap = this.connection.getAccessPayload({ endpoints: [] });
-            var endpoints = JSON.parse(ap).endpoints;
-            if (!endpoints || !Array.isArray(endpoints)) {
-                return [];
-            }
-            endpoints = endpoints.filter(function (endpoint) {
-                var ok = true;
-                if (ok && filter.key) {
-                    ok = (endpoint.key === filter.key);
-                }
-                if (ok && !filter.showBlocked) {
-                    ok = !endpoint.blocked;
-                }
-                return ok;
-            });
-            return endpoints;
-        };
-        ;
-        InternalService.prototype.fidjRoles = function () {
-            return JSON.parse(this.connection.getIdPayload({ roles: [] })).roles;
-        };
-        ;
-        InternalService.prototype.fidjMessage = function () {
-            return JSON.parse(this.connection.getIdPayload({ message: '' })).message;
         };
         ;
         InternalService.prototype.fidjIsLogin = function () {
             return this.connection.isLogin();
         };
         ;
-        InternalService.prototype.fidjLogout = function (force) {
-            var _this = this;
-            var self = this;
-            if (!self.connection.getClient() && !force) {
-                return self._removeAll()
-                    .then(function () {
-                    return _this.session.create(self.connection.fidjId, true);
+        InternalService.prototype.fidjGetEndpoints = function (filter) {
+            return __awaiter(this, void 0, void 0, function () {
+                var ap, endpoints;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!filter) {
+                                filter = { showBlocked: false };
+                            }
+                            return [4 /*yield*/, this.connection.getAccessPayload({ endpoints: [] })];
+                        case 1:
+                            ap = _a.sent();
+                            endpoints = JSON.parse(ap).endpoints;
+                            if (!endpoints || !Array.isArray(endpoints)) {
+                                return [2 /*return*/, []];
+                            }
+                            endpoints = endpoints.filter(function (endpoint) {
+                                var ok = true;
+                                if (ok && filter.key) {
+                                    ok = (endpoint.key === filter.key);
+                                }
+                                if (ok && !filter.showBlocked) {
+                                    ok = !endpoint.blocked;
+                                }
+                                return ok;
+                            });
+                            return [2 /*return*/, endpoints];
+                    }
                 });
-            }
-            return self.connection.logout()
-                .then(function () {
-                return self._removeAll();
-            })
-                .catch(function () {
-                return self._removeAll();
-            })
-                .then(function () {
-                return _this.session.create(self.connection.fidjId, true);
+            });
+        };
+        ;
+        InternalService.prototype.fidjRoles = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var _a, _b;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            _b = (_a = JSON).parse;
+                            return [4 /*yield*/, this.connection.getIdPayload({ roles: [] })];
+                        case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()]).roles];
+                    }
+                });
+            });
+        };
+        ;
+        InternalService.prototype.fidjMessage = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var _a, _b;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            _b = (_a = JSON).parse;
+                            return [4 /*yield*/, this.connection.getIdPayload({ message: '' })];
+                        case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()]).message];
+                    }
+                });
+            });
+        };
+        ;
+        InternalService.prototype.fidjLogout = function (force) {
+            return __awaiter(this, void 0, void 0, function () {
+                var self;
+                var _this = this;
+                return __generator(this, function (_a) {
+                    self = this;
+                    if (!self.connection.getClient() && !force) {
+                        return [2 /*return*/, self._removeAll()
+                                .then(function () {
+                                return _this.session.create(self.connection.fidjId, true);
+                            })];
+                    }
+                    return [2 /*return*/, self.connection.logout()
+                            .then(function () {
+                            return self._removeAll();
+                        })
+                            .catch(function () {
+                            return self._removeAll();
+                        })
+                            .then(function () {
+                            return _this.session.create(self.connection.fidjId, true);
+                        })];
+                });
             });
         };
         ;
@@ -2132,249 +2476,285 @@
          * @returns  promise
          */
         InternalService.prototype.fidjSync = function (fnInitFirstData, fnInitFirstData_Arg) {
-            var _this = this;
-            var self = this;
-            self.logger.log('fidj.sdk.service.fidjSync');
-            // if (!self.session.isReady()) {
-            //    return self.promise.reject('fidj.sdk.service.fidjSync : DB sync impossible. Did you login ?');
-            // }
-            if (!self.sdk.useDB) {
-                self.logger.log('fidj.sdk.service.fidjSync: you ar not using DB - no sync available.');
-                return Promise.resolve();
-            }
-            var firstSync = (self.session.dbLastSync === null);
-            return new self.promise(function (resolve, reject) {
-                self._createSession(self.connection.fidjId)
-                    .then(function () {
-                    return self.session.sync(self.connection.getClientId());
-                })
-                    .then(function () {
-                    self.logger.log('fidj.sdk.service.fidjSync resolved');
-                    return self.session.isEmpty();
-                })
-                    .catch(function (err) {
-                    self.logger.warn('fidj.sdk.service.fidjSync warn: ', err);
-                    return self.session.isEmpty();
-                })
-                    .then(function (isEmpty) {
-                    self.logger.log('fidj.sdk.service.fidjSync isEmpty : ', isEmpty, firstSync);
-                    return new self.promise(function (resolveEmpty, rejectEmptyNotUsed) {
-                        if (isEmpty && firstSync && fnInitFirstData) {
-                            var ret = fnInitFirstData(fnInitFirstData_Arg);
-                            if (ret && ret['catch'] instanceof Function) {
-                                ret.then(resolveEmpty).catch(reject);
-                            }
-                            if (typeof ret === 'string') {
-                                self.logger.log(ret);
-                            }
-                        }
-                        resolveEmpty(); // self.connection.getUser());
-                    });
-                })
-                    .then(function (info) {
-                    self.logger.log('fidj.sdk.service.fidjSync fnInitFirstData resolved: ', info);
-                    self.session.dbLastSync = new Date().getTime();
-                    return self.session.info();
-                })
-                    .then(function (result) {
-                    self.session.dbRecordCount = 0;
-                    if (result && result.doc_count) {
-                        self.session.dbRecordCount = result.doc_count;
+            return __awaiter(this, void 0, void 0, function () {
+                var self, firstSync;
+                var _this = this;
+                return __generator(this, function (_a) {
+                    self = this;
+                    self.logger.log('fidj.sdk.service.fidjSync');
+                    // if (!self.session.isReady()) {
+                    //    return self.promise.reject('fidj.sdk.service.fidjSync : DB sync impossible. Did you login ?');
+                    // }
+                    if (!self.sdk.useDB) {
+                        self.logger.log('fidj.sdk.service.fidjSync: you ar not using DB - no sync available.');
+                        return [2 /*return*/, Promise.resolve()];
                     }
-                    self.logger.log('fidj.sdk.service.fidjSync _dbRecordCount : ' + self.session.dbRecordCount);
-                    return self.connection.refreshConnection();
-                })
-                    .then(function (user) {
-                    self.logger.log('fidj.sdk.service.fidjSync refreshConnection done : ', user);
-                    resolve(); // self.connection.getUser()
-                })
-                    .catch(function (err) {
-                    // console.error(err);
-                    self.logger.warn('fidj.sdk.service.fidjSync refreshConnection failed : ', err);
-                    if (err && (err.code === 403 || err.code === 410)) {
-                        _this.fidjLogout()
-                            .then(function () {
-                            reject({ code: 403, reason: 'Synchronization unauthorized : need to login again.' });
-                        })
-                            .catch(function () {
-                            reject({ code: 403, reason: 'Synchronization unauthorized : need to login again..' });
-                        });
-                    }
-                    else if (err && err.code) {
-                        // todo what to do with this err ?
-                        resolve();
-                    }
-                    else {
-                        var errMessage = 'Error during synchronisation: ' + err.toString();
-                        self.logger.error(errMessage);
-                        reject({ code: 500, reason: errMessage });
-                    }
+                    firstSync = (self.session.dbLastSync === null);
+                    return [2 /*return*/, new self.promise(function (resolve, reject) {
+                            self._createSession(self.connection.fidjId)
+                                .then(function () {
+                                return self.session.sync(self.connection.getClientId());
+                            })
+                                .then(function () {
+                                self.logger.log('fidj.sdk.service.fidjSync resolved');
+                                return self.session.isEmpty();
+                            })
+                                .catch(function (err) {
+                                self.logger.warn('fidj.sdk.service.fidjSync warn: ', err);
+                                return self.session.isEmpty();
+                            })
+                                .then(function (isEmpty) {
+                                self.logger.log('fidj.sdk.service.fidjSync isEmpty : ', isEmpty, firstSync);
+                                return new self.promise(function (resolveEmpty, rejectEmptyNotUsed) {
+                                    if (isEmpty && firstSync && fnInitFirstData) {
+                                        var ret = fnInitFirstData(fnInitFirstData_Arg);
+                                        if (ret && ret['catch'] instanceof Function) {
+                                            ret.then(resolveEmpty).catch(reject);
+                                        }
+                                        if (typeof ret === 'string') {
+                                            self.logger.log(ret);
+                                        }
+                                    }
+                                    resolveEmpty(); // self.connection.getUser());
+                                });
+                            })
+                                .then(function (info) {
+                                self.logger.log('fidj.sdk.service.fidjSync fnInitFirstData resolved: ', info);
+                                self.session.dbLastSync = new Date().getTime();
+                                return self.session.info();
+                            })
+                                .then(function (result) {
+                                self.session.dbRecordCount = 0;
+                                if (result && result.doc_count) {
+                                    self.session.dbRecordCount = result.doc_count;
+                                }
+                                self.logger.log('fidj.sdk.service.fidjSync _dbRecordCount : ' + self.session.dbRecordCount);
+                                return self.connection.refreshConnection();
+                            })
+                                .then(function (user) {
+                                self.logger.log('fidj.sdk.service.fidjSync refreshConnection done : ', user);
+                                resolve(); // self.connection.getUser()
+                            })
+                                .catch(function (err) {
+                                // console.error(err);
+                                self.logger.warn('fidj.sdk.service.fidjSync refreshConnection failed : ', err);
+                                if (err && (err.code === 403 || err.code === 410)) {
+                                    _this.fidjLogout()
+                                        .then(function () {
+                                        reject({ code: 403, reason: 'Synchronization unauthorized : need to login again.' });
+                                    })
+                                        .catch(function () {
+                                        reject({ code: 403, reason: 'Synchronization unauthorized : need to login again..' });
+                                    });
+                                }
+                                else if (err && err.code) {
+                                    // todo what to do with this err ?
+                                    resolve();
+                                }
+                                else {
+                                    var errMessage = 'Error during synchronisation: ' + err.toString();
+                                    self.logger.error(errMessage);
+                                    reject({ code: 500, reason: errMessage });
+                                }
+                            });
+                        })];
                 });
             });
         };
         ;
         InternalService.prototype.fidjPutInDb = function (data) {
-            var self = this;
-            self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
-            if (!self.sdk.useDB) {
-                self.logger.log('fidj.sdk.service.fidjPutInDb: you are not using DB - no put available.');
-                return Promise.resolve('NA');
-            }
-            if (!self.connection.getClientId()) {
-                return self.promise.reject(new Error$2(401, 'DB put impossible. Need a user logged in.'));
-            }
-            if (!self.session.isReady()) {
-                return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
-            }
-            var _id;
-            if (data && typeof data === 'object' && Object.keys(data).indexOf('_id')) {
-                _id = data._id;
-            }
-            if (!_id) {
-                _id = self._generateObjectUniqueId(self.connection.fidjId);
-            }
-            var crypto;
-            if (self.connection.fidjCrypto) {
-                crypto = {
-                    obj: self.connection,
-                    method: 'encrypt'
-                };
-            }
-            return self.session.put(data, _id, self.connection.getClientId(), self.sdk.org, self.connection.fidjVersion, crypto);
+            return __awaiter(this, void 0, void 0, function () {
+                var self, _id, crypto;
+                return __generator(this, function (_a) {
+                    self = this;
+                    self.logger.log('fidj.sdk.service.fidjPutInDb: ', data);
+                    if (!self.sdk.useDB) {
+                        self.logger.log('fidj.sdk.service.fidjPutInDb: you are not using DB - no put available.');
+                        return [2 /*return*/, Promise.resolve('NA')];
+                    }
+                    if (!self.connection.getClientId()) {
+                        return [2 /*return*/, self.promise.reject(new Error$2(401, 'DB put impossible. Need a user logged in.'))];
+                    }
+                    if (!self.session.isReady()) {
+                        return [2 /*return*/, self.promise.reject(new Error$2(400, 'Need to be synchronised.'))];
+                    }
+                    if (data && typeof data === 'object' && Object.keys(data).indexOf('_id')) {
+                        _id = data._id;
+                    }
+                    if (!_id) {
+                        _id = self._generateObjectUniqueId(self.connection.fidjId);
+                    }
+                    if (self.connection.fidjCrypto) {
+                        crypto = {
+                            obj: self.connection,
+                            method: 'encrypt'
+                        };
+                    }
+                    return [2 /*return*/, self.session.put(data, _id, self.connection.getClientId(), self.sdk.org, self.connection.fidjVersion, crypto)];
+                });
+            });
         };
         ;
         InternalService.prototype.fidjRemoveInDb = function (data_id) {
-            var self = this;
-            self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
-            if (!self.sdk.useDB) {
-                self.logger.log('fidj.sdk.service.fidjRemoveInDb: you are not using DB - no remove available.');
-                return Promise.resolve();
-            }
-            if (!self.session.isReady()) {
-                return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
-            }
-            if (!data_id || typeof data_id !== 'string') {
-                return self.promise.reject(new Error$2(400, 'DB remove impossible. ' +
-                    'Need the data._id.'));
-            }
-            return self.session.remove(data_id);
+            return __awaiter(this, void 0, void 0, function () {
+                var self;
+                return __generator(this, function (_a) {
+                    self = this;
+                    self.logger.log('fidj.sdk.service.fidjRemoveInDb ', data_id);
+                    if (!self.sdk.useDB) {
+                        self.logger.log('fidj.sdk.service.fidjRemoveInDb: you are not using DB - no remove available.');
+                        return [2 /*return*/, Promise.resolve()];
+                    }
+                    if (!self.session.isReady()) {
+                        return [2 /*return*/, self.promise.reject(new Error$2(400, 'Need to be synchronised.'))];
+                    }
+                    if (!data_id || typeof data_id !== 'string') {
+                        return [2 /*return*/, self.promise.reject(new Error$2(400, 'DB remove impossible. ' +
+                                'Need the data._id.'))];
+                    }
+                    return [2 /*return*/, self.session.remove(data_id)];
+                });
+            });
         };
         ;
         InternalService.prototype.fidjFindInDb = function (data_id) {
-            var self = this;
-            if (!self.sdk.useDB) {
-                self.logger.log('fidj.sdk.service.fidjFindInDb: you are not using DB - no find available.');
-                return Promise.resolve();
-            }
-            if (!self.connection.getClientId()) {
-                return self.promise.reject(new Error$2(401, 'Find pb : need a user logged in.'));
-            }
-            if (!self.session.isReady()) {
-                return self.promise.reject(new Error$2(400, ' Need to be synchronised.'));
-            }
-            var crypto;
-            if (self.connection.fidjCrypto) {
-                crypto = {
-                    obj: self.connection,
-                    method: 'decrypt'
-                };
-            }
-            return self.session.get(data_id, crypto);
+            return __awaiter(this, void 0, void 0, function () {
+                var self, crypto;
+                return __generator(this, function (_a) {
+                    self = this;
+                    if (!self.sdk.useDB) {
+                        self.logger.log('fidj.sdk.service.fidjFindInDb: you are not using DB - no find available.');
+                        return [2 /*return*/, Promise.resolve()];
+                    }
+                    if (!self.connection.getClientId()) {
+                        return [2 /*return*/, self.promise.reject(new Error$2(401, 'Find pb : need a user logged in.'))];
+                    }
+                    if (!self.session.isReady()) {
+                        return [2 /*return*/, self.promise.reject(new Error$2(400, ' Need to be synchronised.'))];
+                    }
+                    if (self.connection.fidjCrypto) {
+                        crypto = {
+                            obj: self.connection,
+                            method: 'decrypt'
+                        };
+                    }
+                    return [2 /*return*/, self.session.get(data_id, crypto)];
+                });
+            });
         };
         ;
         InternalService.prototype.fidjFindAllInDb = function () {
-            var self = this;
-            if (!self.sdk.useDB) {
-                self.logger.log('fidj.sdk.service.fidjFindAllInDb: you are not using DB - no find available.');
-                return Promise.resolve([]);
-            }
-            if (!self.connection.getClientId()) {
-                return self.promise.reject(new Error$2(401, 'Need a user logged in.'));
-            }
-            if (!self.session.isReady()) {
-                return self.promise.reject(new Error$2(400, 'Need to be synchronised.'));
-            }
-            var crypto;
-            if (self.connection.fidjCrypto) {
-                crypto = {
-                    obj: self.connection,
-                    method: 'decrypt'
-                };
-            }
-            return self.session.getAll(crypto)
-                .then(function (results) {
-                self.connection.setCryptoSaltAsVerified();
-                return self.promise.resolve(results);
+            return __awaiter(this, void 0, void 0, function () {
+                var self, crypto;
+                return __generator(this, function (_a) {
+                    self = this;
+                    if (!self.sdk.useDB) {
+                        self.logger.log('fidj.sdk.service.fidjFindAllInDb: you are not using DB - no find available.');
+                        return [2 /*return*/, Promise.resolve([])];
+                    }
+                    if (!self.connection.getClientId()) {
+                        return [2 /*return*/, self.promise.reject(new Error$2(401, 'Need a user logged in.'))];
+                    }
+                    if (!self.session.isReady()) {
+                        return [2 /*return*/, self.promise.reject(new Error$2(400, 'Need to be synchronised.'))];
+                    }
+                    if (self.connection.fidjCrypto) {
+                        crypto = {
+                            obj: self.connection,
+                            method: 'decrypt'
+                        };
+                    }
+                    return [2 /*return*/, self.session.getAll(crypto)
+                            .then(function (results) {
+                            self.connection.setCryptoSaltAsVerified();
+                            return self.promise.resolve(results);
+                        })];
+                });
             });
         };
         ;
         InternalService.prototype.fidjSendOnEndpoint = function (key, verb, relativePath, data) {
-            var filter = {
-                key: key
-            };
-            var endpoints = this.fidjGetEndpoints(filter);
-            if (!endpoints || endpoints.length !== 1) {
-                return this.promise.reject(new Error$2(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
-            }
-            var endpointUrl = endpoints[0].url;
-            if (relativePath) {
-                endpointUrl = urljoin(endpointUrl, relativePath);
-            }
-            var jwt = this.connection.getIdToken();
-            var answer;
-            var query = new Ajax();
-            switch (verb) {
-                case 'POST':
-                    answer = query.post({
-                        url: endpointUrl,
-                        // not used : withCredentials: true,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'Authorization': 'Bearer ' + jwt
-                        },
-                        data: data
-                    });
-                    break;
-                case 'PUT':
-                    answer = query.put({
-                        url: endpointUrl,
-                        // not used : withCredentials: true,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'Authorization': 'Bearer ' + jwt
-                        },
-                        data: data
-                    });
-                    break;
-                case 'DELETE':
-                    answer = query.delete({
-                        url: endpointUrl,
-                        // not used : withCredentials: true,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'Authorization': 'Bearer ' + jwt
-                        },
-                    });
-                    break;
-                default:
-                    answer = query.get({
-                        url: endpointUrl,
-                        // not used : withCredentials: true,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'Authorization': 'Bearer ' + jwt
-                        },
-                    });
-            }
-            return answer;
+            return __awaiter(this, void 0, void 0, function () {
+                var filter, endpoints, endpointUrl, jwt, answer, query;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            filter = {
+                                key: key
+                            };
+                            return [4 /*yield*/, this.fidjGetEndpoints(filter)];
+                        case 1:
+                            endpoints = _a.sent();
+                            if (!endpoints || endpoints.length !== 1) {
+                                return [2 /*return*/, this.promise.reject(new Error$2(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'))];
+                            }
+                            endpointUrl = endpoints[0].url;
+                            if (relativePath) {
+                                endpointUrl = urljoin(endpointUrl, relativePath);
+                            }
+                            return [4 /*yield*/, this.connection.getIdToken()];
+                        case 2:
+                            jwt = _a.sent();
+                            query = new Ajax();
+                            switch (verb) {
+                                case 'POST':
+                                    answer = query.post({
+                                        url: endpointUrl,
+                                        // not used : withCredentials: true,
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'Authorization': 'Bearer ' + jwt
+                                        },
+                                        data: data
+                                    });
+                                    break;
+                                case 'PUT':
+                                    answer = query.put({
+                                        url: endpointUrl,
+                                        // not used : withCredentials: true,
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'Authorization': 'Bearer ' + jwt
+                                        },
+                                        data: data
+                                    });
+                                    break;
+                                case 'DELETE':
+                                    answer = query.delete({
+                                        url: endpointUrl,
+                                        // not used : withCredentials: true,
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'Authorization': 'Bearer ' + jwt
+                                        },
+                                    });
+                                    break;
+                                default:
+                                    answer = query.get({
+                                        url: endpointUrl,
+                                        // not used : withCredentials: true,
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'Authorization': 'Bearer ' + jwt
+                                        },
+                                    });
+                            }
+                            return [2 /*return*/, answer];
+                    }
+                });
+            });
         };
         ;
         InternalService.prototype.fidjGetIdToken = function () {
-            return this.connection.getIdToken();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    return [2 /*return*/, this.connection.getIdToken()];
+                });
+            });
         };
         ;
         // Internal functions
@@ -2384,52 +2764,75 @@
          * @param login
          * @param password
          * @param updateProperties
+         * @throws {ErrorInterface}
          */
         InternalService.prototype._loginInternal = function (login, password, updateProperties) {
-            var self = this;
-            self.logger.log('fidj.sdk.service._loginInternal');
-            if (!self.connection.isReady()) {
-                return self.promise.reject(new Error$2(403, 'Need an intialized FidjService'));
-            }
-            return new self.promise(function (resolve, reject) {
-                self.connection.logout()
-                    .then(function () {
-                    return self.connection.getClient().login(login, password, updateProperties);
-                })
-                    .catch(function (err) {
-                    return self.connection.getClient().login(login, password, updateProperties);
-                })
-                    .then(function (loginUser) {
-                    loginUser.email = login;
-                    resolve(loginUser);
-                })
-                    .catch(function (err) {
-                    self.logger.error('fidj.sdk.service._loginInternal error : ' + err);
-                    reject(err);
+            return __awaiter(this, void 0, void 0, function () {
+                var clientTokens, e_2;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            this.logger.log('fidj.sdk.service._loginInternal');
+                            if (!this.connection.isReady()) {
+                                throw new Error$2(403, 'Need an initialized FidjService');
+                            }
+                            return [4 /*yield*/, this.connection.logout()];
+                        case 1:
+                            _a.sent();
+                            _a.label = 2;
+                        case 2:
+                            _a.trys.push([2, 3, , 5]);
+                            clientTokens = this.connection.getClient().login(login, password, updateProperties);
+                            return [3 /*break*/, 5];
+                        case 3:
+                            e_2 = _a.sent();
+                            return [4 /*yield*/, this.connection.getClient().login(login, password, updateProperties)];
+                        case 4:
+                            clientTokens = _a.sent();
+                            return [3 /*break*/, 5];
+                        case 5: return [2 /*return*/, clientTokens];
+                    }
                 });
             });
         };
         ;
         InternalService.prototype._removeAll = function () {
-            this.connection.destroy();
-            return this.session.destroy();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    this.connection.destroy();
+                    return [2 /*return*/, this.session.destroy()];
+                });
+            });
         };
         ;
         InternalService.prototype._createSession = function (uid) {
-            var dbs = this.connection.getDBs({ filter: 'theBestOnes' });
-            if (!dbs || dbs.length === 0) {
-                this.logger.warn('Seems that you are in Demo mode or using Node (no remote DB).');
-            }
-            this.session.setRemote(dbs);
-            return this.session.create(uid);
+            return __awaiter(this, void 0, void 0, function () {
+                var dbs;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.connection.getDBs({ filter: 'theBestOnes' })];
+                        case 1:
+                            dbs = _a.sent();
+                            if (!dbs || dbs.length === 0) {
+                                this.logger.warn('Seems that you are in Demo mode or using Node (no remote DB).');
+                            }
+                            this.session.setRemote(dbs);
+                            return [2 /*return*/, this.session.create(uid)];
+                    }
+                });
+            });
         };
         ;
         InternalService.prototype._testPromise = function (a) {
-            if (a) {
-                return this.promise.resolve('test promise ok ' + a);
-            }
-            return new this.promise(function (resolve, reject) {
-                resolve('test promise ok');
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (a) {
+                        return [2 /*return*/, this.promise.resolve('test promise ok ' + a)];
+                    }
+                    return [2 /*return*/, new this.promise(function (resolve, reject) {
+                            resolve('test promise ok');
+                        })];
+                });
             });
         };
         ;
@@ -2457,23 +2860,13 @@
     InternalService._srvDataUniqId = 0;
 
     /**
-     * Angular2+ FidjService
+     * Angular FidjService
      * @see ModuleServiceInterface
      *
-     * @exemple
-     *      // ... after install :
-     *      // $ npm install --save-dev fidj
-     *      // then init your app.js & use it in your services
-     * TODO refresh gist :
-     * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.inject.js"></script>
-     *
-     * <script src="https://gist.githubusercontent.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46/raw/5fff69dd9c15f692a856db62cf334b724ef3f4ac/angular.fidj.sync.js"></script>
-     *
-     *
      */
-    exports.FidjService = /** @class */ (function () {
+    var FidjService = /** @class */ (function () {
         function FidjService() {
-            this.logger = new LoggerService(LoggerLevelEnum.ERROR);
+            this.logger = new LoggerService(exports.LoggerLevelEnum.ERROR);
             this.promise = Promise;
             this.fidjService = null;
             // let pouchdbRequired = PouchDB;
@@ -2481,73 +2874,113 @@
         }
         ;
         FidjService.prototype.init = function (fidjId, options) {
-            if (!this.fidjService) {
-                this.fidjService = new InternalService(this.logger, this.promise);
-            }
-            return this.fidjService.fidjInit(fidjId, options);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        this.fidjService = new InternalService(this.logger, this.promise);
+                    }
+                    return [2 /*return*/, this.fidjService.fidjInit(fidjId, options)];
+                });
+            });
         };
         ;
         FidjService.prototype.login = function (login, password) {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular2.login : not initialized.'));
-            }
-            return this.fidjService.fidjLogin(login, password);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(303, 'fidj.sdk.angular.login : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjLogin(login, password)];
+                });
+            });
         };
         ;
         FidjService.prototype.loginAsDemo = function (options) {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
-            }
-            return this.fidjService.fidjLoginInDemoMode(options);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjLoginInDemoMode(options)];
+                });
+            });
         };
         ;
         FidjService.prototype.isLoggedIn = function () {
             if (!this.fidjService) {
-                return false; // this.promise.reject('fidj.sdk.angular2.isLoggedIn : not initialized.');
+                return false; // this.promise.reject('fidj.sdk.angular.isLoggedIn : not initialized.');
             }
             return this.fidjService.fidjIsLogin();
         };
         ;
         FidjService.prototype.getRoles = function () {
-            if (!this.fidjService) {
-                return [];
-            }
-            return this.fidjService.fidjRoles();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!this.fidjService) {
+                                return [2 /*return*/, []];
+                            }
+                            return [4 /*yield*/, this.fidjService.fidjRoles()];
+                        case 1: return [2 /*return*/, _a.sent()];
+                    }
+                });
+            });
         };
         ;
         FidjService.prototype.getEndpoints = function () {
-            if (!this.fidjService) {
-                return [];
-            }
-            return this.fidjService.fidjGetEndpoints();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, []];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjGetEndpoints()];
+                });
+            });
         };
         ;
         FidjService.prototype.sendOnEndpoint = function (key, verb, relativePath, data) {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular2.loginAsDemo : not initialized.'));
-            }
-            return this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data)];
+                });
+            });
         };
         ;
         FidjService.prototype.getIdToken = function () {
-            if (!this.fidjService) {
-                return;
-            }
-            return this.fidjService.fidjGetIdToken();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjGetIdToken()];
+                });
+            });
         };
         ;
         FidjService.prototype.getMessage = function () {
-            if (!this.fidjService) {
-                return '';
-            }
-            return this.fidjService.fidjMessage();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, ''];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjMessage()];
+                });
+            });
         };
         ;
         FidjService.prototype.logout = function (force) {
-            if (force || !this.fidjService) {
-                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular2.logout : not initialized.'));
-            }
-            return this.fidjService.fidjLogout(force);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (force || !this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(303, 'fidj.sdk.angular.logout : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjLogout(force)];
+                });
+            });
         };
         ;
         /**
@@ -2567,10 +3000,14 @@
          *
          */
         FidjService.prototype.sync = function (fnInitFirstData) {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular2.sync : not initialized.'));
-            }
-            return this.fidjService.fidjSync(fnInitFirstData, this);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(401, 'fidj.sdk.angular.sync : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjSync(fnInitFirstData, this)];
+                });
+            });
         };
         ;
         /**
@@ -2580,10 +3017,14 @@
          * @returns
          */
         FidjService.prototype.put = function (data) {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular2.put : not initialized.'));
-            }
-            return this.fidjService.fidjPutInDb(data);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(401, 'fidj.sdk.angular.put : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjPutInDb(data)];
+                });
+            });
         };
         ;
         /**
@@ -2593,75 +3034,59 @@
          * @returns
          */
         FidjService.prototype.remove = function (id) {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular2.remove : not initialized.'));
-            }
-            return this.fidjService.fidjRemoveInDb(id);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(401, 'fidj.sdk.angular.remove : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjRemoveInDb(id)];
+                });
+            });
         };
         ;
         /**
          * Find
          */
         FidjService.prototype.find = function (id) {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular2.find : not initialized.'));
-            }
-            return this.fidjService.fidjFindInDb(id);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(401, 'fidj.sdk.angular.find : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjFindInDb(id)];
+                });
+            });
         };
         ;
         FidjService.prototype.findAll = function () {
-            if (!this.fidjService) {
-                return this.promise.reject(new Error$2(401, 'fidj.sdk.angular2.findAll : not initialized.'));
-            }
-            return this.fidjService.fidjFindAllInDb();
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (!this.fidjService) {
+                        return [2 /*return*/, this.promise.reject(new Error$2(401, 'fidj.sdk.angular.findAll : not initialized.'))];
+                    }
+                    return [2 /*return*/, this.fidjService.fidjFindAllInDb()];
+                });
+            });
         };
         ;
         return FidjService;
     }());
-    exports.FidjService = __decorate([
-        core.Injectable()
-    ], exports.FidjService);
-
-    /**
-     * `NgModule` which provides associated services.
-     *
-     * ...
-     *
-     * @stable
-     */
-    exports.FidjModule = /** @class */ (function () {
-        function FidjModule() {
-        }
-        return FidjModule;
-    }());
-    exports.FidjModule = __decorate([
-        core.NgModule({
-            imports: [
-                common.CommonModule
-            ],
-            declarations: [],
-            exports: [],
-            providers: [exports.FidjService]
-        })
-    ], exports.FidjModule);
-    /**
-     * module FidjModule
-     *
-     * exemple
-     *      // ... after install :
-     *      // $ npm install fidj
-     *      // then init your app.js & use it in your services
-     * TODO refresh gist :
-     * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
-     *
-     * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
-     */
+    FidjService.ɵprov = i0__namespace.ɵɵdefineInjectable({ factory: function FidjService_Factory() { return new FidjService(); }, token: FidjService, providedIn: "root" });
+    FidjService.decorators = [
+        { type: i0.Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    FidjService.ctorParameters = function () { return []; };
 
     /**
      * Generated bundle index. Do not edit.
      */
 
     exports.Base64 = Base64;
+    exports.Error = Error$2;
+    exports.FidjModule = FidjModule;
+    exports.FidjService = FidjService;
     exports.LocalStorage = LocalStorage;
     exports.Xor = Xor;
 

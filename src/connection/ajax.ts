@@ -127,11 +127,9 @@ export class Ajax {
             opt.headers = args.headers;
         }
 
-        return this.xhr
-            .post(opt.url, {
-                data: opt.data,
+        return this.xhr.post(opt.url, opt.data, {
                 headers: opt.headers,
-                timeout: 10000
+                // timeout: 10000
             })
             .then(res => {
                 if (res.status &&
@@ -156,8 +154,7 @@ export class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .put(opt.url, {
-                data: opt.data,
+            .put(opt.url, opt.data, {
                 headers: opt.headers,
                 timeout: 10000
             })
@@ -184,11 +181,11 @@ export class Ajax {
             opt.headers = args.headers;
         }
         return this.xhr
-            .delete(opt.url, {
-                data: opt.data,
-                headers: opt.headers,
-                timeout: 10000
-            })
+            .delete(opt.url, // no data
+                {
+                    headers: opt.headers,
+                    timeout: 10000
+                })
             // .delete(opt.url) // .send(opt)
             .then(res => {
                 if (res.status &&
@@ -216,7 +213,7 @@ export class Ajax {
         }
         return this.xhr
             .get(opt.url, {
-                data: opt.data,
+                // opt.data,
                 headers: opt.headers,
                 timeout: 10000
             })

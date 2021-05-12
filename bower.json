@@ -1,7 +1,7 @@
 {
   "name": "fidj",
-  "version": "2.1.52",
-  "description": "fidj.ovh js framework",
+  "version": "3.3.0",
+  "description": "api.fidj.ovh js framework",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ofidj/fidj.git"
@@ -23,10 +23,10 @@
   "homepage": "https://github.com/ofidj/fidj#readme",
   "dependencies": {
     "atob": "^2.1.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "localstorage-polyfill": "^1.0.1",
-    "pouchdb": "^7.1.1",
+    "pouchdb": "^7.2.2",
     "url-join": "^4.0.1"
   },
   "ignore": [
@@ -43,11 +43,6 @@
     "tsconfig.json",
     "tslint.json"
   ],
-  "angularjsDependencies": {
-    "angular": "^1.5.3",
-    "angular-mocks": "^1.5.3"
-  },
-  "angularjsMain": "fidj.angularjs.js",
   "main": "bundles/fidj.umd.js",
   "module": "fesm2015/fidj.js",
   "es2015": "fesm2015/fidj.js",

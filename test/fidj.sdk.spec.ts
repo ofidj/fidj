@@ -1,9 +1,9 @@
 import {InternalService} from '../src/sdk/internal.service';
 import {LoggerService} from '../src/sdk/logger.service';
 import {SessionCryptoInterface} from '../src/session';
-import {ConnectionFindOptionsInterface, Error as FidjError} from '../src/connection';
-import {Base64} from '../src/tools';
-import {EndpointFilterInterface, ErrorInterface, LoggerLevelEnum, ModuleServiceInitOptionsInterface} from '../src/sdk/interfaces';
+import {ClientUser, ConnectionFindOptionsInterface, Error as FidjError} from '../src/connection';
+import {Base64} from '../src';
+import {EndpointFilterInterface, ErrorInterface, LoggerLevelEnum, ModuleServiceInitOptionsInterface} from '../src';
 import createSpy = jasmine.createSpy;
 
 describe('fidj.sdk', () => {
@@ -70,7 +70,7 @@ describe('fidj.sdk', () => {
                 .then(() => {
                     done.fail('should fail');
                 })
-                .catch(function (err) {
+                .catch(() => {
                     expect(log.log).toHaveBeenCalled();
                     expect(log.error).toHaveBeenCalled();
                     expect(log.setLevel).toHaveBeenCalledTimes(1);
@@ -106,7 +106,8 @@ describe('fidj.sdk', () => {
                 })
                 .catch(function (err) {
                     expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(1);
-                    expect(err.equals(new FidjError(500, 'no connection'))).toBeTruthy();
+                    expect(err.code).toBe(500);
+                    expect(err.reason).toBe('no connection');
                     done();
                 });
 
@@ -116,7 +117,7 @@ describe('fidj.sdk', () => {
 
             const srv = new InternalService(_log, _q);
             spyOn((srv as any).connection, 'verifyConnectionStates').and.returnValue(_q.resolve());
-            spyOn((srv as any).connection, 'getApiEndpoints').and.returnValue([]);
+            spyOn((srv as any).connection, 'getApiEndpoints').and.returnValue(Promise.resolve([]));
 
             srv
                 .fidjInit('testAppWithoutEndpoint')
@@ -138,7 +139,7 @@ describe('fidj.sdk', () => {
 
             spyOn((srv as any), 'fidjIsLogin').and.returnValue(true);
             spyOn((srv as any).connection, 'verifyConnectionStates').and.returnValue(_q.resolve());
-            (srv as any).connection.getApiEndpoints = (opt: ConnectionFindOptionsInterface) => {
+            (srv as any).connection.getApiEndpoints = async (opt: ConnectionFindOptionsInterface) => {
                 if (opt.filter === 'theBestOldOne') {
                     return ['foundOneUrlBecause'];
                 }
@@ -163,7 +164,7 @@ describe('fidj.sdk', () => {
 
             const srv = new InternalService(_log, _q);
             spyOn((srv as any).connection, 'verifyConnectionStates').and.returnValue(_q.resolve());
-            spyOn((srv as any).connection, 'getApiEndpoints').and.returnValue(['http://endpoint/mock']);
+            spyOn((srv as any).connection, 'getApiEndpoints').and.returnValue(Promise.resolve(['http://endpoint/mock']));
             spyOn((srv as any).connection, 'setClient').and.returnValue({});
 
             srv
@@ -188,72 +189,56 @@ describe('fidj.sdk', () => {
 
         });
 
-        it('should fidjLogin KO : without initialisation', function (done) {
+        it('should fidjLogin KO : without initialisation', async () => {
 
             const srv = new InternalService(_log, _q);
-            srv
-                .fidjLogin(_login, _password)
-                .then(function (user) {
-                    expect(user).toBeUndefined('because we should catch error');
-                    done.fail('should catch');
-                })
-                .catch(function (err) {
-                    expect(err.equals(
-                        new FidjError(
-                            404,
-                            'Need an intialized FidjService'
-                        ))).toBeTruthy();
-                    done();
-                });
+            try {
+                const user = await srv.fidjLogin(_login, _password);
+                expect(user).toBeUndefined('because we should catch error');
+            } catch (err) {
+                expect(err.code).toEqual(404);
+                expect(err.reason).toEqual('Need an initialized FidjService');
+            }
         });
 
-        it('should fidjLogin OK : without using DB', function (done) {
+        it('should fidjLogin OK : without using DB', async () => {
 
             const srv = new InternalService(_log, _q);
             spyOn((srv as any).connection, 'verifyConnectionStates').and.returnValue(_q.resolve({}));
-            spyOn((srv as any).connection, 'getApiEndpoints').and.returnValue(['http://endpoint/mock']);
+            spyOn((srv as any).connection, 'getApiEndpoints').and.returnValue(Promise.resolve(['http://endpoint/mock']));
             spyOn((srv as any).connection, 'setClient').and.returnValue({});
-
-
             spyOn((srv as any).connection, 'isReady').and.returnValue(true);
             spyOn((srv as any), '_removeAll').and.returnValue(Promise.resolve());
             spyOn((srv as any), '_createSession').and.returnValue(Promise.resolve());
             spyOn((srv as any), '_loginInternal').and.returnValue(Promise.resolve({}));
-            spyOn((srv as any).connection, 'setConnection').and.returnValue(null)
+            spyOn((srv as any).connection, 'setConnection').and.returnValue(Promise.resolve(null))
             spyOn((srv as any).session, 'sync').and.returnValue(Promise.resolve());
             spyOn((srv as any).connection, 'getClientId').and.returnValue('clientId');
             spyOn((srv as any).connection, 'getUser').and.returnValue({id: 'getUser'});
 
-            srv
-                .fidjInit('testAppProd', {logLevel: LoggerLevelEnum.NONE, prod: false, crypto: false, useDB: false})
-                .then(function (value) {
-                    expect(value).toBeUndefined();
-                    expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.getApiEndpoints).toHaveBeenCalledTimes(2);
-                    expect((srv as any).connection.setClient).toHaveBeenCalledTimes(1);
-                    return srv.fidjLogin(_login, _password);
-                })
-                .then(function (user) {
-                    expect(user.id).toBe('getUser');
-                    expect((srv as any).connection.isReady).toHaveBeenCalledTimes(1);
-                    expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(2);
-                    expect((srv as any)._createSession).toHaveBeenCalledTimes(1);
-                    expect((srv as any)._loginInternal).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.setConnection).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.sync).toHaveBeenCalledTimes(0);
-                    expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(0);
-                    expect((srv as any).connection.getUser).toHaveBeenCalledTimes(1);
+            const value = await srv.fidjInit('testAppProd', {logLevel: LoggerLevelEnum.NONE, prod: false, crypto: false, useDB: false});
 
-                    done();
-                })
-                .catch(function (err) {
-                    done.fail(err);
-                });
+            expect(value).toBeUndefined();
+            expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.getApiEndpoints).toHaveBeenCalledTimes(2);
+            expect((srv as any).connection.setClient).toHaveBeenCalledTimes(1);
+
+            const user = await srv.fidjLogin(_login, _password);
+
+            expect(user.id).toBe('getUser');
+            expect((srv as any).connection.isReady).toHaveBeenCalledTimes(1);
+            expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(2);
+            expect((srv as any)._createSession).toHaveBeenCalledTimes(1);
+            expect((srv as any)._loginInternal).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.sync).toHaveBeenCalledTimes(0);
+            expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(0);
+            expect((srv as any).connection.getUser).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.setConnection).toHaveBeenCalledTimes(1);
 
         });
 
-        it('should fidjLogin OK', function (done) {
+        it('should fidjLogin OK', async () => {
 
             const srv = new InternalService(_log, _q);
 
@@ -262,65 +247,50 @@ describe('fidj.sdk', () => {
             spyOn((srv as any).connection, 'verifyConnectionStates').and.returnValue(Promise.resolve({}));
             spyOn((srv as any), '_createSession').and.returnValue(Promise.resolve());
             spyOn((srv as any), '_loginInternal').and.returnValue(Promise.resolve({}));
-            spyOn((srv as any).connection, 'setConnection').and.returnValue(null)
+            spyOn((srv as any).connection, 'setConnection').and.returnValue(Promise.resolve(null))
             spyOn((srv as any).session, 'sync').and.returnValue(Promise.resolve());
             spyOn((srv as any).connection, 'getClientId').and.returnValue('clientId');
             spyOn((srv as any).connection, 'getUser').and.returnValue({id: 'getUser'});
 
-            srv
-                .fidjLogin(_login, _password)
-                .then(function (user) {
-                    expect(user.id).toBe('getUser');
-                    expect((srv as any).connection.isReady).toHaveBeenCalledTimes(1);
-                    expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(1);
-                    expect((srv as any)._createSession).toHaveBeenCalledTimes(1);
-                    expect((srv as any)._loginInternal).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.setConnection).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.sync).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.getUser).toHaveBeenCalledTimes(1);
-                    done();
-                })
-                .catch(function (err) {
-                    done.fail(err);
-                });
+            const user = await srv.fidjLogin(_login, _password);
+
+            expect(user.id).toBe('getUser');
+            expect((srv as any).connection.isReady).toHaveBeenCalledTimes(1);
+            expect((srv as any)._removeAll).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.verifyConnectionStates).toHaveBeenCalledTimes(1);
+            expect((srv as any)._createSession).toHaveBeenCalledTimes(1);
+            expect((srv as any)._loginInternal).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.sync).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.getUser).toHaveBeenCalledTimes(1);
         });
 
-        it('should fidjLoginInDemoMode OK', function (done) {
+        it('should fidjLoginInDemoMode OK', async () => {
 
             const srv = new InternalService(_log, _q);
 
             spyOn((srv as any), '_removeAll').and.returnValue(Promise.resolve());
-            spyOn((srv as any).connection, 'setConnectionOffline').and.returnValue(null);
+            spyOn((srv as any).connection, 'setConnectionOffline').and.returnValue(Promise.resolve(null));
             spyOn((srv as any), '_createSession').and.returnValue(Promise.resolve());
             spyOn((srv as any).connection, 'getUser').and.returnValue({id: 'getUser'});
             spyOn(Base64, 'encode').and.returnValue('encoded');
 
-            srv
-                .fidjLoginInDemoMode()
-                .then(function (user) {
-                    expect(user.id).toBe('getUser');
+            const user = await srv.fidjLoginInDemoMode()
 
-                    expect((srv as any).connection.getUser).toHaveBeenCalledTimes(1);
-                    expect((srv as any)._createSession).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.setConnectionOffline).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.setConnectionOffline).toHaveBeenCalledWith({
-                        accessToken: 'encoded.encoded.encoded',
-                        idToken: 'encoded.encoded.encoded',
-                        refreshToken: 'encoded.encoded.encoded'
-                    });
-                    expect(Base64.encode).toHaveBeenCalledTimes(2);
-                    expect(Base64.encode).toHaveBeenCalledWith('{}');
-                    // expect(Base64.encode)
-                    // .toHaveBeenCalledWith('{"roles":[],"message":"demo","endpoints":{},"dbs":[],"exp":1520541290848}');
+            expect(user.id).toBe('getUser');
 
-                    done();
-                })
-                .catch(function (err) {
-                    done.fail(err);
-                });
-
+            expect((srv as any).connection.getUser).toHaveBeenCalledTimes(1);
+            expect((srv as any)._createSession).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.setConnectionOffline).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.setConnectionOffline).toHaveBeenCalledWith({
+                accessToken: 'encoded.encoded.encoded',
+                idToken: 'encoded.encoded.encoded',
+                refreshToken: 'encoded.encoded.encoded'
+            });
+            expect(Base64.encode).toHaveBeenCalledTimes(2);
+            expect(Base64.encode).toHaveBeenCalledWith('{}');
+            // expect(Base64.encode)
+            // .toHaveBeenCalledWith('{"roles":[],"message":"demo","endpoints":{},"dbs":[],"exp":1520541290848}');
 
         });
 
@@ -406,10 +376,10 @@ describe('fidj.sdk', () => {
             const launchIfEmpty = createSpy();
 
             srv
-                .fidjSync(launchIfEmpty, 'noarg')
+                .fidjSync(launchIfEmpty, 'noArg')
                 .then(() => {
                     expect(launchIfEmpty).toHaveBeenCalledTimes(1);
-                    expect(launchIfEmpty).toHaveBeenCalledWith('noarg');
+                    expect(launchIfEmpty).toHaveBeenCalledWith('noArg');
 
                     expect((srv as any).connection.getDBs).toHaveBeenCalledTimes(1);
                     expect((srv as any).session.setRemote).toHaveBeenCalledTimes(1);
@@ -433,7 +403,7 @@ describe('fidj.sdk', () => {
 
         });
 
-        it('should fidjSync KO : with a fail emptyFn', function (done) {
+        it('should fidjSync KO : with a fail emptyFn', async () => {
             const srv = new InternalService(_log, _q);
             (srv as any).connection.fidjId = 'mockedId';
             spyOn((srv as any).connection, 'getDBs').and.returnValue([]);
@@ -447,38 +417,35 @@ describe('fidj.sdk', () => {
             spyOn((srv as any).connection, 'refreshConnection').and.returnValue(null);
 
             const mock = {
-                launchIfEmpty: (args: any) => {
+                launchIfEmpty: (arg) => {
                     return srv.fidjPutInDb('test');
                 }
             };
             spyOn(mock, 'launchIfEmpty').and.callThrough();
 
-            srv
-                .fidjSync(mock.launchIfEmpty, 'noarg')
-                .then(() => {
-                    done.fail();
-                })
-                .catch(function (err) {
+            try {
+                await srv.fidjSync(mock.launchIfEmpty, 'oneArg');
+                expect('fail').toBeUndefined();
+            } catch (err) {
 
-                    expect(err.code).toBe(408);
-                    expect(err.reason).toBe('need db');
-                    expect(mock.launchIfEmpty).toHaveBeenCalledTimes(1);
-                    expect(mock.launchIfEmpty).toHaveBeenCalledWith('noarg');
+                expect(err.code).toBe(408);
+                expect(err.reason).toBe('need db');
+                expect(mock.launchIfEmpty).toHaveBeenCalledTimes(1);
+                expect(mock.launchIfEmpty).toHaveBeenCalledWith('oneArg');
 
-                    expect((srv as any).connection.getDBs).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.setRemote).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.create).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.create).toHaveBeenCalledWith('mockedId');
-                    expect((srv as any).session.sync).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(3);
-                    expect((srv as any).session.isEmpty).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.isReady).toHaveBeenCalledTimes(1);
-                    done();
-                });
+                expect((srv as any).connection.getDBs).toHaveBeenCalledTimes(1);
+                expect((srv as any).session.setRemote).toHaveBeenCalledTimes(1);
+                expect((srv as any).session.create).toHaveBeenCalledTimes(1);
+                expect((srv as any).session.create).toHaveBeenCalledWith('mockedId');
+                expect((srv as any).session.sync).toHaveBeenCalledTimes(1);
+                expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(3);
+                expect((srv as any).session.isEmpty).toHaveBeenCalledTimes(1);
+                expect((srv as any).session.isReady).toHaveBeenCalledTimes(1);
+            }
 
         });
 
-        it('should fidjSync OK', function (done) {
+        it('should fidjSync OK', async () => {
             const srv = new InternalService(_log, _q);
             (srv as any).connection.fidjId = 'mockedId';
             spyOn((srv as any).connection, 'getDBs').and.returnValue([]);
@@ -492,37 +459,29 @@ describe('fidj.sdk', () => {
             spyOn((srv as any).connection, 'refreshConnection').and.returnValue(null);
 
             const mock = {
-                launchIfEmpty: (args: any) => {
+                launchIfEmpty: (arg) => {
                     return 'success';
                 }
             };
             spyOn(mock, 'launchIfEmpty').and.callThrough();
 
-            srv
-                .fidjSync(mock.launchIfEmpty, 'noarg')
-                .then(() => {
-                    expect(mock.launchIfEmpty).toHaveBeenCalledTimes(1);
-                    expect(mock.launchIfEmpty).toHaveBeenCalledWith('noarg');
+            await srv.fidjSync(mock.launchIfEmpty, 'oneArg');
 
-                    expect((srv as any).connection.getDBs).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.setRemote).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.create).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.create).toHaveBeenCalledWith('mockedId');
-                    expect((srv as any).session.sync).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.isEmpty).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.isReady).toHaveBeenCalledTimes(0);
-                    expect((srv as any).session.info).toHaveBeenCalledTimes(1);
-                    expect((srv as any).connection.refreshConnection).toHaveBeenCalledTimes(1);
-                    expect((srv as any).session.dbLastSync).toBeLessThanOrEqual(new Date().getTime());
-                    expect((srv as any).session.dbRecordCount).toBe(2);
+            expect(mock.launchIfEmpty).toHaveBeenCalledTimes(1);
+            expect(mock.launchIfEmpty).toHaveBeenCalledWith('oneArg');
 
-                    done();
-                })
-                .catch(function (err) {
-                    done.fail(err);
-                });
-
+            expect((srv as any).connection.getDBs).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.setRemote).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.create).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.create).toHaveBeenCalledWith('mockedId');
+            expect((srv as any).session.sync).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.getClientId).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.isEmpty).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.isReady).toHaveBeenCalledTimes(0);
+            expect((srv as any).session.info).toHaveBeenCalledTimes(1);
+            expect((srv as any).connection.refreshConnection).toHaveBeenCalledTimes(1);
+            expect((srv as any).session.dbLastSync).toBeLessThanOrEqual(new Date().getTime());
+            expect((srv as any).session.dbRecordCount).toBe(2);
         });
 
         it('should fidjRemoveInDb TODO', function (done) {
@@ -592,7 +551,7 @@ describe('fidj.sdk', () => {
                 });
         });
 
-        it('should fidjGetEndpoints', function () {
+        it('should fidjGetEndpoints', async () => {
 
             let accessPayload;
             let filter: EndpointFilterInterface;
@@ -602,12 +561,12 @@ describe('fidj.sdk', () => {
             // bad endpoints
             accessPayload = {endpoints: {}};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints().length).toBe(0);
+            expect((await srv.fidjGetEndpoints()).length).toBe(0);
 
             // empty endpoints & no filter
             accessPayload = {endpoints: []};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints().length).toBe(0);
+            expect((await srv.fidjGetEndpoints()).length).toBe(0);
 
             // 2 endpoints & no filter
             accessPayload = {
@@ -616,8 +575,8 @@ describe('fidj.sdk', () => {
                     {key: 'my endpoint2', url: 'http://test2.com'}]
             };
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints().length).toBe(2);
-            expect(JSON.stringify(srv.fidjGetEndpoints())).toBe(JSON.stringify(accessPayload.endpoints));
+            expect((await srv.fidjGetEndpoints()).length).toBe(2);
+            expect(JSON.stringify(await srv.fidjGetEndpoints())).toBe(JSON.stringify(accessPayload.endpoints));
 
             // 3 endpoints , one blocked & no filter (showBlocked = false by default)
             accessPayload = {
@@ -627,35 +586,35 @@ describe('fidj.sdk', () => {
                     {key: 'my endpoint3', url: 'http://test3.com', blocked: false}]
             };
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints().length).toBe(2);
-            expect(srv.fidjGetEndpoints()[1].key).toBe('my endpoint3');
-            expect(!srv.fidjGetEndpoints()[1].blocked).toBe(true);
+            expect((await srv.fidjGetEndpoints()).length).toBe(2);
+            expect((await srv.fidjGetEndpoints())[1].key).toBe('my endpoint3');
+            expect(!(await srv.fidjGetEndpoints())[1].blocked).toBe(true);
 
             // 3 endpoints , one blocked & filter on key (showBlocked = false by default)
             filter = {key: 'my endpoint3'};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints(filter).length).toBe(1);
-            expect(srv.fidjGetEndpoints(filter)[0].key).toBe('my endpoint3');
-            expect(!srv.fidjGetEndpoints(filter)[0].blocked).toBe(true);
+            expect((await srv.fidjGetEndpoints(filter)).length).toBe(1);
+            expect((await srv.fidjGetEndpoints(filter))[0].key).toBe('my endpoint3');
+            expect(!(await srv.fidjGetEndpoints(filter))[0].blocked).toBe(true);
 
             // 3 endpoints , one blocked & filter on key blocked (showBlocked = false by default)
             filter = {key: 'my endpoint2'};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints(filter).length).toBe(0);
+            expect((await srv.fidjGetEndpoints(filter)).length).toBe(0);
 
             // 3 endpoints , one blocked & filter bypass showBlocked
             filter = {showBlocked: true};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints(filter).length).toBe(3);
-            expect(srv.fidjGetEndpoints(filter)[1].key).toBe('my endpoint2');
-            expect(!srv.fidjGetEndpoints(filter)[1].blocked).toBe(false);
+            expect((await srv.fidjGetEndpoints(filter)).length).toBe(3);
+            expect((await srv.fidjGetEndpoints(filter))[1].key).toBe('my endpoint2');
+            expect(!(await srv.fidjGetEndpoints(filter))[1].blocked).toBe(false);
 
             // 3 endpoints , one blocked & filter on key and bypass showBlocked
             filter = {key: 'my endpoint2', showBlocked: true};
             getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            expect(srv.fidjGetEndpoints(filter).length).toBe(1);
-            expect(srv.fidjGetEndpoints(filter)[0].key).toBe('my endpoint2');
-            expect(!srv.fidjGetEndpoints(filter)[0].blocked).toBe(false);
+            expect((await srv.fidjGetEndpoints(filter)).length).toBe(1);
+            expect((await srv.fidjGetEndpoints(filter))[0].key).toBe('my endpoint2');
+            expect(!(await srv.fidjGetEndpoints(filter))[0].blocked).toBe(false);
 
         });
 
@@ -667,9 +626,9 @@ describe('fidj.sdk', () => {
 
             // no endpoint -> catch error
             accessPayload = {endpoints: []};
-            getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
+            getAccessPayload.and.returnValue(Promise.resolve(JSON.stringify(accessPayload)));
             srv.fidjSendOnEndpoint('none', 'POST', '/', {})
-                .then(result => done.fail('should fail'))
+                .then(() => done.fail('should fail'))
                 .catch((err: ErrorInterface) => {
                     expect(err.code).toBe(400);
                     expect(err.reason).toBe('fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.');
@@ -677,7 +636,7 @@ describe('fidj.sdk', () => {
                 })
         });
 
-        it('should fidjSendOnEndpoint OK', function (done) {
+        it('should fidjSendOnEndpoint OK', async () => {
 
             const MOCKED_RESPONSE = 'mocked response';
             jasmine.Ajax.stubRequest(/.*test*/).andReturn(
@@ -691,7 +650,7 @@ describe('fidj.sdk', () => {
             let accessPayload;
             const srv = new InternalService(_log, _q);
             const getAccessPayload = spyOn((srv as any).connection, 'getAccessPayload');
-            spyOn((srv as any).connection, 'getIdToken').and.returnValue('aFakeJwt');
+            spyOn((srv as any).connection, 'getIdToken').and.returnValue(Promise.resolve('aFakeJwt'));
 
             // 3 endpoints , one blocked & no filter (showBlocked = false by default)
             accessPayload = {
@@ -700,43 +659,33 @@ describe('fidj.sdk', () => {
                     {key: 'my endpoint2', url: 'http://test2.com', blocked: true},
                     {key: 'my endpoint3', url: 'http://test3.com', blocked: false}]
             };
-            getAccessPayload.and.returnValue(JSON.stringify(accessPayload));
-            srv.fidjSendOnEndpoint('my endpoint1', 'POST', '/', {mock: true})
-                .then(result => {
-                    expect(result).toBe(MOCKED_RESPONSE);
-                    const request = jasmine.Ajax.requests.mostRecent();
-                    expect(request.url).toBe('http://test1.com/');
+            getAccessPayload.and.returnValue(Promise.resolve(JSON.stringify(accessPayload)));
+            const result = await srv.fidjSendOnEndpoint('my endpoint1', 'POST', '/', {mock: true});
+            expect(result).toBe(MOCKED_RESPONSE);
+            const request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe('http://test1.com/');
 
-                    // expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
-                    expect(JSON.parse(request.params).headers.Authorization).toBe('Bearer aFakeJwt');
-                    done();
-                })
-                .catch(err => {
-                    done.fail(err);
-                });
-
+            // expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
+            expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
         });
 
-        it('should _loginInternal KO : without initialisation', function (done) {
+        it('should _loginInternal KO : without initialisation', async () => {
 
             const srv = new InternalService(_log, _q);
-            (srv as any)
-                ._loginInternal(_login, _password, _updateProperties)
-                .then(function (user) {
-                    expect(user).toBeUndefined('because we should catch error');
-                    done.fail('should catch');
-                })
-                .catch(function (err) {
-                    expect(err.equals(new FidjError(403, 'Need an intialized FidjService'))).toBeTruthy();
-                    done();
-                });
+            try {
+                const user = await (srv as any)._loginInternal(_login, _password, _updateProperties)
+                expect(user).toBeUndefined('because we should catch error');
+            } catch (err) {
+                expect(err.code).toBe(403);
+                expect(err.reason).toBe('Need an initialized FidjService');
+            }
         });
 
         it('should _generateObjectUniqueId', () => {
 
             const srv = new InternalService(_log, _q);
-            const id = (srv as any)._generateObjectUniqueId('appName', 'type', 'name');
-            expect(id.indexOf('atypename20')).toBe(0);
+            const id = (srv as any)._generateObjectUniqueId('appName', 'Type', 'Name');
+            expect(id.indexOf('aTypeName20')).toBe(0);
 
             const id2 = (srv as any)._generateObjectUniqueId('appName', 'type', 'name');
             expect(id2).not.toBe(id);

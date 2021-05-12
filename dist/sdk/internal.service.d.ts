@@ -1,4 +1,5 @@
 import { LoggerInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface, ErrorInterface, EndpointInterface, EndpointFilterInterface } from './interfaces';
+import { ClientUser } from '../connection';
 /**
  * please use its angular.js or angular.io wrapper
  * usefull only for fidj dev team
@@ -16,23 +17,25 @@ export declare class InternalService {
      * Check uri
      * Done each app start
      *
+     * @param fidjId
      * @param options Optional settings
      * @param options.fidjId  required use your customized endpoints
      * @param options.fidjSalt required use your customized endpoints
      * @param options.fidjVersion required use your customized endpoints
      * @param options.devMode optional default false, use your customized endpoints
      * @returns
+     * @throws {ErrorInterface}
      */
-    fidjInit(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void | ErrorInterface>;
+    fidjInit(fidjId: string, options?: ModuleServiceInitOptionsInterface): Promise<void>;
     /**
      * Call it if fidjIsLogin() === false
      * Erase all (db & storage)
      *
      * @param login
      * @param password
-     * @returns
+     * @throws {ErrorInterface}
      */
-    fidjLogin(login: string, password: string): Promise<any | ErrorInterface>;
+    fidjLogin(login: string, password: string): Promise<ClientUser>;
     /**
      *
      * @param options
@@ -41,10 +44,10 @@ export declare class InternalService {
      * @returns
      */
     fidjLoginInDemoMode(options?: ModuleServiceLoginOptionsInterface): Promise<any | ErrorInterface>;
-    fidjGetEndpoints(filter?: EndpointFilterInterface): Array<EndpointInterface>;
-    fidjRoles(): Array<string>;
-    fidjMessage(): string;
     fidjIsLogin(): boolean;
+    fidjGetEndpoints(filter?: EndpointFilterInterface): Promise<Array<EndpointInterface>>;
+    fidjRoles(): Promise<Array<string>>;
+    fidjMessage(): Promise<string>;
     fidjLogout(force?: boolean): Promise<void | ErrorInterface>;
     /**
      * Synchronize DB
@@ -59,14 +62,15 @@ export declare class InternalService {
     fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface>;
     fidjFindInDb(data_id: string): Promise<any | ErrorInterface>;
     fidjFindAllInDb(): Promise<Array<any> | ErrorInterface>;
-    fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any): Promise<any | ErrorInterface>;
-    fidjGetIdToken(): string;
+    fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any): Promise<any>;
+    fidjGetIdToken(): Promise<string>;
     /**
      * Logout then Login
      *
      * @param login
      * @param password
      * @param updateProperties
+     * @throws {ErrorInterface}
      */
     private _loginInternal;
     protected _removeAll(): Promise<void | ErrorInterface>;
