@@ -4,7 +4,6 @@ import { EndpointInterface, ErrorInterface, ModuleServiceInitOptionsInterface, M
  * @see ModuleServiceInterface
  *
  */
-import * as ɵngcc0 from '@angular/core';
 export declare class FidjService implements ModuleServiceInterface {
     private logger;
     private fidjService;
@@ -56,7 +55,4 @@ export declare class FidjService implements ModuleServiceInterface {
      */
     find(id: string): Promise<any | ErrorInterface>;
     findAll(): Promise<any[] | ErrorInterface>;
-    static ɵfac: ɵngcc0.ɵɵFactoryDef<FidjService, never>;
 }
-
-//# sourceMappingURL=angular.service.d.ts.map
