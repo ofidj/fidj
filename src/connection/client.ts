@@ -65,6 +65,7 @@ export class Client {
         }
 
         const urlLogin = this.URI + '/users';
+
         const dataLogin = {
             name: login,
             username: login,

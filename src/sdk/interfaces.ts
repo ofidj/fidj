@@ -1,5 +1,3 @@
-// export namespace fidj {
-// }
 export interface ErrorInterface {
     code: number;
     reason: string;
@@ -14,6 +12,13 @@ export interface EndpointInterface {
 export interface EndpointFilterInterface {
     key?: string;
     showBlocked?: boolean;
+}
+
+export interface EndpointCallInterface {
+    verb: string;
+    key?: string;
+    relativePath?: string;
+    data?: any;
 }
 
 /**
@@ -36,7 +41,7 @@ export interface ModuleServiceInterface {
 
     getEndpoints(): Promise<Array<EndpointInterface>>;
 
-    sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface>;
+    sendOnEndpoint(input: EndpointCallInterface): Promise<any | ErrorInterface>;
 
     getIdToken(): Promise<string | ErrorInterface>;
 

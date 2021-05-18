@@ -627,7 +627,7 @@ describe('fidj.sdk', () => {
             // no endpoint -> catch error
             accessPayload = {endpoints: []};
             getAccessPayload.and.returnValue(Promise.resolve(JSON.stringify(accessPayload)));
-            srv.fidjSendOnEndpoint('none', 'POST', '/', {})
+            srv.fidjSendOnEndpoint({key: 'none', verb: 'POST', relativePath: '/', data: {}})
                 .then(() => done.fail('should fail'))
                 .catch((err: ErrorInterface) => {
                     expect(err.code).toBe(400);
@@ -660,7 +660,7 @@ describe('fidj.sdk', () => {
                     {key: 'my endpoint3', url: 'http://test3.com', blocked: false}]
             };
             getAccessPayload.and.returnValue(Promise.resolve(JSON.stringify(accessPayload)));
-            const result = await srv.fidjSendOnEndpoint('my endpoint1', 'POST', '/', {mock: true});
+            const result = await srv.fidjSendOnEndpoint({key: 'my endpoint1', verb: 'POST', relativePath: '/', data: {mock: true}});
             expect(result).toBe(MOCKED_RESPONSE);
             const request = jasmine.Ajax.requests.mostRecent();
             expect(request.url).toBe('http://test1.com/');
