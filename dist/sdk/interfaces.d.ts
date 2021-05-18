@@ -11,6 +11,12 @@ export interface EndpointFilterInterface {
     key?: string;
     showBlocked?: boolean;
 }
+export interface EndpointCallInterface {
+    verb: string;
+    key?: string;
+    relativePath?: string;
+    data?: any;
+}
 /**
  * Interface used by all InternalService wrappers (angular.js, angular.io)
  *
@@ -24,7 +30,7 @@ export interface ModuleServiceInterface {
     isLoggedIn(): boolean;
     getRoles(): Promise<Array<string>>;
     getEndpoints(): Promise<Array<EndpointInterface>>;
-    sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface>;
+    sendOnEndpoint(input: EndpointCallInterface): Promise<any | ErrorInterface>;
     getIdToken(): Promise<string | ErrorInterface>;
     getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;

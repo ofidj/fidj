@@ -641,7 +641,7 @@
     }
 
     // bumped version via gulp
-    var version = '3.3.1';
+    var version = '3.3.2';
 
     var ClientToken = /** @class */ (function () {
         function ClientToken(id, type, data) {
@@ -2673,57 +2673,55 @@
             });
         };
         ;
-        InternalService.prototype.fidjSendOnEndpoint = function (key, verb, relativePath, data) {
+        InternalService.prototype.fidjSendOnEndpoint = function (input) {
             return __awaiter(this, void 0, void 0, function () {
-                var filter, endpoints, endpointUrl, jwt, answer, query;
+                var filter, endpoints, firstEndpointUrl, jwt, answer, query;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            filter = {
-                                key: key
-                            };
+                            filter = input.key ? { key: input.key } : null;
                             return [4 /*yield*/, this.fidjGetEndpoints(filter)];
                         case 1:
                             endpoints = _a.sent();
                             if (!endpoints || endpoints.length !== 1) {
-                                return [2 /*return*/, this.promise.reject(new Error$2(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'))];
+                                throw new Error$2(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.');
                             }
-                            endpointUrl = endpoints[0].url;
-                            if (relativePath) {
-                                endpointUrl = urljoin(endpointUrl, relativePath);
+                            firstEndpointUrl = endpoints[0].url;
+                            if (input.relativePath) {
+                                firstEndpointUrl = urljoin(firstEndpointUrl, input.relativePath);
                             }
                             return [4 /*yield*/, this.connection.getIdToken()];
                         case 2:
                             jwt = _a.sent();
                             query = new Ajax();
-                            switch (verb) {
+                            switch (input.verb) {
                                 case 'POST':
                                     answer = query.post({
-                                        url: endpointUrl,
+                                        url: firstEndpointUrl,
                                         // not used : withCredentials: true,
                                         headers: {
                                             'Content-Type': 'application/json',
                                             'Accept': 'application/json',
                                             'Authorization': 'Bearer ' + jwt
                                         },
-                                        data: data
+                                        data: input.data ? input.data : {}
                                     });
                                     break;
                                 case 'PUT':
                                     answer = query.put({
-                                        url: endpointUrl,
+                                        url: firstEndpointUrl,
                                         // not used : withCredentials: true,
                                         headers: {
                                             'Content-Type': 'application/json',
                                             'Accept': 'application/json',
                                             'Authorization': 'Bearer ' + jwt
                                         },
-                                        data: data
+                                        data: input.data ? input.data : {}
                                     });
                                     break;
                                 case 'DELETE':
                                     answer = query.delete({
-                                        url: endpointUrl,
+                                        url: firstEndpointUrl,
                                         // not used : withCredentials: true,
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -2734,7 +2732,7 @@
                                     break;
                                 default:
                                     answer = query.get({
-                                        url: endpointUrl,
+                                        url: firstEndpointUrl,
                                         // not used : withCredentials: true,
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -2939,13 +2937,13 @@
             });
         };
         ;
-        FidjService.prototype.sendOnEndpoint = function (key, verb, relativePath, data) {
+        FidjService.prototype.sendOnEndpoint = function (input) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     if (!this.fidjService) {
                         return [2 /*return*/, this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'))];
                     }
-                    return [2 /*return*/, this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data)];
+                    return [2 /*return*/, this.fidjService.fidjSendOnEndpoint(input)];
                 });
             });
         };

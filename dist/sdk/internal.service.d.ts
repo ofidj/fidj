@@ -1,4 +1,4 @@
-import { LoggerInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface, ErrorInterface, EndpointInterface, EndpointFilterInterface } from './interfaces';
+import { LoggerInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface, ErrorInterface, EndpointInterface, EndpointFilterInterface, EndpointCallInterface } from './interfaces';
 import { ClientUser } from '../connection';
 /**
  * please use its angular.js or angular.io wrapper
@@ -62,7 +62,7 @@ export declare class InternalService {
     fidjRemoveInDb(data_id: string): Promise<void | ErrorInterface>;
     fidjFindInDb(data_id: string): Promise<any | ErrorInterface>;
     fidjFindAllInDb(): Promise<Array<any> | ErrorInterface>;
-    fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any): Promise<any>;
+    fidjSendOnEndpoint(input: EndpointCallInterface): Promise<any>;
     fidjGetIdToken(): Promise<string>;
     /**
      * Logout then Login

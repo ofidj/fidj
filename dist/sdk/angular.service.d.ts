@@ -1,4 +1,4 @@
-import { EndpointInterface, ErrorInterface, ModuleServiceInitOptionsInterface, ModuleServiceInterface, ModuleServiceLoginOptionsInterface } from './interfaces';
+import { EndpointCallInterface, EndpointInterface, ErrorInterface, ModuleServiceInitOptionsInterface, ModuleServiceInterface, ModuleServiceLoginOptionsInterface } from './interfaces';
 /**
  * Angular FidjService
  * @see ModuleServiceInterface
@@ -15,7 +15,7 @@ export declare class FidjService implements ModuleServiceInterface {
     isLoggedIn(): boolean;
     getRoles(): Promise<Array<string>>;
     getEndpoints(): Promise<Array<EndpointInterface>>;
-    sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface>;
+    sendOnEndpoint(input: EndpointCallInterface): Promise<any | ErrorInterface>;
     getIdToken(): Promise<string>;
     getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;

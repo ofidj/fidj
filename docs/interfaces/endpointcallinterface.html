@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>EndpointInterface | fidj</title>
+	<title>EndpointCallInterface | fidj</title>
 	<meta name="description" content="Documentation for fidj">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">fidj</a>
 				</li>
 				<li>
-					<a href="endpointinterface.html">EndpointInterface</a>
+					<a href="endpointcallinterface.html">EndpointCallInterface</a>
 				</li>
 			</ul>
-			<h1>Interface EndpointInterface</h1>
+			<h1>Interface EndpointCallInterface</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">EndpointInterface</span>
+						<span class="target">EndpointCallInterface</span>
 					</li>
 				</ul>
 			</section>
@@ -80,9 +80,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="endpointinterface.html#blocked" class="tsd-kind-icon">blocked</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="endpointinterface.html#key" class="tsd-kind-icon">key</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="endpointinterface.html#url" class="tsd-kind-icon">url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="endpointcallinterface.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="endpointcallinterface.html#key" class="tsd-kind-icon">key</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="endpointcallinterface.html#relativepath" class="tsd-kind-icon">relative<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="endpointcallinterface.html#verb" class="tsd-kind-icon">verb</a></li>
 							</ul>
 						</section>
 					</div>
@@ -91,32 +92,42 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="blocked" class="tsd-anchor"></a>
-					<h3>blocked</h3>
-					<div class="tsd-signature tsd-kind-icon">blocked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="data" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> data</h3>
+					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/aa5c7d6/src/sdk/interfaces.ts#L9">sdk/interfaces.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/aa5c7d6/src/sdk/interfaces.ts#L21">sdk/interfaces.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="key" class="tsd-anchor"></a>
-					<h3>key</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> key</h3>
 					<div class="tsd-signature tsd-kind-icon">key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/aa5c7d6/src/sdk/interfaces.ts#L7">sdk/interfaces.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/aa5c7d6/src/sdk/interfaces.ts#L19">sdk/interfaces.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="url" class="tsd-anchor"></a>
-					<h3>url</h3>
-					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="relativepath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> relative<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">relative<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/aa5c7d6/src/sdk/interfaces.ts#L8">sdk/interfaces.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/aa5c7d6/src/sdk/interfaces.ts#L20">sdk/interfaces.ts:20</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="verb" class="tsd-anchor"></a>
+					<h3>verb</h3>
+					<div class="tsd-signature tsd-kind-icon">verb<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ofidj/fidj/blob/aa5c7d6/src/sdk/interfaces.ts#L18">sdk/interfaces.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -153,30 +164,33 @@
 					<li class=" tsd-kind-class">
 						<a href="../classes/xor.html" class="tsd-kind-icon">Xor</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="endpointcallinterface.html" class="tsd-kind-icon">Endpoint<wbr>Call<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="endpointfilterinterface.html" class="tsd-kind-icon">Endpoint<wbr>Filter<wbr>Interface</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="endpointinterface.html" class="tsd-kind-icon">Endpoint<wbr>Interface</a>
+						<a href="endpointcallinterface.html" class="tsd-kind-icon">Endpoint<wbr>Call<wbr>Interface</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="endpointinterface.html#blocked" class="tsd-kind-icon">blocked</a>
+								<a href="endpointcallinterface.html#data" class="tsd-kind-icon">data</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="endpointinterface.html#key" class="tsd-kind-icon">key</a>
+								<a href="endpointcallinterface.html#key" class="tsd-kind-icon">key</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="endpointinterface.html#url" class="tsd-kind-icon">url</a>
+								<a href="endpointcallinterface.html#relativepath" class="tsd-kind-icon">relative<wbr>Path</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="endpointcallinterface.html#verb" class="tsd-kind-icon">verb</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="endpointfilterinterface.html" class="tsd-kind-icon">Endpoint<wbr>Filter<wbr>Interface</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="endpointinterface.html" class="tsd-kind-icon">Endpoint<wbr>Interface</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="errorinterface.html" class="tsd-kind-icon">Error<wbr>Interface</a>
 					</li>
