@@ -1,6 +1,6 @@
-/* tslint:disable:max-line-length */
 import {Injectable} from '@angular/core';
 import {
+    EndpointCallInterface,
     EndpointInterface,
     ErrorInterface,
     LoggerInterface,
@@ -77,11 +77,11 @@ export class FidjService implements ModuleServiceInterface {
         return this.fidjService.fidjGetEndpoints();
     };
 
-    public async sendOnEndpoint(key: string, verb: string, relativePath?: string, data?: any): Promise<any | ErrorInterface> {
+    public async sendOnEndpoint(input: EndpointCallInterface): Promise<any | ErrorInterface> {
         if (!this.fidjService) {
             return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
         }
-        return this.fidjService.fidjSendOnEndpoint(key, verb, relativePath, data);
+        return this.fidjService.fidjSendOnEndpoint(input);
     };
 
     public async getIdToken() {

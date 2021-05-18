@@ -10,7 +10,7 @@ import {
     ModuleServiceInitOptionsInterface,
     ModuleServiceLoginOptionsInterface,
     SdkInterface,
-    ErrorInterface, EndpointInterface, EndpointFilterInterface, LoggerLevelEnum
+    ErrorInterface, EndpointInterface, EndpointFilterInterface, LoggerLevelEnum, EndpointCallInterface
 } from './interfaces';
 import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
@@ -487,52 +487,48 @@ export class InternalService {
             });
     };
 
-    public async fidjSendOnEndpoint(key: string, verb: string, relativePath: string, data: any) {
-        const filter: EndpointFilterInterface = {
-            key: key
-        };
+    public async fidjSendOnEndpoint(input: EndpointCallInterface): Promise<any> {
+        const filter: EndpointFilterInterface = input.key ? {key: input.key} : null;
         const endpoints = await this.fidjGetEndpoints(filter);
         if (!endpoints || endpoints.length !== 1) {
-            return this.promise.reject(
-                new Error(400,
-                    'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.'));
+            throw new Error(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.');
         }
 
-        let endpointUrl = endpoints[0].url;
-        if (relativePath) {
-            endpointUrl = urljoin(endpointUrl, relativePath);
+        let firstEndpointUrl = endpoints[0].url;
+        if (input.relativePath) {
+            firstEndpointUrl = urljoin(firstEndpointUrl, input.relativePath);
         }
         const jwt = await this.connection.getIdToken();
         let answer;
         const query = new Ajax();
-        switch (verb) {
+        switch (input.verb) {
             case 'POST' :
                 answer = query.post({
-                    url: endpointUrl,
+                    url: firstEndpointUrl,
                     // not used : withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
-                    data: data
+                    data: input.data ? input.data : {}
                 });
                 break;
             case 'PUT' :
                 answer = query.put({
-                    url: endpointUrl,
+                    url: firstEndpointUrl,
                     // not used : withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
-                    data: data
+                    data: input.data ? input.data : {}
                 });
                 break;
             case 'DELETE' :
                 answer = query.delete({
-                    url: endpointUrl,
+                    url: firstEndpointUrl,
                     // not used : withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
@@ -544,7 +540,7 @@ export class InternalService {
                 break;
             default:
                 answer = query.get({
-                    url: endpointUrl,
+                    url: firstEndpointUrl,
                     // not used : withCredentials: true,
                     headers: {
                         'Content-Type': 'application/json',
