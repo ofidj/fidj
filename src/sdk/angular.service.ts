@@ -77,7 +77,11 @@ export class FidjService implements ModuleServiceInterface {
         return this.fidjService.fidjGetEndpoints();
     };
 
-    public async sendOnEndpoint(input: EndpointCallInterface): Promise<any | ErrorInterface> {
+    /**
+     * @throws {ErrorInterface}
+     * @param {EndpointCallInterface} input
+     */
+    public async sendOnEndpoint(input: EndpointCallInterface): Promise<any> {
         if (!this.fidjService) {
             return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
         }

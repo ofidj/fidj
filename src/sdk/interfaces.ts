@@ -41,7 +41,7 @@ export interface ModuleServiceInterface {
 
     getEndpoints(): Promise<Array<EndpointInterface>>;
 
-    sendOnEndpoint(input: EndpointCallInterface): Promise<any | ErrorInterface>;
+    sendOnEndpoint(input: EndpointCallInterface): Promise<any>;
 
     getIdToken(): Promise<string | ErrorInterface>;
 
