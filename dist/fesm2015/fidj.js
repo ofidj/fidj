@@ -301,7 +301,7 @@ FidjModule.ctorParameters = () => [];
  */
 
 // bumped version via gulp
-const version = '3.3.2';
+const version = '3.3.3';
 
 class ClientToken {
     constructor(id, type, data) {
@@ -2311,6 +2311,10 @@ class FidjService {
         });
     }
     ;
+    /**
+     * @throws {ErrorInterface}
+     * @param {EndpointCallInterface} input
+     */
     sendOnEndpoint(input) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.fidjService) {

@@ -641,7 +641,7 @@
     }
 
     // bumped version via gulp
-    var version = '3.3.2';
+    var version = '3.3.3';
 
     var ClientToken = /** @class */ (function () {
         function ClientToken(id, type, data) {
@@ -2937,6 +2937,10 @@
             });
         };
         ;
+        /**
+         * @throws {ErrorInterface}
+         * @param {EndpointCallInterface} input
+         */
         FidjService.prototype.sendOnEndpoint = function (input) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {

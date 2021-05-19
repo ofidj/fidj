@@ -30,7 +30,7 @@ export interface ModuleServiceInterface {
     isLoggedIn(): boolean;
     getRoles(): Promise<Array<string>>;
     getEndpoints(): Promise<Array<EndpointInterface>>;
-    sendOnEndpoint(input: EndpointCallInterface): Promise<any | ErrorInterface>;
+    sendOnEndpoint(input: EndpointCallInterface): Promise<any>;
     getIdToken(): Promise<string | ErrorInterface>;
     getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;
