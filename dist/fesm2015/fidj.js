@@ -301,7 +301,7 @@ FidjModule.ctorParameters = () => [];
  */
 
 // bumped version via gulp
-const version = '3.3.3';
+const version = '3.3.4';
 
 class ClientToken {
     constructor(id, type, data) {
@@ -2161,6 +2161,24 @@ class InternalService {
         });
     }
     ;
+    fidjForgotPasswordRequest(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const bestUrls = yield this.connection.getApiEndpoints({ filter: 'theBestOne' });
+            if (!bestUrls || bestUrls.length !== 1) {
+                throw new Error$2(400, 'fidj.sdk.service.fidjForgotPasswordRequest : api endpoint does not exist.');
+            }
+            const query = new Ajax();
+            yield query.post({
+                url: bestUrls[0].url + '/me/forgot',
+                // not used : withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                data: { email }
+            });
+        });
+    }
     fidjGetIdToken() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.connection.getIdToken();
@@ -2321,6 +2339,15 @@ class FidjService {
                 return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
             }
             return this.fidjService.fidjSendOnEndpoint(input);
+        });
+    }
+    ;
+    forgotPasswordRequest(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.fidjService) {
+                return this.promise.reject(new Error$2(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
+            }
+            return this.fidjService.fidjForgotPasswordRequest(email);
         });
     }
     ;

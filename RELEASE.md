@@ -7,3 +7,4 @@
  - 3.3.0 : New API (token update)
  - 3.3.4 : Added forgotPasswordRequest
  - 3.3.x : bug fixing
+ - 3.3.5 : In progress... 

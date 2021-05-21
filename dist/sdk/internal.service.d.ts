@@ -63,6 +63,7 @@ export declare class InternalService {
     fidjFindInDb(data_id: string): Promise<any | ErrorInterface>;
     fidjFindAllInDb(): Promise<Array<any> | ErrorInterface>;
     fidjSendOnEndpoint(input: EndpointCallInterface): Promise<any>;
+    fidjForgotPasswordRequest(email: String): Promise<void>;
     fidjGetIdToken(): Promise<string>;
     /**
      * Logout then Login

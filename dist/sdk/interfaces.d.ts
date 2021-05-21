@@ -31,6 +31,7 @@ export interface ModuleServiceInterface {
     getRoles(): Promise<Array<string>>;
     getEndpoints(): Promise<Array<EndpointInterface>>;
     sendOnEndpoint(input: EndpointCallInterface): Promise<any>;
+    forgotPasswordRequest(email: String): Promise<void>;
     getIdToken(): Promise<string | ErrorInterface>;
     getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;

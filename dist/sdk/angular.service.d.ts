@@ -20,6 +20,7 @@ export declare class FidjService implements ModuleServiceInterface {
      * @param {EndpointCallInterface} input
      */
     sendOnEndpoint(input: EndpointCallInterface): Promise<any>;
+    forgotPasswordRequest(email: String): Promise<void>;
     getIdToken(): Promise<string>;
     getMessage(): Promise<string>;
     logout(force?: boolean): Promise<void | ErrorInterface>;
