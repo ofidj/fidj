@@ -690,6 +690,24 @@ describe('fidj.sdk', () => {
             const id2 = (srv as any)._generateObjectUniqueId('appName', 'type', 'name');
             expect(id2).not.toBe(id);
         });
+
+        it('should fidjForgotPasswordRequest', async () => {
+            jasmine.Ajax.stubRequest(/.*forgot*/).andReturn(
+                {
+                    status: 204,
+                    contentType: 'text/plain',
+                    responseText: ''
+                }
+            );
+            const srv = new InternalService(_log, _q);
+
+            await srv.fidjForgotPasswordRequest('email');
+
+            const request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe('http://localhost:3201/v3/me/forgot');
+            expect(request.params).toBe('{"email":"email"}');
+
+        });
     });
 
 });
