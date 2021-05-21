@@ -43,6 +43,8 @@ export interface ModuleServiceInterface {
 
     sendOnEndpoint(input: EndpointCallInterface): Promise<any>;
 
+    forgotPasswordRequest(email: String): Promise<void>;
+
     getIdToken(): Promise<string | ErrorInterface>;
 
     getMessage(): Promise<string>;

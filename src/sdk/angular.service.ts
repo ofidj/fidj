@@ -88,6 +88,13 @@ export class FidjService implements ModuleServiceInterface {
         return this.fidjService.fidjSendOnEndpoint(input);
     };
 
+    public async forgotPasswordRequest(email: String): Promise<void> {
+        if (!this.fidjService) {
+            return this.promise.reject(new FidjError(303, 'fidj.sdk.angular.loginAsDemo : not initialized.'));
+        }
+        return this.fidjService.fidjForgotPasswordRequest(email);
+    };
+
     public async getIdToken() {
         if (!this.fidjService) {
             return;

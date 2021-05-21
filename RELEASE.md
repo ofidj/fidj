@@ -5,6 +5,5 @@
  - 2.2.x : Domain management (linked to roles)
  - 2.1.x : Refresh issue
  - 3.3.0 : New API (token update)
+ - 3.3.4 : Added forgotPasswordRequest
  - 3.3.x : bug fixing
- - 3.3.3 : In progress... 
- - 3.3.4 : In progress... 

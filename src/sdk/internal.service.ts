@@ -553,6 +553,25 @@ export class InternalService {
         return answer;
     };
 
+    public async fidjForgotPasswordRequest(email: String) {
+
+        const bestUrls = await this.connection.getApiEndpoints({filter: 'theBestOne'});
+        if (!bestUrls ||bestUrls.length !== 1) {
+            throw new Error(400, 'fidj.sdk.service.fidjForgotPasswordRequest : api endpoint does not exist.');
+        }
+
+        const query = new Ajax();
+        await query.post({
+            url: bestUrls[0].url + '/me/forgot',
+            // not used : withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            data: {email}
+        });
+    }
+
     public async fidjGetIdToken() {
         return this.connection.getIdToken();
     };
