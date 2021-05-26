@@ -604,8 +604,8 @@ export class InternalService {
     };
 
     protected async _removeAll(): Promise<void | ErrorInterface> {
-        this.connection.destroy();
-        return this.session.destroy();
+        await this.connection.destroy();
+        await this.session.destroy();
     };
 
     private async _createSession(uid: string): Promise<void | ErrorInterface> {

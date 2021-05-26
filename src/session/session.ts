@@ -99,12 +99,12 @@ export class Session {
         });
     }
 
-    public destroy(): Promise<void | ErrorInterface> {
+    public async destroy(): Promise<void> {
 
         if (!this.db) {
             this.dbRecordCount = 0;
             this.dbLastSync = null;
-            return Promise.resolve();
+            return;
         }
 
         if (this.db && !this.db.destroy) {
