@@ -641,7 +641,7 @@
     }
 
     // bumped version via gulp
-    var version = '3.3.5';
+    var version = '3.3.6';
 
     var ClientToken = /** @class */ (function () {
         function ClientToken(id, type, data) {
@@ -1714,7 +1714,6 @@
     Connection._cryptoSalt = 'v2.cryptoSalt';
     Connection._cryptoSaltNext = 'v2.cryptoSalt.next';
 
-    // import PouchDB from 'pouchdb';
     var FidjPouch;
     if (typeof window !== 'undefined') {
         FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
@@ -1785,26 +1784,30 @@
             });
         };
         Session.prototype.destroy = function () {
-            var _this = this;
-            if (!this.db) {
-                this.dbRecordCount = 0;
-                this.dbLastSync = null;
-                return Promise.resolve();
-            }
-            if (this.db && !this.db.destroy) {
-                return Promise.reject(new Error$2(408, 'Need a valid db'));
-            }
-            return new Promise(function (resolve, reject) {
-                _this.db.destroy(function (err, info) {
-                    if (err) {
-                        reject(new Error$2(500, err));
+            return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                return __generator(this, function (_a) {
+                    if (!this.db) {
+                        this.dbRecordCount = 0;
+                        this.dbLastSync = null;
+                        return [2 /*return*/];
                     }
-                    else {
-                        _this.dbRecordCount = 0;
-                        _this.dbLastSync = null;
-                        _this.db = null;
-                        resolve();
+                    if (this.db && !this.db.destroy) {
+                        return [2 /*return*/, Promise.reject(new Error$2(408, 'Need a valid db'))];
                     }
+                    return [2 /*return*/, new Promise(function (resolve, reject) {
+                            _this.db.destroy(function (err, info) {
+                                if (err) {
+                                    reject(new Error$2(500, err));
+                                }
+                                else {
+                                    _this.dbRecordCount = 0;
+                                    _this.dbLastSync = null;
+                                    _this.db = null;
+                                    resolve();
+                                }
+                            });
+                        })];
                 });
             });
         };
@@ -2825,8 +2828,15 @@
         InternalService.prototype._removeAll = function () {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    this.connection.destroy();
-                    return [2 /*return*/, this.session.destroy()];
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.connection.destroy()];
+                        case 1:
+                            _a.sent();
+                            return [4 /*yield*/, this.session.destroy()];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/];
+                    }
                 });
             });
         };

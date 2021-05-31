@@ -301,7 +301,7 @@ FidjModule.ctorParameters = () => [];
  */
 
 // bumped version via gulp
-const version = '3.3.5';
+const version = '3.3.6';
 
 class ClientToken {
     constructor(id, type, data) {
@@ -1308,25 +1308,27 @@ class Session {
         });
     }
     destroy() {
-        if (!this.db) {
-            this.dbRecordCount = 0;
-            this.dbLastSync = null;
-            return Promise.resolve();
-        }
-        if (this.db && !this.db.destroy) {
-            return Promise.reject(new Error$2(408, 'Need a valid db'));
-        }
-        return new Promise((resolve, reject) => {
-            this.db.destroy((err, info) => {
-                if (err) {
-                    reject(new Error$2(500, err));
-                }
-                else {
-                    this.dbRecordCount = 0;
-                    this.dbLastSync = null;
-                    this.db = null;
-                    resolve();
-                }
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.db) {
+                this.dbRecordCount = 0;
+                this.dbLastSync = null;
+                return;
+            }
+            if (this.db && !this.db.destroy) {
+                return Promise.reject(new Error$2(408, 'Need a valid db'));
+            }
+            return new Promise((resolve, reject) => {
+                this.db.destroy((err, info) => {
+                    if (err) {
+                        reject(new Error$2(500, err));
+                    }
+                    else {
+                        this.dbRecordCount = 0;
+                        this.dbLastSync = null;
+                        this.db = null;
+                        resolve();
+                    }
+                });
             });
         });
     }
@@ -2214,8 +2216,8 @@ class InternalService {
     ;
     _removeAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.connection.destroy();
-            return this.session.destroy();
+            yield this.connection.destroy();
+            yield this.session.destroy();
         });
     }
     ;
