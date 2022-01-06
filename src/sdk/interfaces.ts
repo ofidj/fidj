@@ -71,8 +71,6 @@ export interface ModuleServiceInterface {
 export interface ModuleServiceInitOptionsInterface {
     prod: boolean,
     useDB?: boolean,
-    // forcedEndpoint?: string,
-    // forcedDBEndpoint?: string,
     crypto?: boolean,
     logLevel?: LoggerLevelEnum
 }
