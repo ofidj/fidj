@@ -72,6 +72,7 @@ With npm :
 $ npm test
 ```
 
+
 With a OpenAPI (TODO) :  
 https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/
 
