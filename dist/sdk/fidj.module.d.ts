@@ -1,3 +1,5 @@
+import * as i0 from "@angular/core";
+import * as i1 from "@angular/common";
 /**
  * `NgModule` which provides associated services.
  *
@@ -7,16 +9,7 @@
  */
 export declare class FidjModule {
     constructor();
+    static ɵfac: i0.ɵɵFactoryDeclaration<FidjModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<FidjModule, never, [typeof i1.CommonModule], never>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<FidjModule>;
 }
-/**
- * module FidjModule
- *
- * exemple
- *      // ... after install :
- *      // $ npm install fidj
- *      // then init your app.js & use it in your services
- * TODO refresh gist :
- * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
- *
- * <script src="https://gist.github.com/mlefree/ad64f7f6a345856f6bf45fd59ca8db46.js"></script>
- */

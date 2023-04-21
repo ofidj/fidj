@@ -1,6 +1,7 @@
 // import {XHRPromise} from './xhrpromise';
 // const superagent = require('superagent');
 // import from 'superagent';
+import axios from 'axios';
 
 export interface XhrOptionsInterface {
     url: string,
@@ -47,7 +48,7 @@ export class Ajax {
         // superagent.get('https://api.nasa.gov/planetary/apod')
         //     .query({ api_key: 'DEMO_KEY', date: '2017-08-02' })
 
-        this.xhr = require('axios'); // require('superagent'); // new XHRPromise();
+        this.xhr = axios; // require('superagent'); // new XHRPromise();
     };
 
     private static formatResponseData(response: any): any {

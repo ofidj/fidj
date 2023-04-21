@@ -7,7 +7,7 @@ import {EndpointInterface, ErrorInterface} from '../sdk/interfaces';
 
 let FidjPouch;
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && typeof require !== 'undefined') {
     FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
     // load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
     const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
@@ -52,7 +52,7 @@ export class Session {
         this.db = null;
         uid = uid || 'default';
 
-        if (typeof window === 'undefined') {
+        if (typeof window === 'undefined' || !FidjPouch) {
             return Promise.resolve(this.db);
         }
 
@@ -140,6 +140,10 @@ export class Session {
 
         return new Promise((resolve, reject) => {
             try {
+
+                if (!FidjPouch) {
+                    return;
+                }
 
                 if (!this.remoteDb || this.remoteUri !== this.dbs[0].url) {
                     this.remoteUri = this.dbs[0].url;

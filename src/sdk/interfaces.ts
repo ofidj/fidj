@@ -19,6 +19,9 @@ export interface EndpointCallInterface {
     key?: string;
     relativePath?: string;
     data?: any;
+
+    // in case of key not found
+    defaultKeyUrl?: string;
 }
 
 /**

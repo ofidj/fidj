@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/ofidj/fidj.svg?branch=master)](https://travis-ci.org/ofidj/fidj) 
+[![Build Status](https://api.travis-ci.com/ofidj/fidj.svg)](https://app.travis-ci.com/github/ofidj/fidj) 
 [![NPM version](https://badge.fury.io/js/fidj.svg)](https://www.npmjs.com/package/fidj) 
 [![Package Quality](http://npm.packagequality.com/shield/fidj.svg)](http://packagequality.com/#?package=fidj)
 

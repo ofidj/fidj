@@ -1,4 +1,5 @@
 import { EndpointCallInterface, EndpointInterface, ErrorInterface, ModuleServiceInitOptionsInterface, ModuleServiceInterface, ModuleServiceLoginOptionsInterface } from './interfaces';
+import * as i0 from "@angular/core";
 /**
  * Angular FidjService
  * @see ModuleServiceInterface
@@ -60,4 +61,6 @@ export declare class FidjService implements ModuleServiceInterface {
      */
     find(id: string): Promise<any | ErrorInterface>;
     findAll(): Promise<any[] | ErrorInterface>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FidjService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<FidjService>;
 }

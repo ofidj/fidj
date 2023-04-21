@@ -16,6 +16,7 @@ export interface EndpointCallInterface {
     key?: string;
     relativePath?: string;
     data?: any;
+    defaultKeyUrl?: string;
 }
 /**
  * Interface used by all InternalService wrappers (angular.js, angular.io)

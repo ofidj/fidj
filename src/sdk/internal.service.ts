@@ -17,8 +17,7 @@ import {Error} from './error';
 import {Ajax} from '../connection/ajax';
 import {LoggerService} from './logger.service';
 import {ClientTokens, ClientUser} from '../connection';
-
-const urljoin = require('url-join');
+import urljoin from 'url-join';
 // import {LocalStorage} from 'node-localstorage';
 // import 'localstorage-polyfill/localStorage';
 
@@ -62,7 +61,7 @@ export class InternalService {
         if (typeof window !== 'undefined') {
             ls = window.localStorage;
         } else if (typeof global !== 'undefined') {
-            require('localstorage-polyfill');
+            import('localstorage-polyfill');
             ls = global['localStorage'];
         }
         this.storage = new tools.LocalStorage(ls, 'fidj.');
@@ -326,7 +325,7 @@ export class InternalService {
                                 self.logger.log(ret);
                             }
                         }
-                        resolveEmpty(); // self.connection.getUser());
+                        resolveEmpty(null); // self.connection.getUser());
                     });
                 })
                 .then((info) => {
@@ -490,11 +489,11 @@ export class InternalService {
     public async fidjSendOnEndpoint(input: EndpointCallInterface): Promise<any> {
         const filter: EndpointFilterInterface = input.key ? {key: input.key} : null;
         const endpoints = await this.fidjGetEndpoints(filter);
-        if (!endpoints || endpoints.length !== 1) {
+        if (!input.defaultKeyUrl && (!endpoints || endpoints.length !== 1)) {
             throw new Error(400, 'fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.');
         }
 
-        let firstEndpointUrl = endpoints[0].url;
+        let firstEndpointUrl = (!endpoints || endpoints.length !== 1) ? input.defaultKeyUrl : endpoints[0].url;
         if (input.relativePath) {
             firstEndpointUrl = urljoin(firstEndpointUrl, input.relativePath);
         }
