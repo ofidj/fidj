@@ -412,10 +412,11 @@ class Ajax {
         if (args.headers) {
             opt.headers = args.headers;
         }
-        return this.xhr.post(opt.url, opt.data, {
-            headers: opt.headers,
-            // timeout: 10000
-        })
+        const options = { headers: opt.headers };
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
+        return this.xhr.post(opt.url, opt.data, options)
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
@@ -436,11 +437,12 @@ class Ajax {
         if (args.headers) {
             opt.headers = args.headers;
         }
+        const options = { headers: opt.headers };
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
         return this.xhr
-            .put(opt.url, opt.data, {
-            headers: opt.headers,
-            timeout: 10000
-        })
+            .put(opt.url, opt.data, options)
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
@@ -461,13 +463,12 @@ class Ajax {
         if (args.headers) {
             opt.headers = args.headers;
         }
+        const options = { headers: opt.headers };
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
         return this.xhr
-            .delete(opt.url, // no data
-        {
-            headers: opt.headers,
-            timeout: 10000
-        })
-            // .delete(opt.url) // .send(opt)
+            .delete(opt.url, options)
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
@@ -490,13 +491,12 @@ class Ajax {
         if (args.headers) {
             opt.headers = args.headers;
         }
+        const options = { headers: opt.headers };
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
         return this.xhr
-            .get(opt.url, {
-            // opt.data,
-            headers: opt.headers,
-            timeout: 10000
-        })
-            // .get(opt.url) // .send(opt)
+            .get(opt.url, options)
             .then(res => {
             if (res.status &&
                 (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
@@ -2060,7 +2060,8 @@ class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
-                    data: input.data ? input.data : {}
+                    data: input.data ? input.data : {},
+                    timeout: input.timeout
                 });
                 break;
             case 'PUT':
@@ -2072,7 +2073,8 @@ class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
-                    data: input.data ? input.data : {}
+                    data: input.data ? input.data : {},
+                    timeout: input.timeout
                 });
                 break;
             case 'DELETE':
@@ -2084,6 +2086,7 @@ class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
+                    timeout: input.timeout
                     // not used: data: data
                 });
                 break;
@@ -2096,6 +2099,7 @@ class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
+                    timeout: input.timeout
                     // not used: data: data
                 });
         }

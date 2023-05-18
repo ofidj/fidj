@@ -10,7 +10,8 @@ export interface XhrOptionsInterface {
     async?: boolean,
     username?: string,
     password?: string,
-    withCredentials?: boolean
+    withCredentials?: boolean,
+    timeout?: number,
 }
 
 export enum XhrErrorReason {
@@ -128,10 +129,12 @@ export class Ajax {
             opt.headers = args.headers;
         }
 
-        return this.xhr.post(opt.url, opt.data, {
-                headers: opt.headers,
-                // timeout: 10000
-            })
+        const options = {headers: opt.headers};
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
+
+        return this.xhr.post(opt.url, opt.data, options)
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
@@ -154,11 +157,13 @@ export class Ajax {
         if (args.headers) {
             opt.headers = args.headers;
         }
+        const options = {headers: opt.headers};
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
+
         return this.xhr
-            .put(opt.url, opt.data, {
-                headers: opt.headers,
-                timeout: 10000
-            })
+            .put(opt.url, opt.data, options)
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
@@ -181,13 +186,12 @@ export class Ajax {
         if (args.headers) {
             opt.headers = args.headers;
         }
+        const options = {headers: opt.headers};
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
         return this.xhr
-            .delete(opt.url, // no data
-                {
-                    headers: opt.headers,
-                    timeout: 10000
-                })
-            // .delete(opt.url) // .send(opt)
+            .delete(opt.url, options)
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {
@@ -212,13 +216,12 @@ export class Ajax {
         if (args.headers) {
             opt.headers = args.headers;
         }
+        const options = {headers: opt.headers};
+        if (args.timeout) {
+            options['timeout'] = args.timeout;
+        }
         return this.xhr
-            .get(opt.url, {
-                // opt.data,
-                headers: opt.headers,
-                timeout: 10000
-            })
-            // .get(opt.url) // .send(opt)
+            .get(opt.url, options)
             .then(res => {
                 if (res.status &&
                     (parseInt(res.status, 10) < 200 || parseInt(res.status, 10) >= 300)) {

@@ -22,6 +22,8 @@ export interface EndpointCallInterface {
 
     // in case of key not found
     defaultKeyUrl?: string;
+
+    timeout?: number
 }
 
 /**

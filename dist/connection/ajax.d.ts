@@ -6,6 +6,7 @@ export interface XhrOptionsInterface {
     username?: string;
     password?: string;
     withCredentials?: boolean;
+    timeout?: number;
 }
 export declare enum XhrErrorReason {
     UNKNOWN = 0,

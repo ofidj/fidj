@@ -4,19 +4,23 @@
 import * as version from '../version';
 import * as tools from '../tools';
 import * as connection from '../connection';
+import {ClientTokens, ClientUser} from '../connection';
 import * as session from '../session';
 import {
+    EndpointCallInterface,
+    EndpointFilterInterface,
+    EndpointInterface,
+    ErrorInterface,
     LoggerInterface,
+    LoggerLevelEnum,
     ModuleServiceInitOptionsInterface,
     ModuleServiceLoginOptionsInterface,
-    SdkInterface,
-    ErrorInterface, EndpointInterface, EndpointFilterInterface, LoggerLevelEnum, EndpointCallInterface
+    SdkInterface
 } from './interfaces';
 import {SessionCryptoInterface} from '../session/session';
 import {Error} from './error';
 import {Ajax} from '../connection/ajax';
 import {LoggerService} from './logger.service';
-import {ClientTokens, ClientUser} from '../connection';
 import urljoin from 'url-join';
 // import {LocalStorage} from 'node-localstorage';
 // import 'localstorage-polyfill/localStorage';
@@ -510,7 +514,8 @@ export class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
-                    data: input.data ? input.data : {}
+                    data: input.data ? input.data : {},
+                    timeout: input.timeout
                 });
                 break;
             case 'PUT' :
@@ -522,7 +527,8 @@ export class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
-                    data: input.data ? input.data : {}
+                    data: input.data ? input.data : {},
+                    timeout: input.timeout
                 });
                 break;
             case 'DELETE' :
@@ -534,6 +540,7 @@ export class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
+                    timeout: input.timeout
                     // not used: data: data
                 });
                 break;
@@ -546,6 +553,7 @@ export class InternalService {
                         'Accept': 'application/json',
                         'Authorization': 'Bearer ' + jwt
                     },
+                    timeout: input.timeout
                     // not used: data: data
                 });
         }
@@ -555,7 +563,7 @@ export class InternalService {
     public async fidjForgotPasswordRequest(email: String) {
 
         const bestUrls = await this.connection.getApiEndpoints({filter: 'theBestOne'});
-        if (!bestUrls ||bestUrls.length !== 1) {
+        if (!bestUrls || bestUrls.length !== 1) {
             throw new Error(400, 'fidj.sdk.service.fidjForgotPasswordRequest : api endpoint does not exist.');
         }
 

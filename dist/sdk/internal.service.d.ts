@@ -1,5 +1,5 @@
-import { LoggerInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface, ErrorInterface, EndpointInterface, EndpointFilterInterface, EndpointCallInterface } from './interfaces';
 import { ClientUser } from '../connection';
+import { EndpointCallInterface, EndpointFilterInterface, EndpointInterface, ErrorInterface, LoggerInterface, ModuleServiceInitOptionsInterface, ModuleServiceLoginOptionsInterface } from './interfaces';
 /**
  * please use its angular.js or angular.io wrapper
  * usefull only for fidj dev team
