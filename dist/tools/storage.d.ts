@@ -6,7 +6,7 @@
 export declare class LocalStorage {
     private storageKey;
     version: string;
-    private storage;
+    private readonly storage;
     constructor(storageService: any, storageKey: any);
     /**
      * Sets a key's value.

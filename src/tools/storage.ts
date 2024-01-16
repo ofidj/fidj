@@ -6,7 +6,7 @@
 export class LocalStorage {
 
     public version = '0.1';
-    private storage;
+    private readonly storage;
 
     // Constructor
     constructor(storageService, private storageKey) {

@@ -392,9 +392,9 @@ export class Connection {
 
     async getApiEndpoints(options?: ConnectionFindOptionsInterface): Promise<Array<EndpointInterface>> {
 
-        // todo : let ea = ['https://fidj/v3', 'https://fidj-proxy.herokuapp.com/v3'];
         let ea: EndpointInterface[] = [
-            {key: 'fidj.default', url: 'https://api.fidj.ovh/v3', blocked: false}];
+            {key: 'fidj.default', url: 'https://api.fidj.ovh/v3', blocked: false}
+        ];
         let filteredEa = [];
 
         if (!this._sdk.prod) {

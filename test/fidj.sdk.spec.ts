@@ -633,7 +633,41 @@ describe('fidj.sdk', () => {
                     expect(err.code).toBe(400);
                     expect(err.reason).toBe('fidj.sdk.service.fidjSendOnEndpoint : endpoint does not exist.');
                     done();
-                })
+                });
+        });
+
+        it('should fidjSendOnEndpoint OK : without valid endpoint but defaultKeyUrl', async (done) => {
+
+            const MOCKED_RESPONSE = 'mocked response';
+            jasmine.Ajax.stubRequest(/.*test*/).andReturn(
+                {
+                    status: 200,
+                    contentType: 'text/plain',
+                    responseText: MOCKED_RESPONSE
+                }
+            );
+
+            let accessPayload;
+            const srv = new InternalService(_log, _q);
+            const getAccessPayload = spyOn((srv as any).connection, 'getAccessPayload');
+            spyOn((srv as any).connection, 'getIdToken').and.returnValue(Promise.resolve('aFakeJwt'));
+
+            // 3 endpoints , one blocked & no filter (showBlocked = false by default)
+            accessPayload = {endpoints: []};
+            getAccessPayload.and.returnValue(Promise.resolve(JSON.stringify(accessPayload)));
+
+            // => call and expect a default
+            const result = await srv.fidjSendOnEndpoint({
+                key: 'none', verb: 'POST', relativePath: '/', data: {mock: true},
+                defaultKeyUrl: 'http://test1.com'
+            });
+
+            expect(result).toBe(MOCKED_RESPONSE);
+            const request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe('http://test1.com/');
+
+            // expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
+            expect(request.requestHeaders.Authorization).toBe('Bearer aFakeJwt');
         });
 
         it('should fidjSendOnEndpoint OK', async () => {

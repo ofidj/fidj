@@ -3,5 +3,13 @@
   "lib": {
     "entryFile": "./src/index.ts"
   },
-  "whitelistedNonPeerDependencies": ["."]
+  "allowedNonPeerDependencies": [
+    "atob",
+    "axios",
+    "btoa",
+    "localstorage-polyfill",
+    "pouchdb",
+    "pouchdb-adapter-cordova-sqlite",
+    "url-join"
+  ]
 }
