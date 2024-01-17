@@ -5,7 +5,6 @@
 
 > [Install](https://github.com/ofidj/fidj#1-youre-an-app-builder) | [APIs](https://ofidj.github.io/fidj) | [Support](https://github.com/ofidj/fidj#develop)  | [In progress](https://github.com/ofidj/fidj#in-progress) | [Thanks!](https://github.com/ofidj/fidj#thanks)
 
-
 # 1) You're an app builder
 Thank you for building great app. 
 Fidj.ovh will support you to manager auth, session storage.
