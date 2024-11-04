@@ -81,12 +81,11 @@ export class Connection {
     setClient(client: Client): void {
 
         this.client = client;
-        //if (!this.user) {
-        //    this.user = new ClientUser();
-        //}
-
-        // this._user._id = this._client.clientId;
-        //this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
+        // if (!this.user) {
+        //     this.user = new ClientUser();
+        // }
+        //  this._user._id = this._client.clientId;
+        // this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
     }
 
     setUser(user: ClientUser): void {
@@ -179,7 +178,6 @@ export class Connection {
         } catch (err) {
             decrypted = null;
         }
-
 
         try {
 
@@ -400,7 +398,7 @@ export class Connection {
         if (!this._sdk.prod) {
             ea = [
                 {key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false},
-                {key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v3', blocked: false}
+                {key: 'fidj.default', url: 'https://sandbox.api.fidj.ovh/v3', blocked: false}
             ];
         }
 

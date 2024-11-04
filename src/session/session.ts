@@ -1,17 +1,16 @@
 // import PouchDB from 'pouchdb';
 // let PouchDB: any;
 
-import PouchDB from 'pouchdb/dist/pouchdb.js';
+// import PouchDB from 'pouchdb/dist/pouchdb.js';
 import {Error} from '../sdk/error';
 import {EndpointInterface, ErrorInterface} from '../sdk/interfaces';
 
-let FidjPouch;
+const FidjPouch = null;
 
 if (typeof window !== 'undefined' && typeof require !== 'undefined') {
-    FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
     // load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
-    const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
-    FidjPouch.plugin(PouchAdapterCordovaSqlite);
+   //  FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
+   //  FidjPouch.plugin(require('pouchdb-adapter-cordova-sqlite'));
 }
 
 export interface SessionCryptoInterface {
@@ -24,8 +23,8 @@ export class Session {
     public dbRecordCount: number;
     public dbLastSync: number; // Date().getTime();
 
-    private db: PouchDB; // PouchDB
-    private remoteDb: PouchDB; // PouchDB;
+    private db: any; // PouchDB
+    private remoteDb: any; // PouchDB;
     private remoteUri: string;
     private dbs: Array<EndpointInterface>;
 

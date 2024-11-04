@@ -166,9 +166,9 @@ export class FidjService {
     }
     ;
 }
-FidjService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-FidjService.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjService, providedIn: 'root' });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjService, decorators: [{
+FidjService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+FidjService.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjService, providedIn: 'root' });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjService, decorators: [{
             type: Injectable,
             args: [{
                     providedIn: 'root',

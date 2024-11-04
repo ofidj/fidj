@@ -1,233 +1,41 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>fidj</title>
-	<meta name="description" content="Documentation for fidj">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="assets/css/main.css">
-	<script async src="assets/js/search.js" id="search-script"></script>
-</head>
-<body>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="index.html" class="title">fidj</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-externals" checked />
-							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<h1>fidj</h1>
-		</div>
-	</div>
-</header>
-<div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<p><a href="https://travis-ci.org/ofidj/fidj"><img src="https://travis-ci.org/ofidj/fidj.svg?branch=master" alt="Build Status"></a>
-					<a href="https://www.npmjs.com/package/fidj"><img src="https://badge.fury.io/js/fidj.svg" alt="NPM version"></a>
-				<a href="http://packagequality.com/#?package=fidj"><img src="http://npm.packagequality.com/shield/fidj.svg" alt="Package Quality"></a></p>
-				<blockquote>
-					<p><a href="https://github.com/ofidj/fidj#1-youre-an-app-builder">Install</a> | <a href="https://ofidj.github.io/fidj">APIs</a> | <a href="https://github.com/ofidj/fidj#develop">Support</a>  | <a href="https://github.com/ofidj/fidj#in-progress">In progress</a> | <a href="https://github.com/ofidj/fidj#thanks">Thanks!</a></p>
-				</blockquote>
-				<a href="#1-you39re-an-app-builder" id="1-you39re-an-app-builder" style="color: inherit; text-decoration: none;">
-					<h1>1) You&#39;re an app builder</h1>
-				</a>
-				<p>Thank you for building great app.
-				Fidj.ovh will support you to manager auth, session storage.</p>
-				<a href="#the-easiest-way" id="the-easiest-way" style="color: inherit; text-decoration: none;">
-					<h3>The easiest way</h3>
-				</a>
-				<p>From scratch, with <em>yeoman</em> like described here : <a href="https://github.com/ofidj/fidj/wiki/How-build-a-freemium-angular-mobile-application-in-10-minutes">https://github.com/ofidj/fidj/wiki/How-build-a-freemium-angular-mobile-application-in-10-minutes</a></p>
-				<pre><code class="language-bash"><span style="color: #000000">yo fidj</span>
-</code></pre>
-				<a href="#the-normal-way" id="the-normal-way" style="color: inherit; text-decoration: none;">
-					<h3>The normal way</h3>
-				</a>
-				<p>Install with NPM :</p>
-				<pre><code class="language-bash"><span style="color: #000000">npm install fidj --save</span>
-</code></pre>
-				<p>Look at APIs and integration patterns described in <a href="https://ofidj.github.io/fidj/">https://ofidj.github.io/fidj/</a></p>
-				<ul>
-					<li>with <a href="https://ofidj.github.io/fidj/classes/fidjservice.html">Angular</a></li>
-					<li>with pure js</li>
-				</ul>
-				<p>In brief :</p>
-				<pre><code class="language-js"><span style="color: #008000">// init your app</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">fidjService</span><span style="color: #000000">.</span><span style="color: #795E26">init</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;Your FidjAppId from https://fidj.ovh&#039;</span><span style="color: #000000">);</span>
+<!DOCTYPE html><html class="default" lang="en"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>fidj</title><meta name="description" content="Documentation for fidj"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">fidj</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>fidj</h1></div><div class="tsd-panel tsd-typography"><p><a href="https://app.travis-ci.com/github/ofidj/fidj" target="_blank" class="external"><img src="https://api.travis-ci.com/ofidj/fidj.svg" alt="Build Status"></a>
+<a href="https://www.npmjs.com/package/fidj" target="_blank" class="external"><img src="https://badge.fury.io/js/fidj.svg" alt="NPM version"></a>
+<a href="http://packagequality.com/#?package=fidj" target="_blank" class="external"><img src="http://npm.packagequality.com/shield/fidj.svg" alt="Package Quality"></a></p>
+<blockquote>
+<p><a href="https://github.com/ofidj/fidj#1-youre-an-app-builder" target="_blank" class="external">Install</a> | <a href="https://ofidj.github.io/fidj" target="_blank" class="external">APIs</a> | <a href="https://github.com/ofidj/fidj#develop" target="_blank" class="external">Support</a>  | <a href="https://github.com/ofidj/fidj#in-progress" target="_blank" class="external">In progress</a> | <a href="https://github.com/ofidj/fidj#thanks" target="_blank" class="external">Thanks!</a></p>
+</blockquote>
+<a id="md:1-youre-an-app-builder" class="tsd-anchor"></a><h1 class="tsd-anchor-link">1) You're an app builder<a href="#md:1-youre-an-app-builder" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p>Thank you for building great app.
+Fidj.ovh will support you to manager auth, session storage.</p>
+<a id="md:the-easiest-way" class="tsd-anchor"></a><h3 class="tsd-anchor-link">The easiest way<a href="#md:the-easiest-way" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>From scratch, with <em>yeoman</em> like described here : <a href="https://github.com/ofidj/fidj/wiki/How-build-a-freemium-angular-mobile-application-in-10-minutes" target="_blank" class="external">https://github.com/ofidj/fidj/wiki/How-build-a-freemium-angular-mobile-application-in-10-minutes</a></p>
+<pre><code class="bash"><span class="hl-0">yo</span><span class="hl-1"> </span><span class="hl-2">fidj</span>
+</code><button type="button">Copy</button></pre>
 
-<span style="color: #008000">// login (auto register) your user</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">fidjService</span><span style="color: #000000">.</span><span style="color: #795E26">login</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;login&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;password&#039;</span><span style="color: #000000">);</span>
+<a id="md:the-normal-way" class="tsd-anchor"></a><h3 class="tsd-anchor-link">The normal way<a href="#md:the-normal-way" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Install with NPM :</p>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">fidj</span><span class="hl-1"> </span><span class="hl-3">--save</span>
+</code><button type="button">Copy</button></pre>
 
-<span style="color: #008000">// synchronise your session data</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">fidjService</span><span style="color: #000000">.</span><span style="color: #795E26">sync</span><span style="color: #000000">();</span>
+<p>Look at APIs and integration patterns described in <a href="https://ofidj.github.io/fidj/" target="_blank" class="external">https://ofidj.github.io/fidj/</a></p>
+<ul>
+<li>with <a href="https://ofidj.github.io/fidj/classes/fidjservice.html" target="_blank" class="external">Angular</a></li>
+<li>with pure js</li>
+</ul>
+<p>In brief :</p>
+<pre><code class="js"><span class="hl-4">// init your app</span><br/><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">fidjService</span><span class="hl-1">.</span><span class="hl-0">init</span><span class="hl-1">(</span><span class="hl-2">&#39;Your FidjAppId from https://fidj.ovh&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-4">// login (auto register) your user</span><br/><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">fidjService</span><span class="hl-1">.</span><span class="hl-0">login</span><span class="hl-1">(</span><span class="hl-2">&#39;login&#39;</span><span class="hl-1">, </span><span class="hl-2">&#39;password&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-4">// synchronise your session data</span><br/><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">fidjService</span><span class="hl-1">.</span><span class="hl-0">sync</span><span class="hl-1">();</span><br/><br/><span class="hl-4">// put your data into session, </span><br/><span class="hl-4">// it will be available everywhere but also offline</span><br/><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">fidjService</span><span class="hl-1">.</span><span class="hl-0">put</span><span class="hl-1">({</span><span class="hl-6">data :</span><span class="hl-1"> </span><span class="hl-2">&#39;my session&#39;</span><span class="hl-1">});</span><br/><br/><span class="hl-4">//... sync, get data and so on</span><br/><br/><span class="hl-4">// logout if needed</span><br/><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">fidjService</span><span class="hl-1">.</span><span class="hl-0">logout</span><span class="hl-1">();</span><br/>
+</code><button type="button">Copy</button></pre>
 
-<span style="color: #008000">// put your data into session, </span>
-<span style="color: #008000">// it will be available everywhere but also offline</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">fidjService</span><span style="color: #000000">.</span><span style="color: #795E26">put</span><span style="color: #000000">({</span><span style="color: #001080">data :</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;my session&#039;</span><span style="color: #000000">});</span>
+<a id="md:2-youre-a-fidj-dev" class="tsd-anchor"></a><h1 class="tsd-anchor-link">2) You're a fidj dev<a href="#md:2-youre-a-fidj-dev" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p>Thank you for your support !</p>
+<p>Fidj.ovh is an Open Source project - we need you to provide great tools to great apps.</p>
+<a id="md:develop" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Develop<a href="#md:develop" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Fork the project</p>
+<pre><code class="bash"><span class="hl-0">git</span><span class="hl-1"> </span><span class="hl-2">clone</span><span class="hl-1"> </span><span class="hl-2">https://github.com/ofidj/fidj.git</span><br/><span class="hl-0">cd</span><span class="hl-1"> </span><span class="hl-2">fidj</span><br/><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span>
+</code><button type="button">Copy</button></pre>
 
-<span style="color: #008000">//... sync, get data and so on</span>
+<p>And make pull request ...</p>
+<a id="md:testing" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Testing<a href="#md:testing" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>With npm :</p>
+<pre><code class="bash"><span class="hl-0">$</span><span class="hl-1"> </span><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-2">test</span>
+</code><button type="button">Copy</button></pre>
 
-<span style="color: #008000">// logout if needed</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">fidjService</span><span style="color: #000000">.</span><span style="color: #795E26">logout</span><span style="color: #000000">();</span>
-
-</code></pre>
-				<a href="#2-you39re-a-fidj-dev" id="2-you39re-a-fidj-dev" style="color: inherit; text-decoration: none;">
-					<h1>2) You&#39;re a fidj dev</h1>
-				</a>
-				<p>Thank you for your support !</p>
-				<p>Fidj.ovh is an Open Source project - we need you to provide great tools to great apps.</p>
-				<a href="#develop" id="develop" style="color: inherit; text-decoration: none;">
-					<h2>Develop</h2>
-				</a>
-				<p>Fork the project</p>
-				<pre><code class="language-bash"><span style="color: #000000">git clone https://github.com/ofidj/fidj.git</span>
-<span style="color: #795E26">cd</span><span style="color: #000000"> fidj</span>
-<span style="color: #000000">npm install</span>
-</code></pre>
-				<p>And make pull request ...</p>
-				<a href="#testing" id="testing" style="color: inherit; text-decoration: none;">
-					<h3>Testing</h3>
-				</a>
-				<p>With npm :</p>
-				<pre><code class="language-bash"><span style="color: #000000">$ npm </span><span style="color: #795E26">test</span>
-</code></pre>
-				<p>With a OpenAPI (TODO) :<br><a href="https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/">https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/</a></p>
-				<a href="#release-notes" id="release-notes" style="color: inherit; text-decoration: none;">
-					<h2>Release notes</h2>
-				</a>
-				<p>In <a href="./RELEASE.md">Release notes</a>.</p>
-				<a href="#thanks" id="thanks" style="color: inherit; text-decoration: none;">
-					<h1>Thanks</h1>
-				</a>
-				<p><a href="https://fidj.ovh">@fidj</a> @mat_cloud </p>
-			</div>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class=" ">
-						<a href="modules.html">Exports</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-					<li class=" tsd-kind-enum">
-						<a href="enums/loggerlevelenum.html" class="tsd-kind-icon">Logger<wbr>Level<wbr>Enum</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/base64.html" class="tsd-kind-icon">Base64</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/error.html" class="tsd-kind-icon">Error</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/fidjmodule.html" class="tsd-kind-icon">Fidj<wbr>Module</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/fidjservice.html" class="tsd-kind-icon">Fidj<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/localstorage.html" class="tsd-kind-icon">Local<wbr>Storage</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/xor.html" class="tsd-kind-icon">Xor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/endpointcallinterface.html" class="tsd-kind-icon">Endpoint<wbr>Call<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/endpointfilterinterface.html" class="tsd-kind-icon">Endpoint<wbr>Filter<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/endpointinterface.html" class="tsd-kind-icon">Endpoint<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/errorinterface.html" class="tsd-kind-icon">Error<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/loggerinterface.html" class="tsd-kind-icon">Logger<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/moduleserviceinitoptionsinterface.html" class="tsd-kind-icon">Module<wbr>Service<wbr>Init<wbr>Options<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/moduleserviceinterface.html" class="tsd-kind-icon">Module<wbr>Service<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/moduleserviceloginoptionsinterface.html" class="tsd-kind-icon">Module<wbr>Service<wbr>Login<wbr>Options<wbr>Interface</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/sdkinterface.html" class="tsd-kind-icon">Sdk<wbr>Interface</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
-</div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
-<div class="overlay"></div>
-<script src="assets/js/main.js"></script>
-</body>
-</html>
+<p>With a OpenAPI (TODO) :<br>
+<a href="https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/" target="_blank" class="external">https://app.swaggerhub.com/api/mlefree/fidj-io_rest_api/</a></p>
+<a id="md:release-notes" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Release notes<a href="#md:release-notes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>In <a href="media/RELEASE.md">Release notes</a>.</p>
+<a id="md:thanks" class="tsd-anchor"></a><h1 class="tsd-anchor-link">Thanks<a href="#md:thanks" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p><a href="https://fidj.ovh" target="_blank" class="external">@fidj</a> @mat_cloud</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:1-youre-an-app-builder"><span>1) <wbr/>You&#39;re an app builder</span></a><ul><li><ul><li><a href="#md:the-easiest-way"><span>The easiest way</span></a></li><li><a href="#md:the-normal-way"><span>The normal way</span></a></li></ul></li></ul><a href="#md:2-youre-a-fidj-dev"><span>2) <wbr/>You&#39;re a fidj dev</span></a><ul><li><a href="#md:develop"><span>Develop</span></a></li><li><ul><li><a href="#md:testing"><span>Testing</span></a></li></ul></li><li><a href="#md:release-notes"><span>Release notes</span></a></li></ul><a href="#md:thanks"><span>Thanks</span></a></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="assets/icons.svg#icon-1"></use></svg><span>fidj</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

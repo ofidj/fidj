@@ -255,7 +255,7 @@ var LoggerLevelEnum;
     LoggerLevelEnum[LoggerLevelEnum["NONE"] = 4] = "NONE";
 })(LoggerLevelEnum || (LoggerLevelEnum = {}));
 
-class Error$2 {
+let Error$2 = class Error {
     constructor(code, reason) {
         this.code = code;
         this.reason = reason;
@@ -268,7 +268,7 @@ class Error$2 {
         const msg = (typeof this.reason === 'string') ? this.reason : JSON.stringify(this.reason);
         return '' + this.code + ' - ' + msg;
     }
-}
+};
 
 /**
  * `NgModule` which provides associated services.
@@ -281,10 +281,10 @@ class FidjModule {
     constructor() {
     }
 }
-FidjModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
-FidjModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "14.2.10", ngImport: i0, type: FidjModule, imports: [CommonModule] });
-FidjModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjModule, imports: [CommonModule] });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjModule, decorators: [{
+FidjModule.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+FidjModule.ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "15.2.10", ngImport: i0, type: FidjModule, imports: [CommonModule] });
+FidjModule.ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjModule, imports: [CommonModule] });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjModule, decorators: [{
             type: NgModule,
             args: [{
                     imports: [
@@ -322,6 +322,8 @@ class ClientUser {
 }
 
 // import {XHRPromise} from './xhrpromise';
+// const superagent = require('superagent');
+// import from 'superagent';
 var XhrErrorReason;
 (function (XhrErrorReason) {
     XhrErrorReason[XhrErrorReason["UNKNOWN"] = 0] = "UNKNOWN";
@@ -727,11 +729,11 @@ class Connection {
     }
     setClient(client) {
         this.client = client;
-        //if (!this.user) {
-        //    this.user = new ClientUser();
-        //}
-        // this._user._id = this._client.clientId;
-        //this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
+        // if (!this.user) {
+        //     this.user = new ClientUser();
+        // }
+        //  this._user._id = this._client.clientId;
+        // this.user._name = JSON.parse(this.getIdPayload({name: ''})).name;
     }
     setUser(user) {
         this.user = user;
@@ -1013,7 +1015,7 @@ class Connection {
             if (!this._sdk.prod) {
                 ea = [
                     { key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false },
-                    { key: 'fidj.default', url: 'https://fidj-sandbox.herokuapp.com/v3', blocked: false }
+                    { key: 'fidj.default', url: 'https://sandbox.api.fidj.ovh/v3', blocked: false }
                 ];
             }
             if (this.accessToken) {
@@ -1231,12 +1233,11 @@ Connection._states = 'v2.states';
 Connection._cryptoSalt = 'v2.cryptoSalt';
 Connection._cryptoSaltNext = 'v2.cryptoSalt.next';
 
-let FidjPouch;
+const FidjPouch = null;
 if (typeof window !== 'undefined' && typeof require !== 'undefined') {
-    FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
     // load cordova adapter : https://github.com/pouchdb-community/pouchdb-adapter-cordova-sqlite/issues/22
-    const PouchAdapterCordovaSqlite = require('pouchdb-adapter-cordova-sqlite');
-    FidjPouch.plugin(PouchAdapterCordovaSqlite);
+    //  FidjPouch = (window['PouchDB']) ? window['PouchDB'] : require('pouchdb').default; // .default;
+    //  FidjPouch.plugin(require('pouchdb-adapter-cordova-sqlite'));
 }
 class Session {
     constructor() {
@@ -1612,11 +1613,11 @@ class Session {
     }
 }
 
-class Error$1 {
+let Error$1 = class Error {
     constructor() {
     }
     ;
-}
+};
 
 class LoggerService {
     constructor(level) {
@@ -2457,9 +2458,9 @@ class FidjService {
     }
     ;
 }
-FidjService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-FidjService.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjService, providedIn: 'root' });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.2.10", ngImport: i0, type: FidjService, decorators: [{
+FidjService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+FidjService.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjService, providedIn: 'root' });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "15.2.10", ngImport: i0, type: FidjService, decorators: [{
             type: Injectable,
             args: [{
                     providedIn: 'root',

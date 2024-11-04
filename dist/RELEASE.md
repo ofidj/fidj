@@ -8,3 +8,4 @@
  - 3.3.4 : Added forgotPasswordRequest
  - 3.3.5 : bug fixing
  - 3.3.7 : Dependencies update 
+ - 14.2.10: angular update to 14.2.10
