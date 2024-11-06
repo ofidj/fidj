@@ -398,7 +398,7 @@ export class Connection {
         if (!this._sdk.prod) {
             ea = [
                 {key: 'fidj.default', url: 'http://localhost:3201/v3', blocked: false},
-                {key: 'fidj.default', url: 'https://sandbox.api.fidj.ovh/v3', blocked: false}
+                {key: 'fidj.default', url: 'https://api.sandbox.fidj.ovh/v3', blocked: false}
             ];
         }
 

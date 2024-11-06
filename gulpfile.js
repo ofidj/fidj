@@ -42,7 +42,7 @@ function bumpVersion() {
         .pipe(gulp.dest('src/version/'));
 }
 
-const bumpTask = gulp.series(bumpPackage, bumpVersion);
+const bumpTask = gulp.series(bumpVersion);
 
 gulp.task('bump:package', bumpPackage);
 

@@ -7,9 +7,8 @@
 unit-results.xml
 e2e-results.xml
 
-
-/node_modules
-/bower_components
-/reports
-/coverage
-
+node_modules/
+bower_components/
+reports/
+coverage/
+dist/
